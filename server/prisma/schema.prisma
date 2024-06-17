@@ -6,9 +6,248 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  schemas  = ["public"]
+}
+
+// NextAuth
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?  @db.Text
+  access_token       String?  @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?  @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@schema("public")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@schema("public")
+}
+
+model User {
+  id                String    @id @default(cuid())
+  name              String?
+  email             String?   @unique
+  emailVerified     DateTime?
+  image             String?
+
+  accounts          Account[]
+  sessions          Session[]
+
+  // App-specific
+  userProfiles      UserProfile[]
+
+  @@schema("public")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@schema("public")
+}
+
+// Serene Core: User Management (non-NextAuth)
+model UserPreference {
+  id                        String          @id @default(cuid())
+  userProfileId             String          @map("user_profile_id")
+  userProfile               UserProfile     @relation(fields: [userProfileId], references: [id])
+  category                  String
+  key                       String
+  value                     String?
+  values                    String[]
+  created                   DateTime        @default(now())
+
+  @@unique([userProfileId, key], name: "user_preference_uq")
+  @@map("user_preference")
+  @@schema("public")
+}
+
+model UserProfile {
+  id                          String       @id @default(cuid())
+  userId                      String?      @map("user_id") @unique  // Map to NextAuth's User model
+  user                        User?        @relation(fields: [userId], references: [id])
+  isAdmin                     Boolean      @map("is_admin")
+  isTestUser                  Boolean?     @map("is_test_user")     // Should eventually be not null
+
+  // Non-core fields
+  ownerType                   String?      @db.Char(1) @map("owner_type")  // Human or Bot
+  roles                       String[]
+
+  ofAgents                    Agent[]
+  ofChatParticipants          ChatParticipant[]
+  ofChatSessions              ChatSession[]
+  ofChatSettings              ChatSettings[]
+  ofUserPreferences           UserPreference[]
+  ofRateLimitedApiEvents      RateLimitedApiEvent[]
+
+  @@map("user_profile")
+  @@schema("public")
+}
+
+// Serene Gemini AI
+
+model Agent {
+  id                   String         @id @default(cuid())
+  userProfileId        String         @map("user_profile_id") @unique
+  userProfile          UserProfile    @relation(fields: [userProfileId], references: [id])
+  name                 String         @unique
+  role                 String
+  defaultPrompt        String?
+
+  ofChatSettings       ChatSettings[]
+
+  @@map("agent")
+  @@schema("public")
+}
+
+model ChatMessage {
+  // chatSessionId is optional to allow for direct messages.
+  id                           String            @id @default(cuid())
+  chatSessionId                String?           @map("chat_session_id")
+  chatSession                  ChatSession?      @relation(fields: [chatSessionId], references: [id])
+  fromChatParticipantId        String            @map("from_chat_participant_id")
+  fromChatParticipant          ChatParticipant   @relation("fromChatParticipant", fields: [fromChatParticipantId], references: [id])
+  toChatParticipantId          String?           @map("to_chat_participant_id")
+  toChatParticipant            ChatParticipant?  @relation("toChatParticipant", fields: [toChatParticipantId], references: [id])
+  sentByAi                     Boolean           @map("sent_by_ai")
+  message                      String
+  created                      DateTime          @default(now())
+  updated                      DateTime          @updatedAt
+
+  @@index([chatSessionId])
+  @@index([created])
+  @@map("chat_message")
+  @@schema("public")
+}
+
+model ChatParticipant {
+  // An optional projectId is available for use with inter-project chats.
+  id                            String               @id @default(cuid())
+  chatSessionId                 String               @map("chat_session_id")
+  chatSession                   ChatSession          @relation(fields: [chatSessionId], references: [id])
+  userProfileId                 String               @map("user_profile_id")
+  userProfile                   UserProfile          @relation(fields: [userProfileId], references: [id])
+
+  ofChatMessagesFrom            ChatMessage[]        @relation("fromChatParticipant")
+  ofChatMessagesTo              ChatMessage[]        @relation("toChatParticipant")
+
+  @@map("chat_participant")
+  @@schema("public")
+}
+
+model ChatSession {
+  id                           String               @id @default(cuid())
+  chatSettingsId               String               @map("chat_settings_id")
+  chatSettings                 ChatSettings         @relation(fields: [chatSettingsId], references: [id])
+  status                       String               @db.Char(1)
+  token                        String
+  name                         String?
+  createdById                  String               @map("created_by_id")
+  createdByUserProfile         UserProfile          @relation(fields: [createdById], references: [id])
+  created                      DateTime             @default(now())
+  updated                      DateTime             @updatedAt
+
+  ofChatMessages               ChatMessage[]
+  ofChatParticipants           ChatParticipant[]
+
+  @@map("chat_session")
+  @@schema("public")
+}
+
+model ChatSettings {
+  id                           String               @id @default(cuid())
+  status                       String               @db.Char(1)
+  name                         String               @unique
+  llmTechId                    String?              @map("llm_tech_id")
+  llmTech                      Tech?                @relation(fields: [llmTechId], references: [id])
+  agentId                      String               @map("agent_id")
+  agent                        Agent                @relation(fields: [agentId], references: [id])
+  prompt                       String?
+  agentRole                    String?              @map("agent_role")
+  createdById                  String               @map("created_by_id")
+  createdByUserProfile         UserProfile          @relation(fields: [createdById], references: [id])
+  created                      DateTime             @default(now())
+  updated                      DateTime             @updatedAt
+
+  ofChatSessions               ChatSession[]
+
+  @@map("chat_settings")
+  @@schema("public")
+}
+
+// Cache and rate-limiting
+
+model LlmCache {
+  id                           String               @id @default(cuid())
+  key                          String               @unique
+  value                        String
+
+  @@map("llm_cache")
+  @@schema("public")
+}
+
+model RateLimitedApi {
+  id                           String               @id @default(cuid())
+  techId                       String?              @map("tech_id")
+  tech                         Tech?                @relation(fields: [techId], references: [id])
+  ratePerMinute                Int                  @map("rate_per_minute")
+
+  ofRateLimitedApiEvents       RateLimitedApiEvent[]
+
+  @@map("rate_limited_api")
+  @@schema("public")
+}
+
+model RateLimitedApiEvent {
+  // Using a separate table from ChatMessage, because ChatMessage is populated
+  // after the LLM API returns, but the rate limited event should be tracked
+  // from just before the API call is made.
+  id                           String               @id @default(cuid())
+  rateLimitedApiId             String               @map("api_rate_limited_id")
+  rateLimitedApi               RateLimitedApi       @relation(fields: [rateLimitedApiId], references: [id])
+  userProfileId                String               @map("user_profile_id")
+  userProfile                  UserProfile          @relation(fields: [userProfileId], references: [id])
+  created                      DateTime             @default(now())
+
+  @@index([created])
+  @@map("rate_limited_api_event")
+  @@schema("public")
+}
+
+model Tech {
+  id                           String               @id @default(cuid())
+  isDefaultProvider            Boolean              @map("is_default_provider")
+  variantName                  String               @map("variant_name") @unique
+  provides                     String
+
+  ofRateLimitedApis            RateLimitedApi[]
+  ofChatSettings               ChatSettings[]
+
+  @@map("tech")
+  @@schema("public")
 }
