@@ -16,7 +16,7 @@ export async function getChatMessages(
 
   const fnName = `getChatMessages()`
 
-  // console.log(`${fnName}: args: ${JSON.stringify(args)}`)
+  console.log(`${fnName}: args: ${JSON.stringify(args)}`)
 
   var results: any
 
@@ -27,6 +27,8 @@ export async function getChatMessages(
         args.chatSessionId,
         args.userProfileId,
         args.lastMessageId)
+
+    console.log
   } catch (error) {
     if (error instanceof CustomError) {
       return {
@@ -145,6 +147,8 @@ export async function getChatSessions(
       }
     }
   }
+
+  // console.log(`${fnName}: results: ${JSON.stringify(results)}`)
 
   return results
 }

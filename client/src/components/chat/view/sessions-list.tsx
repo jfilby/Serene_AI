@@ -75,7 +75,7 @@ export default function ChatSessionsList({
                   <Typography
                     style={{ marginBottom: '0.5em' }}
                     variant='body1'>
-                    {chatSession.name}
+                    {new Date(Number(chatSession.updated)).toISOString()}
                   </Typography>
 
                   <Divider />

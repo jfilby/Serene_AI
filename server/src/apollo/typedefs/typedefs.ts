@@ -32,6 +32,7 @@ export const typeDefs = `#graphql
   type ChatSession {
     id: String!
     status: String!
+    updated: String!
     chatParticipants: [ChatParticipant]
   }
 

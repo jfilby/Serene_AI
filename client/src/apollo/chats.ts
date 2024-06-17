@@ -100,6 +100,7 @@ export const getChatSessionsQuery = gql`
 
       id
       status
+      updated
       chatParticipants {
         id
         userProfileId
