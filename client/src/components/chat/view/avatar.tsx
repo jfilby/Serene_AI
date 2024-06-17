@@ -13,7 +13,7 @@ export default function Message({ from }: Props) {
     // Render switch in a function: https://stackoverflow.com/a/52618847
     switch (from) {
 
-      case undefined:
+      case undefined || `User`:
         return <Avatar sx={{ bgcolor: deepPurple[500] }}>You</Avatar>
 
       default:
