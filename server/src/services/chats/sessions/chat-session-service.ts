@@ -49,12 +49,13 @@ export class ChatSessionService {
     // console.log(`${fnName}: starting with userProfileId: ${userProfileId}`)
 
     // Create ChatSession
+    // Start in new status, only active once there are messages
     var chatSession = await
           this.chatSessionModel.create(
             prisma,
             undefined,  // id,
             chatSettingsId,
-            CommonTypes.activeStatus,
+            CommonTypes.newStatus,
             undefined,  // name
             userProfileId)
 
@@ -547,6 +548,7 @@ export class ChatSessionService {
     return {
       isRateLimited: false,
       waitSeconds: 0,
+      chatSession: chatSession,
       fromChatParticipantId: fromChatParticipantId,
       fromContents: fromContents,
       toChatParticipantId: toChatParticipant.id,
@@ -558,7 +560,7 @@ export class ChatSessionService {
 
   async saveMessages(
           prisma: any,
-          chatSessionId: string,
+          chatSession: any,
           sessionTurnData: any) {
 
     // Debug
@@ -567,11 +569,24 @@ export class ChatSessionService {
     console.log(`${fnName}: sessionTurnData: ` +
                 JSON.stringify(sessionTurnData))
 
+    // Switch that status from N (new) to A (active)
+    if (chatSession.status === CommonTypes.newStatus) {
+
+      chatSession = await
+        this.chatSessionModel.update(
+          prisma,
+          chatSession.id,
+          undefined,  // chatSettingsId
+          CommonTypes.activeStatus,
+          undefined,  // name
+          undefined)  // createdById
+    }
+
     // Save from message
     await this.chatMessageModel.create(
             prisma,
             undefined,  // id
-            chatSessionId,
+            chatSession.id,
             sessionTurnData.fromChatParticipantId,
             sessionTurnData.toChatParticipantId,
             false,      // sentByAi
@@ -581,7 +596,7 @@ export class ChatSessionService {
     await this.chatMessageModel.create(
             prisma,
             undefined,  // id
-            chatSessionId,
+            chatSession.id,
             sessionTurnData.toChatParticipantId,
             sessionTurnData.fromChatParticipantId,
             true,       // sentByAi

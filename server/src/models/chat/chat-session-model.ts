@@ -98,10 +98,10 @@ export class ChatSessionModel {
 
   async update(prisma: any,
                id: string,
-               chatSettingsId: string,
-               status: string,
+               chatSettingsId: string | undefined,
+               status: string | undefined,
                name: string | undefined,
-               createdById: string) {
+               createdById: string | undefined) {
 
     // Debug
     const fnName = `${this.clName}.update()`
@@ -127,8 +127,8 @@ export class ChatSessionModel {
 
   async upsert(prisma: any,
                id: string,
-               chatSettingsId: string,
-               status: string,
+               chatSettingsId: string | undefined,
+               status: string | undefined,
                name: string | undefined,
                createdById: string) {
 
@@ -151,6 +151,18 @@ export class ChatSessionModel {
     // Upsert
     if (id == null) {
 
+      // Validate for create (mainly for type validation of the create call)
+      if (chatSettingsId == null) {
+        console.error(`${fnName}: id is null and chatSettingsId is null`)
+        throw 'Prisma error'
+      }
+
+      if (status == null) {
+        console.error(`${fnName}: id is null and status is null`)
+        throw 'Prisma error'
+      }
+
+      // Create
       return await this.create(
                      prisma,
                      undefined,  // id
@@ -160,6 +172,7 @@ export class ChatSessionModel {
                      createdById)
     } else {
 
+      // Update
       return await this.update(
                      prisma,
                      id,
