@@ -181,8 +181,10 @@ model ChatSession {
 
 model ChatSettings {
   id                           String               @id @default(cuid())
+  baseChatSettingsId           String?              @map("base_chat_settings_id")
+  baseChatSettings             ChatSettings?        @relation("base", fields: [baseChatSettingsId], references: [id])
   status                       String               @db.Char(1)
-  name                         String               @unique
+  name                         String?              @unique  // Only unique for baseChatSettingsId == null
   llmTechId                    String?              @map("llm_tech_id")
   llmTech                      Tech?                @relation(fields: [llmTechId], references: [id])
   agentId                      String               @map("agent_id")
@@ -194,6 +196,7 @@ model ChatSettings {
   created                      DateTime             @default(now())
   updated                      DateTime             @updatedAt
 
+  ofBaseChatSettings           ChatSettings[]       @relation("base")
   ofChatSessions               ChatSession[]
 
   @@map("chat_settings")

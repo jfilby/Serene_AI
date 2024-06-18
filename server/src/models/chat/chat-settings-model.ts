@@ -5,8 +5,9 @@ export class ChatSettingsModel {
 
   // Code
   async create(prisma: any,
+               baseChatSettingsId: string | undefined,
                status: string,
-               name: string,
+               name: string | undefined,
                llmTechId: string,
                agentId: string,
                prompt: string | undefined,
@@ -21,6 +22,7 @@ export class ChatSettingsModel {
     try {
       return await prisma.chatSettings.create({
         data: {
+          baseChatSettingsId: baseChatSettingsId,
           status: status,
           name: name,
           llmTechId: llmTechId,
@@ -90,6 +92,7 @@ export class ChatSettingsModel {
 
   async update(prisma: any,
                id: string,
+               baseChatSettingsId: string | undefined,
                status: string | undefined,
                name: string | undefined,
                llmTechId: string | undefined,
@@ -104,6 +107,7 @@ export class ChatSettingsModel {
     try {
       return await prisma.chatSettings.update({
         data: {
+          baseChatSettingsId: baseChatSettingsId,
           status: status,
           name: name,
           llmTechId: llmTechId,
@@ -123,6 +127,7 @@ export class ChatSettingsModel {
 
   async upsert(prisma: any,
                id: string | undefined,
+               baseChatSettingsId: string | undefined,
                status: string | undefined,
                name: string | undefined,
                llmTechId: string | undefined,
@@ -153,13 +158,13 @@ export class ChatSettingsModel {
     if (id == null) {
 
       // Validate for create (mainly for type validation of the create call)
-      if (status == null) {
-        console.error(`${fnName}: id is null and status is null`)
+      if (baseChatSettingsId == null) {
+        console.error(`${fnName}: id is null and baseChatSettingsId is null`)
         throw 'Prisma error'
       }
 
-      if (name == null) {
-        console.error(`${fnName}: id is null and name is null`)
+      if (status == null) {
+        console.error(`${fnName}: id is null and status is null`)
         throw 'Prisma error'
       }
 
@@ -180,6 +185,7 @@ export class ChatSettingsModel {
 
       return await this.create(
                      prisma,
+                     baseChatSettingsId,
                      status,
                      name,
                      llmTechId,
@@ -191,6 +197,7 @@ export class ChatSettingsModel {
       return await this.update(
                      prisma,
                      id,
+                     baseChatSettingsId,
                      status,
                      name,
                      llmTechId,

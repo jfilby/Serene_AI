@@ -40,13 +40,40 @@ export class ChatSessionService {
   // Code
   async createChatSession(
           prisma: any,
-          chatSettingsId: string,
-          userProfileId: string) {
+          baseChatSettingsId: string,
+          userProfileId: string,
+          prompt: string | undefined) {
 
     // Debug
     const fnName = `${this.clName}.createChatSession()`
 
     // console.log(`${fnName}: starting with userProfileId: ${userProfileId}`)
+
+    // If a prompt is specified, then create a ChatSettings record
+    var chatSettingsId = baseChatSettingsId
+
+    if (prompt != null) {
+
+      // Get base ChatSettings record
+      const baseChatSettings = await
+              this.chatSettingsModel.getById(
+                prisma,
+                baseChatSettingsId)
+
+      // Create new ChatSettings record
+      const chatSettings = await
+              this.chatSettingsModel.create(
+                prisma,
+                baseChatSettingsId,
+                CommonTypes.activeStatus,
+                undefined,  // name
+                baseChatSettings.llmTechId,
+                baseChatSettings.agentId,
+                prompt,
+                userProfileId)
+
+      chatSettingsId = chatSettings.id
+    }
 
     // Create ChatSession
     // Start in new status, only active once there are messages
@@ -397,8 +424,9 @@ export class ChatSessionService {
   async getOrCreateChatSession(
           prisma: any,
           chatSessionId: string,
-          chatSettingsId: string,
+          baseChatSettingsId: string,
           userProfileId: string,
+          prompt: string | undefined,
           createIfNotExists: boolean = true) {
 
     // Debug
@@ -420,8 +448,9 @@ export class ChatSessionService {
       chatSession = await
         this.createChatSession(
           prisma,
-          chatSettingsId,
-          userProfileId)
+          baseChatSettingsId,
+          userProfileId,
+          prompt)
     }
 
     // Verify
@@ -473,6 +502,9 @@ export class ChatSessionService {
               prisma,
               chatSessionId,
               true)  // includeChatSettings
+
+    // Debug
+    // console.log(`${fnName}: chatSession: ` + JSON.stringify(chatSession))
 
     // Check to see if rate limited
     const rateLimitedData = await
