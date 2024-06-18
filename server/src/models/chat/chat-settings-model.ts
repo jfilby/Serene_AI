@@ -135,6 +135,20 @@ export class ChatSettingsModel {
 
     console.log(`${fnName}: starting..`)
 
+    // Get by name if id not specified
+    if (id == null &&
+        name != null) {
+
+      const chatSettings = await
+              this.getByName(
+                prisma,
+                name)
+
+      if (chatSettings != null) {
+        id = chatSettings.id
+      }
+    }
+
     // Upsert
     if (id == null) {
 
