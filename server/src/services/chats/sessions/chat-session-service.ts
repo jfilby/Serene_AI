@@ -222,6 +222,32 @@ export class ChatSessionService {
     return messagesWithRoles
   }
 
+  buildMessagesWithRolesForSinglePrompt(prompt: string) {
+
+    // Debug
+    const fnName = `${this.clName}.buildMessagesWithRolesForSinglePrompt()`
+
+    // Messages var
+    var messagesWithRoles: any[] = []
+
+    // Add a system prompt
+    messagesWithRoles.push()
+
+    // Determine the role
+    var role: string = ''
+
+    role = ServerOnlyTypes.userMessageRole
+
+    // Add chat message
+    messagesWithRoles.push({
+      role: role,
+      parts: [{ text: prompt }]
+    })
+
+    // Return
+    return messagesWithRoles
+  }
+
   async enrichWithChatParticipantNames(
           prisma: any,
           chatSession: any) {

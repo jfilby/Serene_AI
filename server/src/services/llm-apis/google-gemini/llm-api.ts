@@ -126,7 +126,7 @@ export class GoogleGeminiLlmService {
     // Get the model
     const generativeModel =
             this.genAI.getGenerativeModel(
-              { model: model},
+              { model: model },
               { apiVersion: 'v1beta' })
 
     // Get history: remove the latest message
@@ -332,7 +332,8 @@ export class GoogleGeminiLlmService {
     const completion = await
             this.getChatCompletions(
               model,
-              messagesWithRoles)
+              messagesWithRoles,
+              jsonMode)
 
     // Log
     console.log(`${fnName}: completion: ${JSON.stringify(completion)}`)

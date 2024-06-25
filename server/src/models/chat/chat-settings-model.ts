@@ -158,11 +158,6 @@ export class ChatSettingsModel {
     if (id == null) {
 
       // Validate for create (mainly for type validation of the create call)
-      if (baseChatSettingsId == null) {
-        console.error(`${fnName}: id is null and baseChatSettingsId is null`)
-        throw 'Prisma error'
-      }
-
       if (status == null) {
         console.error(`${fnName}: id is null and status is null`)
         throw 'Prisma error'
