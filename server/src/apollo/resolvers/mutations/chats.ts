@@ -27,6 +27,7 @@ export async function getOrCreateChatSession(
         chatSessionService.getOrCreateChatSession(
           transactionPrisma,
           args.chatSessionId,
+          undefined,  // baseChatSettingsId
           args.prompt,
           args.userProfileId)
     } catch (error) {

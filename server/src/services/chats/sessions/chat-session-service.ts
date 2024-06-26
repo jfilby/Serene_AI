@@ -40,7 +40,7 @@ export class ChatSessionService {
   // Code
   async createChatSession(
           prisma: any,
-          baseChatSettingsId: string,
+          baseChatSettingsId: string | undefined,
           userProfileId: string,
           prompt: string | undefined) {
 
@@ -49,16 +49,37 @@ export class ChatSessionService {
 
     // console.log(`${fnName}: starting with userProfileId: ${userProfileId}`)
 
+    // If no baseChatSettingsId is specified, then get the default
+    var baseChatSettings
+    var defaultBaseChatSettingsId: string | undefined = ''
+
+    if (baseChatSettingsId == null) {
+
+      const baseChatSettingsMany = await
+              this.chatSettingsModel.getByParentId(
+                prisma,
+                null)
+
+      if (baseChatSettingsMany.length > 0) {
+        baseChatSettingsId = baseChatSettingsMany[0].id
+        defaultBaseChatSettingsId = baseChatSettingsId
+      }
+    }
+
     // If a prompt is specified, then create a ChatSettings record
     var chatSettingsId = baseChatSettingsId
 
     if (prompt != null) {
 
       // Get base ChatSettings record
-      const baseChatSettings = await
-              this.chatSettingsModel.getById(
-                prisma,
-                baseChatSettingsId)
+      if (baseChatSettingsId != null &&
+          baseChatSettingsId !== defaultBaseChatSettingsId) {
+
+        baseChatSettings = await
+          this.chatSettingsModel.getById(
+            prisma,
+            baseChatSettingsId)
+      }
 
       // Create new ChatSettings record
       const chatSettings = await
@@ -73,6 +94,11 @@ export class ChatSessionService {
                 userProfileId)
 
       chatSettingsId = chatSettings.id
+    }
+
+    // Verify that chatSettingsId is set
+    if (chatSettingsId == null) {
+      throw new CustomError(`${fnName}: chatSettingsId == null`)
     }
 
     // Create ChatSession
@@ -329,17 +355,6 @@ export class ChatSessionService {
     }
   }
 
-  async getChatParticipants(
-          prisma: any,
-          chatSessionId: string,
-          userProfileId: string) {
-
-    // Debug
-    const fnName = `${this.clName}.getChatParticipants()`
-
-    ;
-  }
-
   async getChatParticipantName(
           prisma: any,
           userProfileId: string) {
@@ -450,7 +465,7 @@ export class ChatSessionService {
   async getOrCreateChatSession(
           prisma: any,
           chatSessionId: string,
-          baseChatSettingsId: string,
+          baseChatSettingsId: string | undefined,
           userProfileId: string,
           prompt: string | undefined,
           createIfNotExists: boolean = true) {

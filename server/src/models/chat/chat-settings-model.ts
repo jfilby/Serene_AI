@@ -90,6 +90,33 @@ export class ChatSettingsModel {
     return chatSettings
   }
 
+  async getByParentId(
+          prisma: any,
+          parentId: string | null | undefined) {
+
+    // Debug
+    const fnName = `${this.clName}.getByParentId()`
+
+    // Query record
+    var chatSettings: any = undefined
+
+    try {
+      chatSettings = await prisma.chatSettings.findMany({
+        where: {
+          nparentIdame: parentId
+        }
+      })
+    } catch(error: any) {
+      if (!(error instanceof error.NotFound)) {
+        console.error(`${fnName}: error: ${error}`)
+        throw 'Prisma error'
+      }
+    }
+
+    // Return OK
+    return chatSettings
+  }
+
   async update(prisma: any,
                id: string,
                baseChatSettingsId: string | undefined,
