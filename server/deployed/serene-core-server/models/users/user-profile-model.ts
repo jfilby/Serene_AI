@@ -21,7 +21,7 @@ export class UserProfileModel {
           isAdmin: isAdmin
         }
       })
-    } catch(error) {
+    } catch(error: any) {
       console.error(`${fnName}: error: ${error}`)
       throw 'Prisma error'
     }
@@ -40,7 +40,7 @@ export class UserProfileModel {
           id: id
         }
       })
-    } catch(error) {
+    } catch(error: any) {
       if (!(error instanceof error.NotFound)) {
         console.error(`${fnName}: error: ${error}`)
         throw 'Prisma error'
@@ -62,7 +62,7 @@ export class UserProfileModel {
           userId: userId
         }
       })
-    } catch(error) {
+    } catch(error: any) {
       if (!(error instanceof error.NotFound)) {
         console.error(`${fnName}: error: ${error}`)
         throw 'Prisma error'

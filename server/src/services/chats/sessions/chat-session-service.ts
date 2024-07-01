@@ -8,10 +8,7 @@ import { ChatMessageModel } from '../../../models/chat/chat-message-model'
 import { ChatParticipantModel } from '../../../models/chat/chat-participant-model'
 import { ChatSessionModel } from '../../../models/chat/chat-session-model'
 import { ChatSettingsModel } from '../../../models/chat/chat-settings-model'
-import { RateLimitedApiEventModel } from '../../../models/chat/rate-limited-api-event-model'
-import { RateLimitedApiModel } from '../../../models/chat/rate-limited-api-model'
 import { AgentsService } from '../../agents/agents-service'
-import { ChatApiUsageService } from '../../api-usage/chat-api-usage-service'
 import { ChatService } from '../../llm-apis/chat-service'
 
 export class ChatSessionService {
@@ -28,12 +25,9 @@ export class ChatSessionService {
   chatParticipantModel = new ChatParticipantModel()
   chatSessionModel = new ChatSessionModel()
   chatSettingsModel = new ChatSettingsModel()
-  rateLimitedApiEventModel = new RateLimitedApiEventModel()
-  rateLimitedApiModel = new RateLimitedApiModel()
 
   // Services
   agentsService = new AgentsService()
-  chatApiUsageService = new ChatApiUsageService()
   chatService = new ChatService()
   usersService = new UsersService()
 
@@ -547,31 +541,6 @@ export class ChatSessionService {
     // Debug
     // console.log(`${fnName}: chatSession: ` + JSON.stringify(chatSession))
 
-    // Check to see if rate limited
-    const rateLimitedData = await
-            this.chatApiUsageService.isRateLimited(
-              prisma,
-              chatSession.chatSettings.llmTechId)
-
-    if (rateLimitedData.isRateLimited === true) {
-
-      return {
-        isRateLimited: rateLimitedData.isRateLimited,
-        waitSeconds: rateLimitedData.waitSeconds,
-        chatParticipantId: undefined,
-        userProfileId: undefined,
-        name: undefined,
-        contents: undefined
-      }
-    }
-
-    // Create rate-limited API event
-    await this.rateLimitedApiEventModel.create(
-            prisma,
-            undefined,  // id
-            rateLimitedData.rateLimitedApiId,
-            fromUserProfileId)
-
     // Get the chatParticipant record of the bot
     const toChatParticipant = await
             this.chatParticipantModel.getByChatSessionIdAndOwnerType(
@@ -608,6 +577,9 @@ export class ChatSessionService {
     // Call Gemini
     const chatCompletionResults = await
             this.chatService.llmRequest(
+              prisma,
+              chatSession.chatSettings.llmTechId,
+              fromUserProfileId,
               agent,
               messagesWithRoles,
               chatSession.chatSettings.prompt,

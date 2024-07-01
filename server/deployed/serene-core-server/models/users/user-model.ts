@@ -22,7 +22,7 @@ export class UserModel {
           name: name
         }
       })
-    } catch(error) {
+    } catch(error: any) {
       console.error(`${fnName}: error: ${error}`)
       throw 'Prisma error'
     }
@@ -44,7 +44,7 @@ export class UserModel {
           email: emailLower
         }
       })
-    } catch(error) {
+    } catch(error: any) {
       if (!(error instanceof error.NotFound)) {
         console.error(`${fnName}: error: ${error}`)
         throw 'Prisma error'
@@ -65,7 +65,7 @@ export class UserModel {
           id: id
         }
       })
-    } catch(error) {
+    } catch(error: any) {
       if (!(error instanceof error.NotFound)) {
         console.error(`${fnName}: error: ${error}`)
         throw 'Prisma error'
@@ -90,7 +90,7 @@ export class UserModel {
           id: id
         }
       })
-    } catch(error) {
+    } catch(error: any) {
       console.error(`${fnName}: error: ${error}`)
       throw 'Prisma error'
     }

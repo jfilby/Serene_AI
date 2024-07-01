@@ -20,7 +20,7 @@ export class UserGroupMemberModel {
           userProfileId: userProfileId
         }
       })
-    } catch(error) {
+    } catch(error: any) {
       console.error(`${fnName}: error: ${error}`)
       throw 'Prisma error'
     }
@@ -40,7 +40,7 @@ export class UserGroupMemberModel {
           id: id
         }
       })
-    } catch(error) {
+    } catch(error: any) {
       console.error(`${fnName}: error: ${error}`)
       throw 'Prisma error'
     }

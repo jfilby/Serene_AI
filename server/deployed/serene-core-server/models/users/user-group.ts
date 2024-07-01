@@ -18,7 +18,7 @@ export class UserGroupModel {
           name: name
         }
       })
-    } catch(error) {
+    } catch(error: any) {
       console.error(`${fnName}: error: ${error}`)
       throw 'Prisma error'
     }
@@ -96,7 +96,7 @@ export class UserGroupModel {
           id: id
         }
       })
-    } catch(error) {
+    } catch(error: any) {
       console.error(`${fnName}: error: ${error}`)
       throw 'Prisma error'
     }

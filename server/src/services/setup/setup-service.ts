@@ -1,8 +1,7 @@
+import { RateLimitedApiModel } from '@/serene-core-server/models/tech/rate-limited-api-model'
+import { TechModel } from '@/serene-core-server/models/tech/tech-model'
 import { AiTechDefs } from '../../types/tech-defs'
 import { ServerOnlyTypes } from '../../types/server-only-types'
-import { CommonTypes } from '../../types/types'
-import { RateLimitedApiModel } from '../../models/chat/rate-limited-api-model'
-import { TechModel } from '../../models/tech/tech-model'
 
 export class SereneGeminiSetup {
 

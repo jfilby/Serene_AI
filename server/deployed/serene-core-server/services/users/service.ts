@@ -37,15 +37,15 @@ export class UsersService {
       return
     }
 
-    const jsonArray: JSON[] = JSON.parse(defaultUserPreferences)
+    const jsonArray: any[] = JSON.parse(defaultUserPreferences)
 
     for (const json of jsonArray) {
       await this.userPreferenceService.createIfNotExists(
               prisma,
               userProfileId,
-              json['category'],
-              json['key'],
-              json['value'],
+              json.category,
+              json.key,
+              json.value,
               null)
     }
   }
@@ -57,17 +57,17 @@ export class UsersService {
     var user: any
     var userProfile: any
 
-    await prisma.$transaction(async (prisma) => {
+    await prisma.$transaction(async (transactionPrisma: any) => {
 
       user = await
         this.userModel.create(
-          prisma,
+          transactionPrisma,
           email,
           undefined)  // name
 
       userProfile = await
         this.userProfileModel.create(
-          prisma,
+          transactionPrisma,
           user.id,
           false)  // isAdmin
     })

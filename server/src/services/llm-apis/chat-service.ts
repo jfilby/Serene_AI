@@ -1,6 +1,10 @@
-import { CustomError } from '../../types/errors'
+import { CustomError } from '@/serene-core-server/types/errors'
+import { RateLimitedApiEventModel } from '@/serene-core-server/models/tech/rate-limited-api-event-model'
+import { RateLimitedApiModel } from '@/serene-core-server/models/tech/rate-limited-api-model'
+import { TechModel } from '@/serene-core-server/models/tech/tech-model'
 import { AiTechDefs } from '../../types/tech-defs'
 import { LlmCacheModel } from '../../models/cache/llm-cache-model'
+import { ChatApiUsageService } from '../api-usage/chat-api-usage-service'
 import { DetectContentTypeService } from '../content/detect-content-type-service'
 import { GoogleGeminiLlmService } from './google-gemini/llm-api'
 
@@ -11,8 +15,12 @@ export class ChatService {
 
   // Models
   llmCacheModel = new LlmCacheModel()
+  rateLimitedApiEventModel = new RateLimitedApiEventModel()
+  rateLimitedApiModel = new RateLimitedApiModel()
+  techModel = new TechModel()
 
   // Services
+  chatApiUsageService = new ChatApiUsageService()
   detectContentTypeService = new DetectContentTypeService()
   googleGeminiLlmService = new GoogleGeminiLlmService()
 
@@ -81,6 +89,9 @@ export class ChatService {
   }
 
   async llmRequest(
+          prisma: any,
+          llmTechId: string | undefined,
+          userProfileId: string | undefined,
           agent: any,
           messagesWithRoles: any[],
           systemPrompt: string | undefined = undefined,
@@ -101,6 +112,57 @@ export class ChatService {
     if (llmCache != null) {
       return llmCache.value.split('\n')
     } */
+
+    // If llmTechId isn't specified, get the default
+    if (llmTechId == null) {
+
+      const tech = await
+              this.techModel.getDefaultProvider(
+                prisma,
+                AiTechDefs.llms)
+
+      if (tech != null) {
+        llmTechId = tech.id
+      }
+    }
+
+    if (llmTechId == null) {
+      throw new CustomError(`${fnName}: no LLM default LLM tech available`)
+    }
+
+    // Get userProfileId if agent specified
+    if (userProfileId == null &&
+        agent != null) {
+
+      userProfileId = agent.userProfileId
+    }
+
+    if (userProfileId == null) {
+      throw new CustomError(
+                  `${fnName}: no userProfileId given and agent not available`)
+    }
+
+    // Check to see if rate limited
+    const rateLimitedData = await
+            this.chatApiUsageService.isRateLimited(
+              prisma,
+              llmTechId)
+
+    if (rateLimitedData.isRateLimited === true) {
+
+      return {
+        isRateLimited: rateLimitedData.isRateLimited,
+        waitSeconds: rateLimitedData.waitSeconds,
+        messages: undefined
+      }
+    }
+
+    // Create rate-limited API event
+    await this.rateLimitedApiEventModel.create(
+            prisma,
+            undefined,  // id
+            rateLimitedData.rateLimitedApiId,
+            userProfileId)
 
     // Tech
     const tech = {
@@ -151,6 +213,16 @@ export class ChatService {
     }
 
     // Return
-    return results
+    return {
+      status: results.status,
+      isRateLimited: false,
+      waitSeconds: 0,
+      message: results.message,
+      messages: results.messages,
+      model: results.model,
+      actualTech: results.actualTech,
+      inputTokens: results.inputTokens,
+      outputTokens: results.outputTokens
+    }
   }
 }

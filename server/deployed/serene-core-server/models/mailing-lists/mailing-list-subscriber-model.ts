@@ -37,7 +37,7 @@ export class MailingListSubscriberModel {
           verified: verified
         }
       })
-    } catch(error) {
+    } catch(error: any) {
       console.error(`${fnName}: error: ${error}`)
       throw 'Prisma error'
     }
@@ -59,7 +59,7 @@ export class MailingListSubscriberModel {
           id: id
         }
       })
-    } catch(error) {
+    } catch(error: any) {
       if (!(error instanceof error.NotFound)) {
         console.error(`${fnName}: error: ${error}`)
         throw 'Prisma error'
@@ -94,7 +94,7 @@ export class MailingListSubscriberModel {
           email: email
         }
       })
-    } catch(error) {
+    } catch(error: any) {
       if (!(error instanceof error.NotFound)) {
         console.error(`${fnName}: error: ${error}`)
         throw 'Prisma error'
@@ -131,7 +131,7 @@ export class MailingListSubscriberModel {
           id: id
         }
       })
-    } catch(error) {
+    } catch(error: any) {
       console.error(`${fnName}: error: ${JSON.stringify(error)}`)
       throw 'Prisma error'
     }

@@ -1,4 +1,4 @@
-import { ApiUsageBaseService } from './api-usage-base-service'
+import { ApiUsageBaseService } from '@/serene-core-server/services/api-usage/api-usage-base-service'
 
 export class ChatApiUsageService {
 

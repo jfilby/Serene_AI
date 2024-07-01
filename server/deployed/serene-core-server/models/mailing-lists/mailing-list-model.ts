@@ -31,7 +31,7 @@ export class MailingListModel {
           title: title
         }
       })
-    } catch(error) {
+    } catch(error: any) {
       console.error(`${fnName}: error: ${error}`)
       throw 'Prisma error'
     }
@@ -45,7 +45,7 @@ export class MailingListModel {
     // Query
     try {
       return await prisma.mailingList.findMany()
-    } catch(error) {
+    } catch(error: any) {
       console.error(`${fnName}: error: ${error}`)
       throw 'Prisma error'
     }
@@ -67,7 +67,7 @@ export class MailingListModel {
           id: id
         }
       })
-    } catch(error) {
+    } catch(error: any) {
       if (!(error instanceof error.NotFound)) {
         console.error(`${fnName}: error: ${error}`)
         throw 'Prisma error'
@@ -100,7 +100,7 @@ export class MailingListModel {
           name: name
         }
       })
-    } catch(error) {
+    } catch(error: any) {
       if (!(error instanceof error.NotFound)) {
         console.error(`${fnName}: error: ${error}`)
         throw 'Prisma error'
@@ -131,7 +131,7 @@ export class MailingListModel {
           id: id
         }
       })
-    } catch(error) {
+    } catch(error: any) {
       console.error(`${fnName}: error: ${JSON.stringify(error)}`)
       throw 'Prisma error'
     }

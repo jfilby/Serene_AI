@@ -109,6 +109,48 @@ model UserProfile {
   @@schema("public")
 }
 
+// Generic tech
+model RateLimitedApi {
+  id                           String               @id @default(cuid())
+  techId                       String?              @map("tech_id")
+  tech                         Tech?                @relation(fields: [techId], references: [id])
+  ratePerMinute                Int                  @map("rate_per_minute")
+
+  ofRateLimitedApiEvents       RateLimitedApiEvent[]
+
+  @@map("rate_limited_api")
+  @@schema("public")
+}
+
+model RateLimitedApiEvent {
+  // Using a separate table from ChatMessage, because ChatMessage is populated
+  // after the LLM API returns, but the rate limited event should be tracked
+  // from just before the API call is made.
+  id                           String               @id @default(cuid())
+  rateLimitedApiId             String               @map("api_rate_limited_id")
+  rateLimitedApi               RateLimitedApi       @relation(fields: [rateLimitedApiId], references: [id])
+  userProfileId                String               @map("user_profile_id")
+  userProfile                  UserProfile          @relation(fields: [userProfileId], references: [id])
+  created                      DateTime             @default(now())
+
+  @@index([created])
+  @@map("rate_limited_api_event")
+  @@schema("public")
+}
+
+model Tech {
+  id                           String               @id @default(cuid())
+  isDefaultProvider            Boolean              @map("is_default_provider")
+  variantName                  String               @map("variant_name") @unique
+  provides                     String
+
+  ofChatSettings               ChatSettings[]
+  ofRateLimitedApis            RateLimitedApi[]
+
+  @@map("tech")
+  @@schema("public")
+}
+
 // Serene Gemini AI
 
 model Agent {
@@ -211,46 +253,5 @@ model LlmCache {
   value                        String
 
   @@map("llm_cache")
-  @@schema("public")
-}
-
-model RateLimitedApi {
-  id                           String               @id @default(cuid())
-  techId                       String?              @map("tech_id")
-  tech                         Tech?                @relation(fields: [techId], references: [id])
-  ratePerMinute                Int                  @map("rate_per_minute")
-
-  ofRateLimitedApiEvents       RateLimitedApiEvent[]
-
-  @@map("rate_limited_api")
-  @@schema("public")
-}
-
-model RateLimitedApiEvent {
-  // Using a separate table from ChatMessage, because ChatMessage is populated
-  // after the LLM API returns, but the rate limited event should be tracked
-  // from just before the API call is made.
-  id                           String               @id @default(cuid())
-  rateLimitedApiId             String               @map("api_rate_limited_id")
-  rateLimitedApi               RateLimitedApi       @relation(fields: [rateLimitedApiId], references: [id])
-  userProfileId                String               @map("user_profile_id")
-  userProfile                  UserProfile          @relation(fields: [userProfileId], references: [id])
-  created                      DateTime             @default(now())
-
-  @@index([created])
-  @@map("rate_limited_api_event")
-  @@schema("public")
-}
-
-model Tech {
-  id                           String               @id @default(cuid())
-  isDefaultProvider            Boolean              @map("is_default_provider")
-  variantName                  String               @map("variant_name") @unique
-  provides                     String
-
-  ofRateLimitedApis            RateLimitedApi[]
-  ofChatSettings               ChatSettings[]
-
-  @@map("tech")
   @@schema("public")
 }

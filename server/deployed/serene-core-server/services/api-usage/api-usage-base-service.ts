@@ -1,7 +1,7 @@
 import { CustomError } from '../../types/errors'
 import { TechModel } from '../../models/tech/tech-model'
-import { RateLimitedApiModel } from '../../models/chat/rate-limited-api-model'
-import { RateLimitedApiEventModel } from '../../models/chat/rate-limited-api-event-model'
+import { RateLimitedApiModel } from '../../models/tech/rate-limited-api-model'
+import { RateLimitedApiEventModel } from '../../models/tech/rate-limited-api-event-model'
 
 export class ApiUsageBaseService {
 

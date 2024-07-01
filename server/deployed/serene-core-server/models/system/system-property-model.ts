@@ -26,7 +26,7 @@ export class SystemPropertyModel {
           value: value
         }
       })
-    } catch(error) {
+    } catch(error: any) {
       console.error(`${fnName}: error: ${error}`)
       throw 'Prisma error'
     }
@@ -40,7 +40,7 @@ export class SystemPropertyModel {
     // Query
     try {
       return await prisma.systemProperty.findMany()
-    } catch(error) {
+    } catch(error: any) {
       console.error(`${fnName}: error: ${error}`)
       throw 'Prisma error'
     }
@@ -62,7 +62,7 @@ export class SystemPropertyModel {
           id: id
         }
       })
-    } catch(error) {
+    } catch(error: any) {
       if (!(error instanceof error.NotFound)) {
         console.error(`${fnName}: error: ${error}`)
         throw 'Prisma error'
@@ -95,7 +95,7 @@ export class SystemPropertyModel {
           key: key
         }
       })
-    } catch(error) {
+    } catch(error: any) {
       if (!(error instanceof error.NotFound)) {
         console.error(`${fnName}: error: ${error}`)
         throw 'Prisma error'
@@ -134,7 +134,7 @@ export class SystemPropertyModel {
           id: id
         }
       })
-    } catch(error) {
+    } catch(error: any) {
       console.error(`${fnName}: error: ${JSON.stringify(error)}`)
       throw 'Prisma error'
     }
