@@ -15,6 +15,7 @@ export const getOrCreateChatSessionMutation = gql`
       chatSession {
         id
         status
+        name
         chatParticipants {
           id
           userProfileId
@@ -80,6 +81,7 @@ export const getChatSessionQuery = gql`
       chatSession {
         id
         status
+        name
         chatParticipants {
           id
           userProfileId
@@ -100,6 +102,7 @@ export const getChatSessionsQuery = gql`
 
       id
       status
+      name
       updated
       chatParticipants {
         id

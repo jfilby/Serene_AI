@@ -36,7 +36,8 @@ export class ChatSessionService {
           prisma: any,
           baseChatSettingsId: string | undefined,
           userProfileId: string,
-          prompt: string | undefined) {
+          prompt: string | undefined,
+          name: string | undefined) {
 
     // Debug
     const fnName = `${this.clName}.createChatSession()`
@@ -103,7 +104,7 @@ export class ChatSessionService {
             undefined,  // id,
             chatSettingsId,
             CommonTypes.newStatus,
-            undefined,  // name
+            name,
             userProfileId)
 
     // Get ChatSettings and Agent
@@ -452,8 +453,60 @@ export class ChatSessionService {
               status,
               userProfileId)
 
+    // Check if any chatSessions have a null name, if not return
+    var hasNullName = false
+
+    for (const chatSession of chatSessions) {
+      if (chatSession.name == null) {
+        hasNullName = true
+        break
+      }
+    }
+
+    if (hasNullName === false) {
+      return chatSessions
+    }
+
+    // Get first message as name, if name not specified
+    var updatedChatSessions: any[] = []
+
+    for (var chatSession of chatSessions) {
+
+      if (chatSession.name == null) {
+
+        const chatMessage = await
+                this.chatMessageModel.getFirst(
+                  prisma,
+                  chatSession.id)
+
+        // Get message text
+        var firstMessageText: string | undefined
+
+        for (const message of JSON.parse(chatMessage.message)) {
+
+          if (message.type === '') {
+            firstMessageText = message.text
+            break
+          }
+        }
+
+        // Update chatMessage.name
+        chatSession = await
+          this.chatSessionModel.update(
+            prisma,
+            chatSession.id,
+            undefined,  // chatSettingsId
+            undefined,  // status
+            firstMessageText,
+            undefined)  // createdById
+      }
+
+      // Add the chatSession, which may have been updated
+      updatedChatSessions.push(chatSession)
+    }
+
     // Return
-    return chatSessions
+    return updatedChatSessions
   }
 
   async getOrCreateChatSession(
@@ -462,6 +515,7 @@ export class ChatSessionService {
           baseChatSettingsId: string | undefined,
           userProfileId: string,
           prompt: string | undefined,
+          name: string | undefined,
           createIfNotExists: boolean = true) {
 
     // Debug
@@ -485,7 +539,8 @@ export class ChatSessionService {
           prisma,
           baseChatSettingsId,
           userProfileId,
-          prompt)
+          prompt,
+          name)
     }
 
     // Verify

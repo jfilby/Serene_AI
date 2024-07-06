@@ -186,6 +186,37 @@ export class ChatMessageModel {
     return chatMessage
   }
 
+  async getFirst(
+          prisma: any,
+          chatSessionId: string) {
+
+    const fnName = `${this.clName}.getFirst()`
+
+    // Query record
+    var chatMessage: any = undefined
+
+    try {
+      chatMessage = await prisma.chatMessage.findFirst({
+        where: {
+          chatSessionId: chatSessionId
+        },
+        orderBy: [
+          {
+            created: 'asc'
+          }
+        ]
+      })
+    } catch(error: any) {
+      if (!(error instanceof error.NotFound)) {
+        console.error(`${fnName}: error: ${error}`)
+        throw 'Prisma error'
+      }
+    }
+
+    // Return OK
+    return chatMessage
+  }
+
   async getLast(
           prisma: any,
           chatSessionId: string) {
