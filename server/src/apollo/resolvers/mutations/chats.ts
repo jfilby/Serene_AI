@@ -28,8 +28,9 @@ export async function getOrCreateChatSession(
           transactionPrisma,
           args.chatSessionId,
           undefined,  // baseChatSettingsId
+          args.userProfileId,
           args.prompt,
-          args.userProfileId)
+          undefined)  // name
     } catch (error) {
       if (error instanceof CustomError) {
         return {
