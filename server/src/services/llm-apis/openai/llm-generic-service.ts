@@ -1,5 +1,5 @@
-import { CustomError } from "@/serene-core-server/types/errors"
-import { ServerOnlyTypes } from "@/types/server-only-types"
+import { CustomError } from '@/serene-core-server/types/errors'
+import { ServerOnlyTypes } from '../../../types/server-only-types'
 
 export class OpenAIGenericLlmService {
 
@@ -119,18 +119,36 @@ export class OpenAIGenericLlmService {
     // Debug
     const fnName = `${this.clName}.estimateInputTokens()`
 
+    console.log(`${fnName}: starting..`)
+
     // Calculate total length of words
     var words = 0
 
     for (const message of messages) {
 
-      // console.log(`${fnName}: message: ${JSON.stringify(message)}`)
+      console.log(`${fnName}: message: ${JSON.stringify(message)}`)
+
+      // Validate
+      if (message.role == null) {
+        throw new CustomError(`${fnName}: message.role == null`)
+      }
+
+      if (message.parts == null) {
+        throw new CustomError(`${fnName}: message.parts == null`)
+      }
 
       // Add role (1: 'role: ')
       words += 1 + message.role.split(' ').length
 
       // Add messages
-      words += message.content.split(' ').length
+      for (const part of message.parts) {
+
+        if (part.text == null) {
+          throw new CustomError(`${fnName}: part.text == null`)
+        }
+
+        words += part.text.split(' ').length
+      }
     }
 
     // Calculate input tokens
@@ -164,8 +182,14 @@ export class OpenAIGenericLlmService {
     tech: any,
     name: string,
     role: string,
+    systemPrompt: string | undefined,
     messages: any[],
     anonymize: boolean) {
+
+    // Debug
+    const fnName = `${this.clName}.prepareMessages()`
+
+    console.log(`${fnName}: starting..`)
 
     // Create messagesWithRoles
     var messagesWithRoles: any[] = []
@@ -188,12 +212,34 @@ export class OpenAIGenericLlmService {
       })
     }
 
+    // System prompt
+    if (systemPrompt != null) {
+
+      messagesWithRoles.push({
+        role: ServerOnlyTypes.chatGptSystemMessageRole,
+        content: systemPrompt
+      })
+    }
+  
     // Inform messages set the context
     for (const message of messages) {
 
+      // Get message content
+      var content = ''
+
+      for (const part of message.parts) {
+
+        if (content.length > 0) {
+          content += '\n'
+        }
+
+        content += part.text
+      }
+
+      // Add to messages
       messagesWithRoles.push({
         role: message.role,
-        content: message.content
+        content: content
       })
     }
 
@@ -211,6 +257,8 @@ export class OpenAIGenericLlmService {
     const variantName = tech.variantName
 
     // Return
+    console.log(`${fnName}: returning..`)
+
     return {
       messages: messagesWithRoles,
       variantName: variantName,

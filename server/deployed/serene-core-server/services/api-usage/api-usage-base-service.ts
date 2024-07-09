@@ -51,6 +51,11 @@ export class ApiUsageBaseService {
               prisma,
               techId)
 
+    // Return null if not a rate-limited tech
+    if (rateLimitedApi == null) {
+      return null
+    }
+
     // Determine if rate-limited
     const eventCount = await
             this.rateLimitedApiEventModel.getUserSentForLastSpecifiedMinutes(

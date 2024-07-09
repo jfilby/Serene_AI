@@ -1,9 +1,9 @@
 import OpenAI from 'openai'
 import { CustomError } from '@/serene-core-server/types/errors'
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
-import { AiTechDefs } from '@/types/tech-defs'
-import { FeatureFlags } from '@/types/feature-flags'
-import { OpenAIGenericLlmService } from '../openai-generic/llm-service'
+import { AiTechDefs } from '../../../types/tech-defs'
+import { FeatureFlags } from '../../../types/feature-flags'
+import { OpenAIGenericLlmService } from './llm-generic-service'
 
 export class OpenAiLlmService {
 
@@ -19,7 +19,8 @@ export class OpenAiLlmService {
 
   // Vars
   openAi = new OpenAI({
-    apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY
+    apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+    baseURL: process.env.NEXT_PUBLIC_OPENAI_BASE_URL
   })
 
   // Models
@@ -31,6 +32,13 @@ export class OpenAiLlmService {
   // Code
   constructor() {
 
+    /* Debug
+    const fnName = `${this.clName}.constructor()`
+
+    console.log(`${fnName}: ` +
+                `apiKey: ` + JSON.stringify(process.env.NEXT_PUBLIC_OPENAI_API_KEY) +
+                ` baseURL: ` + JSON.stringify(process.env.NEXT_PUBLIC_OPENAI_BASE_URL)) */
+
     // Validate apiKey
     if (process.env.NEXT_PUBLIC_OPENAI_API_KEY == null) {
       throw `apiKey isn't set`
@@ -39,7 +47,8 @@ export class OpenAiLlmService {
 
   async sendChatMessages(
           tech: any,
-          messagesWithRoles: any[]) {
+          messagesWithRoles: any[],
+          jsonMode: boolean = false) {
 
     // Debug
     const fnName = `${this.clName}.sendChatMessages()`
@@ -73,21 +82,23 @@ export class OpenAiLlmService {
                 `with model: ${model} messagesWithRoles: ` +
                 `${JSON.stringify(messagesWithRoles)}`)
 
+    // Set Completions options
+    var completionsOptions: any = {
+          model: model,
+          messages: messagesWithRoles
+        }
+
+    if (jsonMode === true) {
+      completionsOptions.response_format={ "type": "json_object" }
+    }
+
     // ChatCompletion request
     //
     // Note: if this fails with no error then check the expected way to call
     //       the version of the NPM for this API.
     var completion: any = null
 
-    await this.openAi.chat.completions.create({
-          model: model,
-          messages: messagesWithRoles
-          /* model: "gpt-3.5-turbo",
-          messages: [
-            { role: ChatCompletionRequestMessageRoleEnum.System, content: "An assistant" },
-            { role: ChatCompletionRequestMessageRoleEnum.User, content: "Hello world" }
-          ], */
-        })
+    await this.openAi.chat.completions.create(completionsOptions)
     .then((res) => {
       console.log(`${fnName}: got response:`)
       console.log(`${fnName}: ` + JSON.stringify(res))
@@ -135,7 +146,8 @@ export class OpenAiLlmService {
     // TODO: is a special conversion function required? Maybe one that calls
     // convertOpenAiResults? Need inputTokens and outputTokens.
     const chatCompletionResults =
-            this.openAIGenericLlmService.convertOpenAiChatCompletionResults(completion)
+            this.openAIGenericLlmService.convertOpenAiChatCompletionResults(
+              completion)
 
     // Cache the results
 

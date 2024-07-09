@@ -3,10 +3,10 @@ import { TechModel } from '@/serene-core-server/models/tech/tech-model'
 import { AiTechDefs } from '../../types/tech-defs'
 import { ServerOnlyTypes } from '../../types/server-only-types'
 
-export class SereneGeminiSetup {
+export class SereneAiSetup {
 
   // Consts
-  clName = 'SereneGeminiSetup'
+  clName = 'SereneAiSetup'
 
   // Models
   rateLimitedApiModel = new RateLimitedApiModel()
@@ -51,7 +51,7 @@ export class SereneGeminiSetup {
             this.techModel.upsert(
               prisma,
               undefined,  // id
-              false,     // isDefaultProvider
+              false,      // isDefaultProvider
               AiTechDefs.chatGpt4o,
               AiTechDefs.llms)
 

@@ -45,7 +45,7 @@ export class ChatSessionService {
     // Debug
     const fnName = `${this.clName}.createChatSession()`
 
-    // console.log(`${fnName}: starting with userProfileId: ${userProfileId}`)
+    console.log(`${fnName}: starting with userProfileId: ${userProfileId}`)
 
     // If no baseChatSettingsId is specified, then get the default
     var baseChatSettings
@@ -78,6 +78,41 @@ export class ChatSessionService {
             prisma,
             baseChatSettingsId)
       }
+
+      // Validation
+      if (baseChatSettings == null) {
+        throw new CustomError(`${fnName}: baseChatSettings == null`)
+      }
+
+      // Is a default LLM provider specified in the env file?
+      if (process.env.NEXT_PUBLIC_OVERRIDE_LLM_VARIANT != null &&
+          process.env.NEXT_PUBLIC_OVERRIDE_LLM_VARIANT !== '') {
+
+        // Debug
+        console.log(`${fnName}: getting variant (by env file): ` +
+                    process.env.NEXT_PUBLIC_OVERRIDE_LLM_VARIANT)
+
+        // Get variant by name
+        const envTech = await
+                this.techModel.getByVariantName(
+                  prisma,
+                  process.env.NEXT_PUBLIC_OVERRIDE_LLM_VARIANT)
+
+        if (envTech == null) {
+          const message =
+                  `${fnName}: tech not found for NEXT_PUBLIC_OVERRIDE_LLM_VARIANT: ` +
+                  JSON.stringify(process.env.NEXT_PUBLIC_OVERRIDE_LLM_VARIANT)
+
+          console.error(message)
+          throw new CustomError(message)
+        } else {
+          baseChatSettings.llmTechId = envTech.id
+        }
+      }
+
+      // Debug
+      console.log(`${fnName}: baseChatSettings.llmTechId: ` +
+                  JSON.stringify(baseChatSettings.llmTechId))
 
       // Create new ChatSettings record
       const chatSettings = await

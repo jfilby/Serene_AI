@@ -6,7 +6,7 @@ import { AiTechDefs } from '../../types/tech-defs'
 import { LlmCacheModel } from '../../models/cache/llm-cache-model'
 import { ChatApiUsageService } from '../api-usage/chat-api-usage-service'
 import { DetectContentTypeService } from '../content/detect-content-type-service'
-import { GoogleGeminiLlmService } from './google-gemini/llm-api'
+import { LlmUtilsService } from './utils-service'
 
 export class ChatService {
 
@@ -22,11 +22,9 @@ export class ChatService {
   // Services
   chatApiUsageService = new ChatApiUsageService()
   detectContentTypeService = new DetectContentTypeService()
-  googleGeminiLlmService = new GoogleGeminiLlmService()
+  llmUtilsService = new LlmUtilsService()
 
   // Code
-  ;
-
   cleanMultiLineFormatting(messages: string[]) {
 
     const contents: string[] = messages.join('\n').split('\n')
@@ -152,21 +150,25 @@ export class ChatService {
               prisma,
               llmTechId)
 
-    if (rateLimitedData.isRateLimited === true) {
+    // If a rate-limited tech
+    if (rateLimitedData != null) {
 
-      return {
-        isRateLimited: rateLimitedData.isRateLimited,
-        waitSeconds: rateLimitedData.waitSeconds,
-        messages: undefined
+      if (rateLimitedData.isRateLimited === true) {
+
+        return {
+          isRateLimited: rateLimitedData.isRateLimited,
+          waitSeconds: rateLimitedData.waitSeconds,
+          messages: undefined
+        }
       }
-    }
 
-    // Create rate-limited API event
-    await this.rateLimitedApiEventModel.create(
-            prisma,
-            undefined,  // id
-            rateLimitedData.rateLimitedApiId,
-            userProfileId)
+      // Create rate-limited API event
+      await this.rateLimitedApiEventModel.create(
+              prisma,
+              undefined,  // id
+              rateLimitedData.rateLimitedApiId,
+              userProfileId)
+    }
 
     // Get Tech if not yet retrieved
     if (tech == null) {
@@ -177,21 +179,13 @@ export class ChatService {
           llmTechId)
     }
 
-    // Prepare messages
-    const prepareMessagesResults =
-            this.googleGeminiLlmService.prepareMessages(
+    // Prepare messages and send request by provider
+    const results = await
+            this.llmUtilsService.prepareAndSendChatMessages(
               tech,
-              agent.name,
-              agent.role,
+              agent,
               systemPrompt,
               messagesWithRoles,
-              false)  // anonymize
-
-    // Gemini LLM request
-    const results = await
-            this.googleGeminiLlmService.sendChatMessages(
-              tech,
-              prepareMessagesResults.messages,
               jsonMode)
 
     // Get result output as a string
