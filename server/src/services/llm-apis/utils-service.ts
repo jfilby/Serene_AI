@@ -1,5 +1,5 @@
 import { CustomError } from '@/serene-core-server/types/errors'
-import { AiTechDefs } from '@/types/tech-defs'
+import { AiTechDefs } from '../../types/tech-defs'
 import { GoogleGeminiLlmUtilsService } from './google-gemini/utils'
 import { OpenAiLlmUtilsService } from './openai/utils'
 

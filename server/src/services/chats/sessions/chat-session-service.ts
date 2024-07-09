@@ -527,7 +527,7 @@ export class ChatSessionService {
     // Build messagesWithRoles
     const messagesWithRoles =
             this.llmUtilsService.buildMessagesWithRoles(
-              llmTech.techProvider,
+              llmTech,
               chatMessages,
               fromContents,
               [fromChatParticipantId],

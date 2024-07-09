@@ -1,5 +1,5 @@
 import { CustomError } from '@/serene-core-server/types/errors'
-import { ServerOnlyTypes } from '@/types/server-only-types'
+import { ServerOnlyTypes } from '../../../types/server-only-types'
 
 export class OpenAiLlmUtilsService {
 

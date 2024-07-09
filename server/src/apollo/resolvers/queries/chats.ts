@@ -1,5 +1,5 @@
 import { prisma } from '@/db'
-import { CustomError } from '../../../types/errors'
+import { CustomError } from '@/serene-core-server/types/errors'
 import { ChatSessionService } from '../../../services/chats/sessions/chat-session-service'
 
 

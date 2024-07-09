@@ -25,6 +25,8 @@ export class ChatService {
   googleGeminiLlmService = new GoogleGeminiLlmService()
 
   // Code
+  ;
+
   cleanMultiLineFormatting(messages: string[]) {
 
     const contents: string[] = messages.join('\n').split('\n')
@@ -114,12 +116,14 @@ export class ChatService {
     } */
 
     // If llmTechId isn't specified, get the default
+    var tech: any
+
     if (llmTechId == null) {
 
-      const tech = await
-              this.techModel.getDefaultProvider(
-                prisma,
-                AiTechDefs.llms)
+      tech = await
+        this.techModel.getDefaultProvider(
+          prisma,
+          AiTechDefs.llms)
 
       if (tech != null) {
         llmTechId = tech.id
@@ -164,11 +168,16 @@ export class ChatService {
             rateLimitedData.rateLimitedApiId,
             userProfileId)
 
-    // Tech
-    const tech = {
-      variantName: AiTechDefs.defaultChatVariantName
+    // Get Tech if not yet retrieved
+    if (tech == null) {
+
+      tech = await
+        this.techModel.getById(
+          prisma,
+          llmTechId)
     }
 
+    // Prepare messages
     const prepareMessagesResults =
             this.googleGeminiLlmService.prepareMessages(
               tech,
