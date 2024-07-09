@@ -45,6 +45,24 @@ export class SereneGeminiSetup {
             undefined,  // id
             geminiV1pt5ProTech.id,
             2)
+
+    // ChatGPT 4o
+    const chatGpt4oTech = await
+            this.techModel.upsert(
+              prisma,
+              undefined,  // id
+              false,     // isDefaultProvider
+              AiTechDefs.chatGpt4o,
+              AiTechDefs.llms)
+
+    // Llama3 8B
+    const llama3_8bTech = await
+            this.techModel.upsert(
+              prisma,
+              undefined,  // id
+              false,      // isDefaultProvider
+              AiTechDefs.llama3_8b,
+              AiTechDefs.llms)
   }
 
   /* async upsertTips(prisma: any) {

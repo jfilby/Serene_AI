@@ -1,7 +1,8 @@
+import { TechModel } from '@/serene-core-server/models/tech/tech-model'
+import { CommonTypes } from '@/types/types'
 import { AiTechDefs } from '../../../types/tech-defs'
 import { AgentModel } from '../../../models/agents/agent-model'
 import { ChatSettingsModel } from '../../../models/chat/chat-settings-model'
-import { TechModel } from '../../../models/tech/tech-model'
 
 export class ExampleChatSessionSetupService {
 
@@ -38,6 +39,9 @@ export class ExampleChatSessionSetupService {
             this.chatSettingsModel.upsert(
               prisma,
               undefined,  // id
+              undefined,  // baseChatSettingsId
+              CommonTypes.activeStatus,
+              'Test chat setting',  // name
               tech.id,
               agent.id,
               'Talk about anything tech related',

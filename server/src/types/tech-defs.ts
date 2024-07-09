@@ -11,8 +11,13 @@ export class AiTechDefs {
   static googleGeminiProvider = 'Google Gemini'
   static gcpPlatform = 'GCP'
   static googleVendor = 'Google'
-
   static defaultLlmProvider = this.googleGeminiProvider
+
+  static chatGptProvider = 'ChatGPT'
+  static chatGpt4o = 'ChatGPT-4o'
+
+  // The Llama models use OpenAI's client (provider)
+  static llama3_8b = 'Llama 3 8B'
 
   // LLMs by provider
   static googleGemini = 'Google Gemini'
@@ -30,7 +35,7 @@ export class AiTechDefs {
 
   // Project default
   static defaultLlmVariantName = this.googleGeminiV1pt5Pro
-  static defaultChatVariantName = this.googleGeminiV1pt5Pro
+  static defaultChatVariantName = this.chatGpt4o
 
   // A list of available LLMs
   static userAILlms = [
@@ -58,6 +63,16 @@ export class AiTechDefs {
     [AiTechDefs.googleGeminiV1pt5Pro]: this.googleGeminiV1pt5ProModelName
   }
 
+  // Variant to providers
+  static variantToProviders = {
+    [AiTechDefs.googleGeminiV1Pro]: this.googleGeminiProvider,
+    [AiTechDefs.googleGeminiV1pt5Pro]: this.googleGeminiProvider,
+
+    [AiTechDefs.chatGpt4o]: this.chatGptProvider,
+    [AiTechDefs.llama3_8b]: this.chatGptProvider   // The Llama models use the OpenAI client
+  }
+
+  // Variant names to descriptions
   static variantNamesToDescriptions = {
     // Google Gemini
     [AiTechDefs.googleGeminiV1Pro]: 'Gemini Pro v1 Pro',

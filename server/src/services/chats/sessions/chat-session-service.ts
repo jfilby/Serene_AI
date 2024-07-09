@@ -1,8 +1,8 @@
+import { CustomError } from '@/serene-core-server/types/errors'
 import { UserTypes } from '@/serene-core-server/types/user-types'
+import { TechModel } from '@/serene-core-server/models/tech/tech-model'
 import { UsersService } from '@/serene-core-server/services/users/service'
-import { CustomError } from '../../../types/errors'
 import { CommonTypes } from '../../../types/types'
-import { ServerOnlyTypes } from '../../../types/server-only-types'
 import { AgentModel } from '../../../models/agents/agent-model'
 import { ChatMessageModel } from '../../../models/chat/chat-message-model'
 import { ChatParticipantModel } from '../../../models/chat/chat-participant-model'
@@ -10,6 +10,7 @@ import { ChatSessionModel } from '../../../models/chat/chat-session-model'
 import { ChatSettingsModel } from '../../../models/chat/chat-settings-model'
 import { AgentsService } from '../../agents/agents-service'
 import { ChatService } from '../../llm-apis/chat-service'
+import { LlmUtilsService } from '../../llm-apis/utils-service'
 
 export class ChatSessionService {
 
@@ -25,10 +26,12 @@ export class ChatSessionService {
   chatParticipantModel = new ChatParticipantModel()
   chatSessionModel = new ChatSessionModel()
   chatSettingsModel = new ChatSettingsModel()
+  techModel = new TechModel()
 
   // Services
   agentsService = new AgentsService()
   chatService = new ChatService()
+  llmUtilsService = new LlmUtilsService()
   usersService = new UsersService()
 
   // Code
@@ -161,112 +164,6 @@ export class ChatSessionService {
     return {
       chatSession: chatSession
     }
-  }
-
-  buildMessagesWithRoles(
-    chatMessages: any[],
-    fromContents: any,
-    userChatParticipantIds: string[],
-    agentChatParticipantIds: string[]) {
-
-    // Debug
-    const fnName = `${this.clName}.buildMessagesWithRoles()`
-
-    /* console.log(`${fnName}: chatMessages: ` + JSON.stringify(chatMessages))
-
-    console.log(`${fnName}: userChatParticipantIds: ` +
-                JSON.stringify(userChatParticipantIds))
-
-    console.log(`${fnName}: agentChatParticipantIds: ` +
-                JSON.stringify(agentChatParticipantIds)) */
-
-    // Messages var
-    var messagesWithRoles: any[] = []
-
-    // If this is the first message, then add a system prompt
-    if (chatMessages.length === 0) {
-      messagesWithRoles.push()
-    }
-
-    // Build messages with roles
-    for (const chatMessage of chatMessages) {
-
-      // Determine the role
-      var role: string = ''
-
-      if (userChatParticipantIds.includes(chatMessage.fromChatParticipantId)) {
-        role = ServerOnlyTypes.userMessageRole
-      } else if (agentChatParticipantIds.includes(chatMessage.fromChatParticipantId)) {
-        role = ServerOnlyTypes.modelMessageRole
-      } else {
-        throw new CustomError(
-          `${fnName}: unhandled chatMessage.fromChatParticipantId: ` +
-          chatMessage.fromChatParticipantId)
-      }
-
-      // Validate
-      if (chatMessage.sentByAi) {
-
-        if (chatMessage.sentByAi === true &&
-            role !== ServerOnlyTypes.modelMessageRole) {
-
-          throw new CustomError(
-                      `${fnName}: chatMessage.sentByAi === true, but ` +
-                      `role !== ServerOnlyTypes.modelMessageRole ` +
-                      `for chatMessage: ${JSON.stringify(chatMessage)}`)
-        }
-
-        if (chatMessage.sentByAi === false &&
-            role !== ServerOnlyTypes.userMessageRole) {
-
-          throw new CustomError(
-                      `${fnName}: chatMessage.sentByAi === false, but ` +
-                      `role !== ServerOnlyTypes.userMessageRole ` +
-                      `for chatMessage: ${JSON.stringify(chatMessage)}`)
-        }
-      }
-
-      // Add chat message
-      messagesWithRoles.push({
-        role: role,
-        parts: JSON.parse(chatMessage.message)
-      })
-    }
-
-    // Add latest message from the user
-    messagesWithRoles.push({
-      role: ServerOnlyTypes.userMessageRole,
-      parts: fromContents
-    })
-
-    // Return
-    return messagesWithRoles
-  }
-
-  buildMessagesWithRolesForSinglePrompt(prompt: string) {
-
-    // Debug
-    const fnName = `${this.clName}.buildMessagesWithRolesForSinglePrompt()`
-
-    // Messages var
-    var messagesWithRoles: any[] = []
-
-    // Add a system prompt
-    messagesWithRoles.push()
-
-    // Determine the role
-    var role: string = ''
-
-    role = ServerOnlyTypes.userMessageRole
-
-    // Add chat message
-    messagesWithRoles.push({
-      role: role,
-      parts: [{ text: prompt }]
-    })
-
-    // Return
-    return messagesWithRoles
   }
 
   async enrichWithChatParticipantNames(
@@ -621,9 +518,16 @@ export class ChatSessionService {
               prisma,
               chatSessionId)
 
+    // Get Tech
+    const llmTech = await
+            this.techModel.getById(
+              prisma,
+              chatSession.chatSettings.llmTechId)
+
     // Build messagesWithRoles
     const messagesWithRoles =
-            this.buildMessagesWithRoles(
+            this.llmUtilsService.buildMessagesWithRoles(
+              llmTech.techProvider,
               chatMessages,
               fromContents,
               [fromChatParticipantId],

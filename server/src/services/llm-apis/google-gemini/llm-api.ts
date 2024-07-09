@@ -1,4 +1,4 @@
-import { CustomError } from '../../../types/errors'
+import { CustomError } from '@/serene-core-server/types/errors'
 import { FeatureFlags } from '../../../types/feature-flags'
 import { AiTechDefs } from '../../../types/tech-defs'
 import { ServerOnlyTypes } from '../../../types/server-only-types'
@@ -21,9 +21,6 @@ export class GoogleGeminiLlmService {
     [AiTechDefs.googleGeminiV1ProModelName]: 'v1',
     [AiTechDefs.googleGeminiV1pt5ProModelName]: 'v1beta'
   }
-
-  // Services
-  // openAIGenericLlmService = new OpenAIGenericLlmService()
 
   // Code
   convertGeminiChatCompletionResults(
@@ -215,13 +212,14 @@ export class GoogleGeminiLlmService {
       }
 
       // Add messages
+      // Gemini doesn't have the system role
       messagesWithRoles.push({
-        role: ServerOnlyTypes.userMessageRole,  // Gemini doesn't have the system role
+        role: ServerOnlyTypes.geminiUserMessageRole,
         parts: [{type: '', text: systemAndRolePrompt}]
       })
 
       messagesWithRoles.push({
-        role: ServerOnlyTypes.modelMessageRole,
+        role: ServerOnlyTypes.geminiModelMessageRole,
         parts: [{type: '', text: this.okMsg}]
       })
     }
@@ -238,17 +236,17 @@ export class GoogleGeminiLlmService {
       var role: string = ''
 
       if (message.isModel === true) {
-        role = ServerOnlyTypes.modelMessageRole
+        role = ServerOnlyTypes.geminiModelMessageRole
       } else {
-        role = ServerOnlyTypes.userMessageRole
+        role = ServerOnlyTypes.geminiUserMessageRole
       }
 
       // Fill in a model response if none found
-      if (previousRole === ServerOnlyTypes.userMessageRole &&
-          role === ServerOnlyTypes.userMessageRole) {
+      if (previousRole === ServerOnlyTypes.geminiUserMessageRole &&
+          role === ServerOnlyTypes.geminiUserMessageRole) {
 
         messagesWithRoles.push({
-          role: ServerOnlyTypes.modelMessageRole,
+          role: ServerOnlyTypes.geminiModelMessageRole,
           parts: [{type: '', text: this.okMsg}]
         })
       }
