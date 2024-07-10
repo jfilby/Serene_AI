@@ -47,92 +47,19 @@ export class ChatSessionService {
 
     console.log(`${fnName}: starting with userProfileId: ${userProfileId}`)
 
-    // If no baseChatSettingsId is specified, then get the default
-    var baseChatSettings
-    var defaultBaseChatSettingsId: string | undefined = ''
-
-    if (baseChatSettingsId == null) {
-
-      const baseChatSettingsMany = await
-              this.chatSettingsModel.getByParentId(
-                prisma,
-                null)
-
-      if (baseChatSettingsMany.length > 0) {
-        baseChatSettingsId = baseChatSettingsMany[0].id
-        defaultBaseChatSettingsId = baseChatSettingsId
-      }
-    }
-
-    // If a prompt is specified, then create a ChatSettings record
-    var chatSettingsId = baseChatSettingsId
-
-    if (prompt != null) {
-
-      // Get base ChatSettings record
-      if (baseChatSettingsId != null &&
-          baseChatSettingsId !== defaultBaseChatSettingsId) {
-
-        baseChatSettings = await
-          this.chatSettingsModel.getById(
-            prisma,
-            baseChatSettingsId)
-      }
-
-      // Validation
-      if (baseChatSettings == null) {
-        throw new CustomError(`${fnName}: baseChatSettings == null`)
-      }
-
-      // Is a default LLM provider specified in the env file?
-      if (process.env.NEXT_PUBLIC_OVERRIDE_LLM_VARIANT != null &&
-          process.env.NEXT_PUBLIC_OVERRIDE_LLM_VARIANT !== '') {
-
-        // Debug
-        console.log(`${fnName}: getting variant (by env file): ` +
-                    process.env.NEXT_PUBLIC_OVERRIDE_LLM_VARIANT)
-
-        // Get variant by name
-        const envTech = await
-                this.techModel.getByVariantName(
-                  prisma,
-                  process.env.NEXT_PUBLIC_OVERRIDE_LLM_VARIANT)
-
-        if (envTech == null) {
-          const message =
-                  `${fnName}: tech not found for NEXT_PUBLIC_OVERRIDE_LLM_VARIANT: ` +
-                  JSON.stringify(process.env.NEXT_PUBLIC_OVERRIDE_LLM_VARIANT)
-
-          console.error(message)
-          throw new CustomError(message)
-        } else {
-          baseChatSettings.llmTechId = envTech.id
-        }
-      }
-
-      // Debug
-      console.log(`${fnName}: baseChatSettings.llmTechId: ` +
-                  JSON.stringify(baseChatSettings.llmTechId))
-
-      // Create new ChatSettings record
-      const chatSettings = await
-              this.chatSettingsModel.create(
-                prisma,
-                baseChatSettingsId,
-                CommonTypes.activeStatus,
-                undefined,  // name
-                baseChatSettings.llmTechId,
-                baseChatSettings.agentId,
-                prompt,
-                userProfileId)
-
-      chatSettingsId = chatSettings.id
-    }
+    const chatSettingsResults = await
+            this.llmUtilsService.getOrCreateChatSettings(
+              prisma,
+              baseChatSettingsId,
+              userProfileId,
+              prompt)
 
     // Verify that chatSettingsId is set
-    if (chatSettingsId == null) {
-      throw new CustomError(`${fnName}: chatSettingsId == null`)
+    if (chatSettingsResults.chatSettings == null) {
+      throw new CustomError(`${fnName}: chatSettingsResults.chatSettings == null`)
     }
+
+    var chatSettings = chatSettingsResults.chatSettings
 
     // Create ChatSession
     // Start in new status, only active once there are messages
@@ -140,17 +67,12 @@ export class ChatSessionService {
           this.chatSessionModel.create(
             prisma,
             undefined,  // id,
-            chatSettingsId,
+            chatSettings.id,
             CommonTypes.newStatus,
             name,
             userProfileId)
 
-    // Get ChatSettings and Agent
-    const chatSettings = await
-            this.chatSettingsModel.getById(
-              prisma,
-              chatSettingsId)
-
+    // Get Agent
     const agent = await
             this.agentModel.getById(
               prisma,

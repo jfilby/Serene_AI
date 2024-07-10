@@ -90,12 +90,12 @@ export class ChatSettingsModel {
     return chatSettings
   }
 
-  async getByParentId(
+  async getByBaseChatSettingsId(
           prisma: any,
-          parentId: string | null | undefined) {
+          baseChatSettingsId: string | null | undefined) {
 
     // Debug
-    const fnName = `${this.clName}.getByParentId()`
+    const fnName = `${this.clName}.getByBaseChatSettingsId()`
 
     // Query record
     var chatSettings: any = undefined
@@ -103,14 +103,12 @@ export class ChatSettingsModel {
     try {
       chatSettings = await prisma.chatSettings.findMany({
         where: {
-          nparentIdame: parentId
+          baseChatSettingsId: baseChatSettingsId
         }
       })
     } catch(error: any) {
-      if (!(error instanceof error.NotFound)) {
-        console.error(`${fnName}: error: ${error}`)
-        throw 'Prisma error'
-      }
+      console.error(`${fnName}: error: ${error}`)
+      throw 'Prisma error'
     }
 
     // Return OK

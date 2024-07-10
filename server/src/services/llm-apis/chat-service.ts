@@ -182,6 +182,7 @@ export class ChatService {
     // Prepare messages and send request by provider
     const results = await
             this.llmUtilsService.prepareAndSendChatMessages(
+              prisma,
               tech,
               agent,
               systemPrompt,

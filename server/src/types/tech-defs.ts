@@ -91,16 +91,14 @@ export class AiTechDefs {
     [AiTechDefs.googleGeminiV1pt5Pro]: 'Gemini Pro v1.5 Pro'
   }
 
-  static contextWindows = [
+  static variantToContextWindows = {
     // Google Gemini
     // Source: https://ai.google.dev/models/gemini
-    {
-      variant: this.googleGeminiV1Pro,
-      size: 1048576
-    },
-    {
-      variant: this.googleGeminiV1pt5Pro,
-      size: 30720
-    }
-  ]
+    [AiTechDefs.googleGeminiV1Pro]: 1048576,
+    [AiTechDefs.googleGeminiV1pt5Pro]: 30720,
+
+    // Llama 3
+    // Source: https://huggingface.co/meta-llama/Meta-Llama-3-8B
+    [AiTechDefs.llama3_8b]: 8000
+  }
 }
