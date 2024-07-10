@@ -78,9 +78,9 @@ export class OpenAiLlmService {
     }
 
     // Debug
-    console.log(`${fnName}: calling this.openAiApi.createChatCompletion ` +
-                `with model: ${model} messagesWithRoles: ` +
-                `${JSON.stringify(messagesWithRoles)}`)
+    // console.log(`${fnName}: calling this.openAiApi.createChatCompletion ` +
+    //             `with model: ${model} messagesWithRoles: ` +
+    //             `${JSON.stringify(messagesWithRoles)}`)
 
     // Set Completions options
     var completionsOptions: any = {

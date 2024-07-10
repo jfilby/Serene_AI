@@ -126,7 +126,6 @@ export class LlmUtilsService {
     var chatSettings
     var baseChatSettings
     var defaultBaseChatSettingsId: string | undefined = ''
-    var tech
 
     if (baseChatSettingsId == null) {
 
@@ -161,31 +160,69 @@ export class LlmUtilsService {
       if (baseChatSettings == null) {
         throw new CustomError(`${fnName}: baseChatSettings == null`)
       }
+    }
 
-      // Is a default LLM provider specified in the env file?
-      if (process.env.NEXT_PUBLIC_OVERRIDE_LLM_VARIANT != null &&
-          process.env.NEXT_PUBLIC_OVERRIDE_LLM_VARIANT !== '') {
+    // Get tech
+    const tech = await
+            this.getTech(
+              prisma,
+              baseChatSettings)
 
-        // Debug
-        console.log(`${fnName}: getting variant (by env file): ` +
-                    process.env.NEXT_PUBLIC_OVERRIDE_LLM_VARIANT)
+    // Create new ChatSettings record
+    if (baseChatSettings != null &&
+        prompt != null) {
 
-        // Get variant by name
-        tech = await
-          this.techModel.getByVariantName(
-            prisma,
-            process.env.NEXT_PUBLIC_OVERRIDE_LLM_VARIANT)
+      chatSettings = await
+        this.chatSettingsModel.create(
+          prisma,
+          baseChatSettingsId,
+          CommonTypes.activeStatus,
+          undefined,  // name
+          tech.id,    // baseChatSettings.llmTechId,
+          baseChatSettings.agentId,
+          prompt,
+          userProfileId)
+    }
 
-        if (tech == null) {
-          const message =
-                  `${fnName}: tech not found for NEXT_PUBLIC_OVERRIDE_LLM_VARIANT: ` +
-                  JSON.stringify(process.env.NEXT_PUBLIC_OVERRIDE_LLM_VARIANT)
+    // Return
+    return {
+      chatSettings: chatSettings,
+      tech: tech
+    }
+  }
 
-          console.error(message)
-          throw new CustomError(message)
-        } else {
-          baseChatSettings.llmTechId = tech.id
-        }
+  async getTech(
+          prisma: any,
+          baseChatSettings: any) {
+
+    // Debug
+    const fnName = `${this.clName}.getTech()`
+    // Var
+    var tech: any
+
+    // Is a default LLM provider specified in the env file?
+    if (process.env.NEXT_PUBLIC_OVERRIDE_LLM_VARIANT != null &&
+        process.env.NEXT_PUBLIC_OVERRIDE_LLM_VARIANT !== '') {
+
+      // Debug
+      console.log(`${fnName}: getting variant (by env file): ` +
+                  process.env.NEXT_PUBLIC_OVERRIDE_LLM_VARIANT)
+
+      // Get variant by name
+      tech = await
+        this.techModel.getByVariantName(
+          prisma,
+          process.env.NEXT_PUBLIC_OVERRIDE_LLM_VARIANT)
+
+      if (tech == null) {
+        const message =
+                `${fnName}: tech not found for NEXT_PUBLIC_OVERRIDE_LLM_VARIANT: ` +
+                JSON.stringify(process.env.NEXT_PUBLIC_OVERRIDE_LLM_VARIANT)
+
+        console.error(message)
+        throw new CustomError(message)
+      } else {
+        baseChatSettings.llmTechId = tech.id
       }
 
       // Debug
@@ -194,8 +231,7 @@ export class LlmUtilsService {
     }
 
     // Get tech
-    if (getTech === true &&
-        tech == null) {
+    if (tech == null) {
 
       tech = await
         this.techModel.getById(
@@ -203,23 +239,7 @@ export class LlmUtilsService {
           baseChatSettings.llmTechId)
     }
 
-    // Create new ChatSettings record
-    chatSettings = await
-      this.chatSettingsModel.create(
-        prisma,
-        baseChatSettingsId,
-        CommonTypes.activeStatus,
-        undefined,  // name
-        baseChatSettings.llmTechId,
-        baseChatSettings.agentId,
-        prompt,
-        userProfileId)
-
-    // Return
-    return {
-      chatSettings: chatSettings,
-      tech: tech
-    }
+    return tech
   }
 
   async prepareAndSendChatMessages(

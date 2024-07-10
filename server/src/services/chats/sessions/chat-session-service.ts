@@ -119,7 +119,8 @@ export class ChatSessionService {
 
     // Return
     return {
-      chatSession: chatSession
+      chatSession: chatSession,
+      tech: chatSettingsResults.tech
     }
   }
 
@@ -377,6 +378,9 @@ export class ChatSessionService {
 
     // console.log(`${fnName}: starting with userProfileId: ${userProfileId}`)
 
+    // LLM tech
+    var tech
+
     // Try to get the chat session
     var chatSession = await
           this.chatSessionModel.getById(
@@ -395,6 +399,18 @@ export class ChatSessionService {
           userProfileId,
           prompt,
           name)
+
+      tech = chatSession.tech
+    } else {
+      const chatSettings = await
+              this.chatSettingsModel.getById(
+                prisma,
+                chatSession.chatSettingsId)
+
+      tech = await
+        this.techModel.getById(
+          prisma,
+          chatSettings.llmTechId)
     }
 
     // Verify

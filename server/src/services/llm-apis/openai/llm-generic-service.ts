@@ -236,9 +236,30 @@ export class OpenAIGenericLlmService {
         content += part.text
       }
 
+      // Get the OpenAI role
+      var role: string
+
+      switch (message.role) {
+        case 'user': {
+          role = ServerOnlyTypes.chatGptUserMessageRole
+          break
+        }
+
+        case 'model': {
+          role = ServerOnlyTypes.chatGptAssistantMessageRole
+          break
+        }
+
+        default: {
+          throw new CustomError(`${fnName}: unhandled message role ` +
+                                JSON.stringify(message.role)
+          )
+        }
+      }
+
       // Add to messages
       messagesWithRoles.push({
-        role: message.role,
+        role: role,
         content: content
       })
     }
@@ -257,7 +278,9 @@ export class OpenAIGenericLlmService {
     const variantName = tech.variantName
 
     // Return
-    console.log(`${fnName}: returning..`)
+    // console.log(`${fnName}: returning..`)
+    // console.log(`${fnName}: messagesWithRoles: ` +
+    //             JSON.stringify(messagesWithRoles))
 
     return {
       messages: messagesWithRoles,

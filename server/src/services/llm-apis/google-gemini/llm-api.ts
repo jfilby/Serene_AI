@@ -319,9 +319,9 @@ export class GoogleGeminiLlmService {
     }
 
     // Debug
-    console.log(`${fnName}: calling this.client.getChatCompletions ` +
-                `with model: ${model} messagesWithRoles: ` +
-                `${JSON.stringify(messagesWithRoles)}`)
+    // console.log(`${fnName}: calling this.client.getChatCompletions ` +
+    //             `with model: ${model} messagesWithRoles: ` +
+    //             `${JSON.stringify(messagesWithRoles)}`)
 
     // ChatCompletion request
     //

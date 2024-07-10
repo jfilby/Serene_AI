@@ -91,14 +91,29 @@ export class AiTechDefs {
     [AiTechDefs.googleGeminiV1pt5Pro]: 'Gemini Pro v1.5 Pro'
   }
 
-  static variantToContextWindows = {
+  // Define a large context token size
+  static largeContextTokenSize = 100000  // 100k
+
+  // Context windows by variant
+  static variantToMaxInputTokens = {
     // Google Gemini
     // Source: https://ai.google.dev/models/gemini
     [AiTechDefs.googleGeminiV1Pro]: 1048576,
-    [AiTechDefs.googleGeminiV1pt5Pro]: 30720,
+    [AiTechDefs.googleGeminiV1pt5Pro]: 2097152,
 
     // Llama 3
     // Source: https://huggingface.co/meta-llama/Meta-Llama-3-8B
     [AiTechDefs.llama3_8b]: 8000
+  }
+
+  static variantToMaxOutputTokens = {
+    // Google Gemini
+    // Source: https://ai.google.dev/models/gemini
+    [AiTechDefs.googleGeminiV1Pro]: 8192,
+    [AiTechDefs.googleGeminiV1pt5Pro]: 8192,
+
+    // Llama 3
+    // Source: https://huggingface.co/meta-llama/Meta-Llama-3-8B
+    [AiTechDefs.llama3_8b]: 2048
   }
 }
