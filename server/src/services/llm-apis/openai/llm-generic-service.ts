@@ -108,7 +108,7 @@ export class OpenAIGenericLlmService {
     }
 
     // Debug
-    console.log(`${fnName}: results: ${JSON.stringify(results)}`)
+    // console.log(`${fnName}: results: ${JSON.stringify(results)}`)
 
     // Return
     return results
@@ -119,14 +119,14 @@ export class OpenAIGenericLlmService {
     // Debug
     const fnName = `${this.clName}.estimateInputTokens()`
 
-    console.log(`${fnName}: starting..`)
+    // console.log(`${fnName}: starting..`)
 
     // Calculate total length of words
     var words = 0
 
     for (const message of messages) {
 
-      console.log(`${fnName}: message: ${JSON.stringify(message)}`)
+      // console.log(`${fnName}: message: ${JSON.stringify(message)}`)
 
       // Validate
       if (message.role == null) {
@@ -155,7 +155,7 @@ export class OpenAIGenericLlmService {
     const tokens = words / 4 * 3
 
     // Debug
-    console.log(`${fnName}: tokens: ${tokens}`)
+    // console.log(`${fnName}: tokens: ${tokens}`)
 
     // Return
     return tokens

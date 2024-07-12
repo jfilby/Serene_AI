@@ -53,7 +53,7 @@ export class OpenAiLlmService {
     // Debug
     const fnName = `${this.clName}.sendChatMessages()`
 
-    console.log(`${fnName}: starting with variant: ${tech.variantName}`)
+    // console.log(`${fnName}: starting with variant: ${tech.variantName}`)
 
     // Verify that the variant has a model name
     if (!AiTechDefs.variantToModelNames.hasOwnProperty(tech.variantName)) {
@@ -69,7 +69,7 @@ export class OpenAiLlmService {
     // Get the variant's model name
     const model = AiTechDefs.variantToModelNames[tech.variantName]
 
-    console.log(`${fnName}: getting variant's model name: ${model}`)
+    // console.log(`${fnName}: getting variant's model name: ${model}`)
 
     // Return early if external APIs not enabled
     if (FeatureFlags.externalApis === false) {
@@ -100,7 +100,7 @@ export class OpenAiLlmService {
 
     await this.openAi.chat.completions.create(completionsOptions)
     .then((res) => {
-      console.log(`${fnName}: got response:`)
+      /* console.log(`${fnName}: got response:`)
       console.log(`${fnName}: ` + JSON.stringify(res))
       console.log(`${fnName}: got result choice 0 message content:`)
 
@@ -108,7 +108,7 @@ export class OpenAiLlmService {
         if (res.choices.length > 0) {
           console.log(res.choices[0].message.content)
         }
-      }
+      } */
 
       completion = res
     })
@@ -132,7 +132,7 @@ export class OpenAiLlmService {
     })
 
     // Log
-    console.log(`${fnName}: completion: ${JSON.stringify(completion)}`)
+    // console.log(`${fnName}: completion: ${JSON.stringify(completion)}`)
 
     // Validate the results
     if (completion == null) {
