@@ -1,5 +1,5 @@
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
-import { CommonTypes } from '@/types/types'
+import { CommonTypes } from '../../../types/types'
 import { AiTechDefs } from '../../../types/tech-defs'
 import { AgentModel } from '../../../models/agents/agent-model'
 import { ChatSettingsModel } from '../../../models/chat/chat-settings-model'

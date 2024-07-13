@@ -3,7 +3,12 @@ import { UserPreferenceService } from '../../../services/user-preference/service
 
 const userPreferenceService = new UserPreferenceService()
 
-export async function getUserPreferences(parent, args, context, info) {
+export async function getUserPreferences(
+                        parent: any,
+                        args: any,
+                        context: any,
+                        info: any) {
+
   console.log('getUserPreferences(): ' +
               `args.userProfileId: ${args.userProfileId} ` +
               `args.keys: ${args.keys}`)

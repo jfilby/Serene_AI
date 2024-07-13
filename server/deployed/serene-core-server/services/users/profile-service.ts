@@ -3,6 +3,11 @@ import { UserProfileModel } from '../../models/users/user-profile-model'
 import { countries } from '../locale/countries'
 import { UserPreferenceService } from '../user-preference/service'
 
+interface ReqRes {
+  req: any
+  res: any
+}
+
 export class ProfileService {
 
   // Consts
@@ -211,7 +216,7 @@ export class ProfileService {
   }
 
   async updateViaRestApi(
-          { req, res },
+          { req, res }: ReqRes,
           prisma: any) {
 
     const body = req.body

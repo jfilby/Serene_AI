@@ -2,6 +2,11 @@ import { getCookie, setCookie } from 'cookies-next'
 import { isAdminUserQuery } from '../../apollo/access'
 import { UsersService } from '../users/user-service'
 
+interface ReqRes {
+  req: any
+  res: any
+}
+
 export class AccessService {
 
   // Consts
@@ -12,33 +17,33 @@ export class AccessService {
   usersService = new UsersService()
 
   // Code
-  formatValidateAdminUser(json: JSON) {
+  formatValidateAdminUser(json: any) {
 
-    if (!json.hasOwnProperty('isAdminUser')) {
+    if (json.isAdminUser == null) {
       return { status: false,
                message: 'Invalid reply' }
     }
 
-    const record = json['isAdminUser']
+    const record = json.isAdminUser
 
-    if (!record.hasOwnProperty('status')) {
+    if (record.status == null) {
       return { status: false,
                message: 'Invalid reply' }
     }
 
     var results =
-          { status: record['status'],
+          { status: record.status,
             message: null }
 
-    if (record.hasOwnProperty('message')) {
-      results.message = record['message']
+    if (record.message == null) {
+      results.message = record.message
     }
 
     return results
   }
 
   validateAccessCode(
-    { req, res },
+    { req, res }: ReqRes,
     accessCode: string) {
 
     // Fail if in production but ACCESS_CODE isn't defined
@@ -82,7 +87,7 @@ export class AccessService {
   }
 
   async validateUserIsAdmin(
-          { req, res },
+          { req, res }: ReqRes,
           apolloClient: any) {
 
     // Debug
@@ -112,7 +117,7 @@ export class AccessService {
       variables: {
         userProfileId: signedInId
       }
-    }).then(result => validateUserData = result)
+    }).then((result: any) => validateUserData = result)
 
     // console.log(`validateUserIsAdmin(): ${JSON.stringify(validateUserData)}`)
 

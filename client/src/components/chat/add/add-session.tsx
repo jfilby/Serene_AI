@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useMutation } from '@apollo/client'
-import { getOrCreateChatSessionMutation } from '@/apollo/chats'
 import { Alert, Typography } from '@mui/material'
+import { getOrCreateChatSessionMutation } from '../../../apollo/chats'
 
 interface Props {
   chatSessionId: string

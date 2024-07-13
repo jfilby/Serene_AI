@@ -3,7 +3,12 @@ import { MailingListSubscriberService } from '../../../services/mailing-lists/ma
 
 const mailingListSubscriberService = new MailingListSubscriberService()
 
-export async function upsertUserPreference(parent, args, context, info) {
+export async function upsertUserPreference(
+                        parent: any,
+                        args: any,
+                        context: any,
+                        info: any) {
+
   // console.log('userById..')
 
   // Subscribe

@@ -1,11 +1,18 @@
 import { Link, Typography } from '@mui/material'
 
+interface Props {
+  label: string
+  href: string
+  value: string
+  style?: any
+}
+
 export default function ViewLinkField({
                           label,
                           href,
                           value,
                           style = {}
-                        }) {
+                        }: Props) {
 
   // Render
   return (

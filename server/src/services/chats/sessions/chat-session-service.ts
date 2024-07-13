@@ -252,6 +252,17 @@ export class ChatSessionService {
     }
   }
 
+  async getChatParticipants(
+          prisma: any,
+          chatSessionId: string,
+          userProfileId: string) {
+
+    // Debug
+    const fnName = `${this.clName}.getChatParticipants()`
+
+    ;
+  }
+
   async getChatSessionById(
           prisma: any,
           chatSessionId: string,

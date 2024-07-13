@@ -3,7 +3,13 @@ import { useMutation } from '@apollo/client'
 import { mailingListSignupMutation } from '../../apollo/mailing-lists'
 import { Alert, Button, TextField } from '@mui/material'
 
-export default function MailingListSignUp({ mailingListName }) {
+interface Props {
+  mailingListName: string
+}
+
+export default function MailingListSignUp({
+                          mailingListName
+                        }: Props) {
 
   // Types
   type AlertSeverity = 'error' | 'warning' | 'info' | 'success' | undefined

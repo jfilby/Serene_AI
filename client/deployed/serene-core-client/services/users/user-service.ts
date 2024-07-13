@@ -2,6 +2,11 @@ import { getCookie, setCookie } from 'cookies-next'
 import { getOrCreateSignedOutUserMutation, getOrCreateUserByEmailMutation, verifySignedInUserProfileIdQuery } from '../../apollo/users'
 import { getSession } from 'next-auth/react'
 
+interface ReqRes {
+  req: any
+  res: any
+}
+
 export class UsersService {
 
   // Consts
@@ -10,10 +15,11 @@ export class UsersService {
   signedOutCookieName = 'signedOutUserUq'
 
   // Code
-  formatCreateBlankUser(json: JSON) {
+  formatCreateBlankUser(json: any) {
+
     console.log('formatCreateBlankUser: ' + JSON.stringify(json))
 
-    const userRecord = json['createBlankUser']
+    const userRecord = json.createBlankUser
 
     if (!userRecord) {
       return null
@@ -26,10 +32,11 @@ export class UsersService {
     return user
   }
 
-  formatUserById(json: JSON) {
+  formatUserById(json: any) {
+
     console.log('formatUserById: ' + JSON.stringify(json))
 
-    const userRecord = json['userById']
+    const userRecord = json.userById
 
     if (!userRecord) {
       return null
@@ -43,8 +50,8 @@ export class UsersService {
   }
 
   async getSignedInOrOutUserIdFromCookie(
-    { req, res },
-    apolloClient) {
+    { req, res }: ReqRes,
+    apolloClient: any) {
 
     const session = await getSession({req: req})
 
@@ -57,7 +64,8 @@ export class UsersService {
     }
   }
 
-  getSignedOutUserIdFromCookie({ req, res }) {
+  getSignedOutUserIdFromCookie(
+    { req, res }: ReqRes) {
 
     const signedOutIdValue =
             getCookie(this.signedOutCookieName,
@@ -76,18 +84,18 @@ export class UsersService {
   }
 
   async getUserIdFromCookieAndVerify(
-          { req, res },
-          apolloClient) {
+          { req, res }: ReqRes,
+          apolloClient: any) {
 
     // Get signed-in userId
-    const idValue =
+    const idValue: string | undefined =
             getCookie(
               this.signedInCookieName,
               { req, res })
 
     console.log(`getUserIdFromCookieAndVerify: idValue: ${idValue}`)
 
-    var userProfileId
+    var userProfileId: string | null | undefined
 
     if (idValue == null) {
       return null
@@ -105,8 +113,8 @@ export class UsersService {
       variables: {
         userProfileId: userProfileId
       }
-    }).then(result => results = result)
-      .catch(error => {
+    }).then((result: any) => results = result)
+      .catch((error: any) => {
         console.log(`error.networkError: ${JSON.stringify(error.networkError)}`)
       })
 
@@ -130,7 +138,7 @@ export class UsersService {
   }
 
   async getOrCreateUser(
-          { req, res },
+          { req, res }: ReqRes,
           session: any,
           apolloClient: any,
           defaultUserPreferences: any) {
@@ -139,8 +147,8 @@ export class UsersService {
     const fnName = `${this.clName}.getOrCreateUser()`
 
     // Cookie values
-    var signedInId: string = ''
-    var signedOutId: string = ''
+    var signedInId: string | null | undefined = ''
+    var signedOutId: string | null | undefined = ''
 
     if (session) {
 
@@ -169,8 +177,8 @@ export class UsersService {
           email: session.user.email,
           defaultUserPreferences: JSON.stringify(defaultUserPreferences)
         }
-      }).then(result => results = result)
-        .catch(error => {
+      }).then((result: any) => results = result)
+        .catch((error: any) => {
           console.log(`${fnName}: error: ${error}`)
           console.log(`${fnName}: error.networkError: ${JSON.stringify(error.networkError)}`)
         })
@@ -196,7 +204,10 @@ export class UsersService {
     // No session available (signed-out)
     // If not signed-in/out user cookie
     if (originalSignedOutId !== signedOutId) {
-      this.setSignedOutUserCookie({req, res}, signedOutId)
+
+      this.setSignedOutUserCookie(
+        {req, res},
+        signedOutId)
     }
 
     // GraphQL call to get or create userProfile for signed-out user
@@ -210,8 +221,8 @@ export class UsersService {
         signedOutId: signedOutId,
         defaultUserPreferences: JSON.stringify(defaultUserPreferences)
       }
-    }).then(result => results = result)
-      .catch(error => {
+    }).then((result: any) => results = result)
+      .catch((error: any) => {
         console.log(`${fnName}: error: ${error}`)
         console.log(`${fnName}: error.networkError: ${JSON.stringify(error.networkError)}`)
       })
@@ -236,7 +247,9 @@ export class UsersService {
     return signedOutUserProfile
   }
 
-  setSignedInUserCookie({ req, res }, id: string) {
+  setSignedInUserCookie(
+    { req, res }: ReqRes,
+    id: string) {
 
     // Set userUq in cookie
     setCookie(
@@ -247,7 +260,9 @@ export class UsersService {
         maxAge: 60 * 60 * 24 * 30 }) // 30 days
   }
 
-  setSignedOutUserCookie({ req, res }, id: string) {
+  setSignedOutUserCookie(
+    { req, res }: ReqRes,
+    id: string | null | undefined) {
 
     // Set signedOutUserUq in cookie
     setCookie(

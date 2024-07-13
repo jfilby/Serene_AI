@@ -3,18 +3,31 @@ import { UsersService } from '../../../services/users/service'
 
 const usersService = new UsersService()
 
-export async function createBlankUser(parent, args, context, info) {
+export async function createBlankUser(
+                        parent: any,
+                        args: any,
+                        context: any,
+                        info: any) {
+
   // console.log('createBlankUser..')
 
   return usersService.createBlankUser(prisma)
 }
 
-export async function createUserByEmail(parent, args, context, info) {
+export async function createUserByEmail(
+                        parent: any,
+                        args: any,
+                        context: any,
+                        info: any) {
 
   return usersService.createUserByEmail(prisma, args.email)
 }
 
-export async function getOrCreateSignedOutUser(parent, args, context, info) {
+export async function getOrCreateSignedOutUser(
+                        parent: any,
+                        args: any,
+                        context: any,
+                        info: any) {
 
   // console.log(`getOrCreateSignedOutUser(): args: ${JSON.stringify(args)}`)
 
@@ -28,7 +41,11 @@ export async function getOrCreateSignedOutUser(parent, args, context, info) {
   }
 }
 
-export async function getOrCreateUserByEmail(parent, args, context, info) {
+export async function getOrCreateUserByEmail(
+                        parent: any,
+                        args: any,
+                        context: any,
+                        info: any) {
 
   try {
     return usersService.getOrCreateUserByEmail(

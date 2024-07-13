@@ -1,24 +1,30 @@
 import { signIn, signOut } from 'next-auth/react'
+import { useLazyQuery } from '@apollo/client'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
+import Select from '@mui/material/Select'
 import { useEffect, useState } from 'react'
+import { useRecoilValue } from 'recoil'
 import ActionNotification from '../notifications/action'
 import { RestApiService } from '../../services/rest-api/service'
-import Select from '@mui/material/Select'
 import { FormControl, InputLabel, Typography } from '@mui/material'
 import { countries } from '../../services/locale/countries'
-import { useRecoilValue } from 'recoil'
 import { userProfileAtom } from '../../atoms/user'
 import { getUserPreferencesQuery } from '../../apollo/user-preferences'
 import { UserPreferencesService } from '../../services/users/user-preferences-service'
 import { ProfileService } from '../../services/users/profile-service'
-import { useLazyQuery } from '@apollo/client'
+
+interface Props {
+  clientUrl: string
+  serverUrl: string
+  session: any
+}
 
 export default function Profile({
                           clientUrl,
                           serverUrl,
                           session
-                        }) {
+                        }: Props) {
 
   // Consts
   const personalDetails = 'personal details'
@@ -78,12 +84,12 @@ export default function Profile({
     setFirstName(fullName.substring(0, firstSpace))
   }
 
-  const handleSignin = (e) => {
+  const handleSignin = (e: any) => {
     e.preventDefault()
     signIn()
   }
 
-  const handleSignout = (e) => {
+  const handleSignout = (e: any) => {
     e.preventDefault()
     signOut()
   }
@@ -96,6 +102,9 @@ export default function Profile({
 
     restApiService.submit({
       relativeUrl: '/api/account/profile/update',
+      headers: undefined,
+      method: undefined,
+
       values: {
         // token: token,
         userProfileId: userProfile.id,
@@ -113,6 +122,9 @@ export default function Profile({
         billingState: billingState,
         billingZip: billingZip */
       },
+      callbackOnSuccess: undefined,
+      routeOnSuccess: undefined,
+      setSubmitDisabled: undefined,
       setNotificationSuccessText: setNotificationSuccessText,
       setNotificationSuccessOpened: setNotificationSuccessOpened,
       setNotificationErrorText: setNotificationErrorText,

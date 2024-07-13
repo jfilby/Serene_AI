@@ -5,7 +5,7 @@ export class AccessService {
   usersService = new UsersService()
 
   async isAdminUser(
-          prisma,
+          prisma: any,
           userProfileId: string) {
 
     // Get UserProfile record

@@ -25,8 +25,8 @@ export class UserPreferencesService {
         category: category,
         keys: keys
       }
-    }).then(result => results = result)
-      .catch(error => {
+    }).then((result: any) => results = result)
+      .catch((error: any) => {
         console.log(`error.networkError: ${JSON.stringify(error.networkError)}`)
       })
 

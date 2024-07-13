@@ -1,10 +1,16 @@
 import { Typography } from '@mui/material'
 
+interface Props {
+  label: string
+  value: string
+  style?: any
+}
+
 export default function ViewTextField({
                           label,
                           value,
                           style = {}
-                        }) {
+                        }: Props) {
 
   // Render
   return (

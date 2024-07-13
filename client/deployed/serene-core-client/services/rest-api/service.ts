@@ -3,6 +3,20 @@ import router from 'next/router'
 import { postToServerHeaders } from './request'
 import { UtilsService } from '../utils/service'
 
+interface SubmitProps {
+  relativeUrl: string
+  headers: Headers | undefined
+  values: any
+  method: string | undefined
+  callbackOnSuccess: any
+  routeOnSuccess: string | undefined
+  setSubmitDisabled: any
+  setNotificationSuccessText: any
+  setNotificationSuccessOpened: any
+  setNotificationErrorText: any
+  setNotificationErrorOpened: any
+}
+
 export class RestApiService {
 
   // localClientUrl: e.g. http://localhost:3001 (irrespective of the domain name)
@@ -39,7 +53,7 @@ export class RestApiService {
           setNotificationSuccessText = null as Dispatch<SetStateAction<string>> | null,
           setNotificationSuccessOpened = null as Dispatch<SetStateAction<boolean>> | null,
           setNotificationErrorText = null as Dispatch<SetStateAction<string>> | null,
-          setNotificationErrorOpened = null as Dispatch<SetStateAction<boolean>> | null }) {
+          setNotificationErrorOpened = null as Dispatch<SetStateAction<boolean>> | null }: SubmitProps) {
 
     // console.log('submitting..')
 

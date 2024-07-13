@@ -3,7 +3,12 @@ import { UserPreferenceService } from '../../../services/user-preference/service
 
 const userPreferenceService = new UserPreferenceService()
 
-export async function upsertUserPreference(parent, args, context, info) {
+export async function upsertUserPreference(
+                        parent: any,
+                        args: any,
+                        context: any,
+                        info: any) {
+
   // console.log('userById..')
 
   try {
