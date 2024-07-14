@@ -7,6 +7,28 @@ export class TextParsingService {
                                // markdown syntax blocks
 
   // Code
+  combineTextExtracts(
+    extracts: any[],  // Extracted using this.getTextExtracts()
+    syntax: string) {
+
+    var textExtracts: string[] = []
+
+    for (const extract of extracts) {
+
+      textExtracts.push(
+        // Remove lines starting with ```
+        extract.text.replace(/^[ \t]*```.*$\n?/gm, ''))
+    }
+
+    var output = textExtracts.join('\n')
+
+    if (!output.endsWith('\n')) {
+      output += '\n'
+    }
+
+    return output
+  }
+
   getJsonExtractExcludingQuotesWithBraces(
     input: string,
     jsonMustBeInArray: boolean = false) {
