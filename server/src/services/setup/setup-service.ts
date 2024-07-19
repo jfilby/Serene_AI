@@ -46,6 +46,21 @@ export class SereneAiSetup {
             geminiV1pt5ProTech.id,
             2)
 
+    // Gemini v1.5 Flash
+    const geminiV1pt5FlashTech = await
+            this.techModel.upsert(
+              prisma,
+              undefined,  // id
+              true,       // isDefaultProvider
+              AiTechDefs.googleGeminiV1pt5Flash,
+              AiTechDefs.llms)
+
+    await this.rateLimitedApiModel.upsert(
+            prisma,
+            undefined,  // id
+            geminiV1pt5ProTech.id,
+            15)
+
     // ChatGPT 4o
     const chatGpt4oTech = await
             this.techModel.upsert(

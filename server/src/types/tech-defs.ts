@@ -24,10 +24,12 @@ export class AiTechDefs {
   // upgrade paths in service/tech/data/llms.ts.
   static googleGeminiV1Pro = 'Google Gemini v1 Pro'
   static googleGeminiV1pt5Pro = 'Google Gemini v1.5 Pro'
+  static googleGeminiV1pt5Flash = 'Google Gemini v1.5 Flash'
 
   static genericModel = 'Generic'
   static v1ProVersion = 'v1 Pro'
   static v1pt5ProVersion = 'v1.5 Pro'
+  static v1pt5FlashVersion = 'v1.5 Flash'
 
   // OpenAI
   static chatGpt4o = 'ChatGPT-4o'
@@ -50,13 +52,19 @@ export class AiTechDefs {
     {
       provider: this.googleGeminiProvider,
       variantName: this.googleGeminiV1pt5Pro,
+      default: false
+    },
+    {
+      provider: this.googleGeminiProvider,
+      variantName: this.googleGeminiV1pt5Flash,
       default: true
     }
   ]
 
   // Model names
   static googleGeminiV1ProModelName = 'gemini-pro'
-  static googleGeminiV1pt5ProModelName = 'gemini-1.5-pro-latest'
+  static googleGeminiV1pt5ProModelName = 'gemini-1.5-pro'
+  static googleGeminiV1pt5FlashModelName = 'gemini-1.5-flash'
 
   static chatGpt4oModelName = 'GPT-4o'
 
@@ -67,6 +75,7 @@ export class AiTechDefs {
     // Google Gemini
     [AiTechDefs.googleGeminiV1Pro]: this.googleGeminiV1ProModelName,
     [AiTechDefs.googleGeminiV1pt5Pro]: this.googleGeminiV1pt5ProModelName,
+    [AiTechDefs.googleGeminiV1pt5Flash]: this.googleGeminiV1pt5FlashModelName,
 
     // OpenAI
     [AiTechDefs.chatGpt4o]: this.chatGpt4oModelName,
@@ -79,6 +88,7 @@ export class AiTechDefs {
   static variantToProviders = {
     [AiTechDefs.googleGeminiV1Pro]: this.googleGeminiProvider,
     [AiTechDefs.googleGeminiV1pt5Pro]: this.googleGeminiProvider,
+    [AiTechDefs.googleGeminiV1pt5Flash]: this.googleGeminiProvider,
 
     [AiTechDefs.chatGpt4o]: this.chatGptProvider,
     [AiTechDefs.llama3_8b]: this.chatGptProvider   // The Llama models use the OpenAI client
@@ -88,7 +98,8 @@ export class AiTechDefs {
   static variantNamesToDescriptions = {
     // Google Gemini
     [AiTechDefs.googleGeminiV1Pro]: 'Gemini Pro v1 Pro',
-    [AiTechDefs.googleGeminiV1pt5Pro]: 'Gemini Pro v1.5 Pro'
+    [AiTechDefs.googleGeminiV1pt5Pro]: 'Gemini Pro v1.5 Pro',
+    [AiTechDefs.googleGeminiV1pt5Flash]: 'Gemini Pro v1.5 Flash'
   }
 
   // Define a large context token size
@@ -100,6 +111,7 @@ export class AiTechDefs {
     // Source: https://ai.google.dev/models/gemini
     [AiTechDefs.googleGeminiV1Pro]: 1048576,
     [AiTechDefs.googleGeminiV1pt5Pro]: 2097152,
+    [AiTechDefs.googleGeminiV1pt5Flash]: 1048576,
 
     // Llama 3
     // Source: https://huggingface.co/meta-llama/Meta-Llama-3-8B
@@ -111,6 +123,7 @@ export class AiTechDefs {
     // Source: https://ai.google.dev/models/gemini
     [AiTechDefs.googleGeminiV1Pro]: 8192,
     [AiTechDefs.googleGeminiV1pt5Pro]: 8192,
+    [AiTechDefs.googleGeminiV1pt5Flash]: 8192,
 
     // Llama 3
     // Source: https://huggingface.co/meta-llama/Meta-Llama-3-8B
