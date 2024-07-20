@@ -319,17 +319,19 @@ export class ChatSessionService {
               status,
               userProfileId)
 
-    // Check if any chatSessions have a null name, if not return
-    var hasNullName = false
+    // Check if any chatSessions have a null/blank name, if not return
+    var hasNullOrBlankName = false
 
     for (const chatSession of chatSessions) {
-      if (chatSession.name == null) {
-        hasNullName = true
+      if (chatSession.name == null ||
+          chatSession.name.trim() === '') {
+
+        hasNullOrBlankName = true
         break
       }
     }
 
-    if (hasNullName === false) {
+    if (hasNullOrBlankName === false) {
       return chatSessions
     }
 
@@ -338,7 +340,8 @@ export class ChatSessionService {
 
     for (var chatSession of chatSessions) {
 
-      if (chatSession.name == null) {
+      if (chatSession.name == null ||
+         chatSession.name.trim() === '') {
 
         const chatMessage = await
                 this.chatMessageModel.getFirst(
