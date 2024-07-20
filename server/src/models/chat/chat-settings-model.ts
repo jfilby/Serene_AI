@@ -37,6 +37,26 @@ export class ChatSettingsModel {
     }
   }
 
+  async deleteById(
+          prisma: any,
+          id: string) {
+
+    // Debug
+    const fnName = `${this.clName}.deleteById()`
+
+    // Delete records
+    try {
+      await prisma.chatSettings.deleteMany({
+        where: {
+          id: id
+        }
+      })
+    } catch(error: any) {
+      console.error(`${fnName}: error: ${error}`)
+      throw 'Prisma error'
+    }
+  }
+
   async getById(prisma: any,
                 id: string) {
 
@@ -97,11 +117,9 @@ export class ChatSettingsModel {
     // Debug
     const fnName = `${this.clName}.getByBaseChatSettingsId()`
 
-    // Query record
-    var chatSettings: any = undefined
-
+    // Query records
     try {
-      chatSettings = await prisma.chatSettings.findMany({
+      return await prisma.chatSettings.findMany({
         where: {
           baseChatSettingsId: baseChatSettingsId
         }
@@ -110,9 +128,26 @@ export class ChatSettingsModel {
       console.error(`${fnName}: error: ${error}`)
       throw 'Prisma error'
     }
+  }
 
-    // Return OK
-    return chatSettings
+  async getUnused(prisma: any) {
+
+    // Debug
+    const fnName = `${this.clName}.getByBaseChatSettingsId()`
+
+    // Query records
+    try {
+      return await prisma.chatSettings.findMany({
+        where: {
+          ofChatSessions: {
+            none: {}
+          }
+        }
+      })
+    } catch(error: any) {
+      console.error(`${fnName}: error: ${error}`)
+      throw 'Prisma error'
+    }
   }
 
   async update(prisma: any,

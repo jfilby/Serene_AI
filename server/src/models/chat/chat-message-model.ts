@@ -50,10 +50,8 @@ export class ChatMessageModel {
         }
       })
     } catch(error: any) {
-      if (!(error instanceof error.NotFound)) {
-        console.error(`${fnName}: error: ${error}`)
-        throw 'Prisma error'
-      }
+      console.error(`${fnName}: error: ${error}`)
+      throw 'Prisma error'
     }
   }
 

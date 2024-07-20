@@ -1,9 +1,18 @@
+import { ChatMessageModel } from './chat-message-model'
+import { ChatParticipantModel } from './chat-participant-model'
+
 const { v4: uuidv4 } = require('uuid')
 
 export class ChatSessionModel {
 
   // Consts
   clName = 'ChatSessionModel'
+
+  newStatus = 'N'
+
+  // Models
+  chatMessageModel = new ChatMessageModel()
+  chatParticipantModel = new ChatParticipantModel()
 
   // Code
   async create(prisma: any,
@@ -35,6 +44,49 @@ export class ChatSessionModel {
       console.error(`${fnName}: error: ${error}`)
       throw 'Prisma error'
     }
+  }
+
+  async deleteById(
+          prisma: any,
+          id: string) {
+
+    // Debug
+    const fnName = `${this.clName}.deleteById()`
+
+    // Delete chat session
+    try {
+      return await prisma.chatSession.delete({
+        where: {
+          id: id
+        }
+      })
+    } catch(error: any) {
+      console.error(`${fnName}: error: ${error}`)
+      throw 'Prisma error'
+    }
+  }
+
+  async deleteByIdCascade(
+          prisma: any,
+          id: string) {
+
+    // Debug
+    const fnName = `${this.clName}.deleteByIdCascade()`
+
+    // Delete chat messages
+    await this.chatMessageModel.deleteByChatSessionId(
+            prisma,
+            id)
+
+    // Delete chat participants
+    await this.chatParticipantModel.deleteByChatSessionId(
+            prisma,
+            id)
+
+    // Delete chat session
+    await this.deleteById(
+            prisma,
+            id)
   }
 
   async filter(
@@ -94,6 +146,34 @@ export class ChatSessionModel {
 
     // Return OK
     return chatSession
+  }
+
+  async getNewStatusOver3DaysOld(prisma: any) {
+
+    // Debug
+    const fnName = `${this.clName}.getNewStatusOver3DaysOld()`
+
+    // Days ago
+    const day = 1000 * 60 * 60 * 24
+    const days3 = day * 3
+    const days3AgoDate = new Date(new Date().getTime() - days3)
+
+    // Query records
+    try {
+      return await prisma.chatSession.findMany({
+        where: {
+          status: this.newStatus,
+          created: {
+            lt: days3AgoDate
+          }
+        }
+      })
+    } catch(error: any) {
+      if (!(error instanceof error.NotFound)) {
+        console.error(`${fnName}: error: ${error}`)
+        throw 'Prisma error'
+      }
+    }
   }
 
   async update(prisma: any,

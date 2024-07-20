@@ -198,6 +198,7 @@ model ChatParticipant {
   ofChatMessagesFrom            ChatMessage[]        @relation("fromChatParticipant")
   ofChatMessagesTo              ChatMessage[]        @relation("toChatParticipant")
 
+  @@index([chatSessionId])
   @@map("chat_participant")
   @@schema("public")
 }

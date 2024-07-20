@@ -39,6 +39,26 @@ export class ChatParticipantModel {
     }
   }
 
+  async deleteByChatSessionId(
+          prisma: any,
+          chatSessionId: string) {
+
+    // Debug
+    const fnName = `${this.clName}.deleteByChatSessionId()`
+
+    // Delete records
+    try {
+      await prisma.chatParticipant.deleteMany({
+        where: {
+          chatSessionId: chatSessionId
+        }
+      })
+    } catch(error: any) {
+      console.error(`${fnName}: error: ${error}`)
+      throw 'Prisma error'
+    }
+  }
+
   async getById(prisma: any,
                 id: string) {
 

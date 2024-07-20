@@ -341,7 +341,7 @@ export class ChatSessionService {
     for (var chatSession of chatSessions) {
 
       if (chatSession.name == null ||
-         chatSession.name.trim() === '') {
+          chatSession.name.trim() === '') {
 
         const chatMessage = await
                 this.chatMessageModel.getFirst(
