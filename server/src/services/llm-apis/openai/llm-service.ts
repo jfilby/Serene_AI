@@ -69,6 +69,13 @@ export class OpenAiLlmService {
     // Get the variant's model name
     const model = AiTechDefs.variantToModelNames[tech.variantName]
 
+    // Ignore jsonMode?
+    if (jsonMode === true &&
+        AiTechDefs.variantNamesToIgnoreJsonMode[tech.variantName] === true) {
+
+      jsonMode = false
+    }
+
     // console.log(`${fnName}: getting variant's model name: ${model}`)
 
     // Return early if external APIs not enabled

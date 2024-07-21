@@ -78,6 +78,12 @@ export class SereneAiSetup {
               false,      // isDefaultProvider
               AiTechDefs.llama3_8b,
               AiTechDefs.llms)
+
+    await this.rateLimitedApiModel.upsert(
+            prisma,
+            undefined,  // id
+            llama3_8bTech.id,
+            15)
   }
 
   /* async upsertTips(prisma: any) {

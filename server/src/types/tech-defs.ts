@@ -99,7 +99,10 @@ export class AiTechDefs {
     // Google Gemini
     [AiTechDefs.googleGeminiV1Pro]: 'Gemini Pro v1 Pro',
     [AiTechDefs.googleGeminiV1pt5Pro]: 'Gemini Pro v1.5 Pro',
-    [AiTechDefs.googleGeminiV1pt5Flash]: 'Gemini Pro v1.5 Flash'
+    [AiTechDefs.googleGeminiV1pt5Flash]: 'Gemini Pro v1.5 Flash',
+
+    // Llama 3
+    [AiTechDefs.llama3_8b]: 'Llama 3 8B'
   }
 
   // Define a large context token size
@@ -128,5 +131,13 @@ export class AiTechDefs {
     // Llama 3
     // Source: https://huggingface.co/meta-llama/Meta-Llama-3-8B
     [AiTechDefs.llama3_8b]: 2048
+  }
+
+  // Variants for which to ignore jsonMode. This is useful for those that keep
+  // raising an exception due to badly formed JSON. An alternative can then be
+  // tried, e.g. jsonRepair.
+  // Not used by the Google Gemini provider
+  static variantNamesToIgnoreJsonMode = {
+    [AiTechDefs.llama3_8b]: true
   }
 }
