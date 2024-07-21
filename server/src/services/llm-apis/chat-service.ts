@@ -1,4 +1,6 @@
+import { jsonrepair } from 'jsonrepair'
 import { CustomError } from '@/serene-core-server/types/errors'
+import { sleepSeconds } from '@/serene-core-server/services/process/sleep'
 import { RateLimitedApiEventModel } from '@/serene-core-server/models/tech/rate-limited-api-event-model'
 import { RateLimitedApiModel } from '@/serene-core-server/models/tech/rate-limited-api-model'
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
@@ -7,6 +9,7 @@ import { LlmCacheModel } from '../../models/cache/llm-cache-model'
 import { ChatApiUsageService } from '../api-usage/chat-api-usage-service'
 import { DetectContentTypeService } from '../content/detect-content-type-service'
 import { LlmUtilsService } from './utils-service'
+import { TextParsingService } from '../content/text-parsing-service'
 
 export class ChatService {
 
@@ -23,6 +26,7 @@ export class ChatService {
   chatApiUsageService = new ChatApiUsageService()
   detectContentTypeService = new DetectContentTypeService()
   llmUtilsService = new LlmUtilsService()
+  textParsingService = new TextParsingService()
 
   // Code
   cleanMultiLineFormatting(messages: string[]) {
@@ -99,6 +103,70 @@ export class ChatService {
 
     // Debug
     const fnName = `${this.clName}.llmRequest()`
+
+    // Loop until not rate-limited
+    var chatCompletionResults
+
+    while (true) {
+
+      // Call Gemini to get full results
+      chatCompletionResults = await
+        this.prepAndSendLlmRequest(
+          prisma,
+          llmTechId,
+          userProfileId,
+          agent,
+          messagesWithRoles,
+          systemPrompt,
+          jsonMode)
+
+      if (chatCompletionResults.isRateLimited === false) {
+
+        // Try to parse JSON
+        if (jsonMode === true) {
+
+          const jsonExtracts =
+                  this.textParsingService.getJsonExtractExcludingQuotesWithBraces(
+                    chatCompletionResults.messages[0].text)
+
+          var jsonStr: string
+
+          try {
+            jsonStr =
+              jsonrepair(
+                jsonExtracts.extracts.join('\n').trim())
+          } catch(e) {
+            console.log(`${fnName}: jsonRepair failed, retrying..`)
+            continue
+          }
+
+          chatCompletionResults.json = JSON.parse(jsonStr)
+        }
+
+        // Done
+        break
+      } else {
+        if (chatCompletionResults.waitSeconds != null) {
+          await sleepSeconds(chatCompletionResults.waitSeconds)
+        }
+      }
+    }
+
+    return chatCompletionResults
+  }
+
+  // Note: don't call directly, rather call llmRequest().
+  private async prepAndSendLlmRequest(
+                  prisma: any,
+                  llmTechId: string | undefined,
+                  userProfileId: string | undefined,
+                  agent: any,
+                  messagesWithRoles: any[],
+                  systemPrompt: string | undefined = undefined,
+                  jsonMode: boolean = false) {
+
+    // Debug
+    const fnName = `${this.clName}.prepAndSendLlmRequest()`
 
     // Get the messages as a lowercase string
     const lowerMessagesStr = JSON.stringify(messagesWithRoles).toLowerCase()
@@ -217,6 +285,8 @@ export class ChatService {
     }
 
     // Return
+    var jsonEmpty: any
+
     return {
       status: results.status,
       isRateLimited: false,
@@ -226,7 +296,8 @@ export class ChatService {
       model: results.model,
       actualTech: results.actualTech,
       inputTokens: results.inputTokens,
-      outputTokens: results.outputTokens
+      outputTokens: results.outputTokens,
+      json: jsonEmpty  // Set by caller, llmRequest()
     }
   }
 }

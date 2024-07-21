@@ -177,6 +177,7 @@ export class LlmUtilsService {
           prisma,
           baseChatSettingsId,
           CommonTypes.activeStatus,
+          false,      // pinned
           undefined,  // name
           tech.id,    // baseChatSettings.llmTechId,
           baseChatSettings.agentId,

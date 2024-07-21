@@ -38,9 +38,10 @@ export class ExampleChatSessionSetupService {
     const chatSetting = await
             this.chatSettingsModel.upsert(
               prisma,
-              undefined,  // id
-              undefined,  // baseChatSettingsId
+              undefined,            // id
+              undefined,            // baseChatSettingsId
               CommonTypes.activeStatus,
+              false,                // pinned
               'Test chat setting',  // name
               tech.id,
               agent.id,

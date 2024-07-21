@@ -7,6 +7,7 @@ export class ChatSettingsModel {
   async create(prisma: any,
                baseChatSettingsId: string | undefined,
                status: string,
+               pinned: boolean,
                name: string | undefined,
                llmTechId: string,
                agentId: string,
@@ -24,6 +25,7 @@ export class ChatSettingsModel {
         data: {
           baseChatSettingsId: baseChatSettingsId,
           status: status,
+          pinned: pinned,
           name: name,
           llmTechId: llmTechId,
           agentId: agentId,
@@ -139,6 +141,7 @@ export class ChatSettingsModel {
     try {
       return await prisma.chatSettings.findMany({
         where: {
+          pinned: false,
           ofChatSessions: {
             none: {}
           }
@@ -154,6 +157,7 @@ export class ChatSettingsModel {
                id: string,
                baseChatSettingsId: string | undefined,
                status: string | undefined,
+               pinned: boolean | undefined,
                name: string | undefined,
                llmTechId: string | undefined,
                agentId: string | undefined,
@@ -169,6 +173,7 @@ export class ChatSettingsModel {
         data: {
           baseChatSettingsId: baseChatSettingsId,
           status: status,
+          pinned: pinned,
           name: name,
           llmTechId: llmTechId,
           agentId: agentId,
@@ -189,6 +194,7 @@ export class ChatSettingsModel {
                id: string | undefined,
                baseChatSettingsId: string | undefined,
                status: string | undefined,
+               pinned: boolean | undefined,
                name: string | undefined,
                llmTechId: string | undefined,
                agentId: string | undefined,
@@ -223,6 +229,11 @@ export class ChatSettingsModel {
         throw 'Prisma error'
       }
 
+      if (pinned == null) {
+        console.error(`${fnName}: id is null and pinned is null`)
+        throw 'Prisma error'
+      }
+
       if (llmTechId == null) {
         console.error(`${fnName}: id is null and llmTechId is null`)
         throw 'Prisma error'
@@ -242,6 +253,7 @@ export class ChatSettingsModel {
                      prisma,
                      baseChatSettingsId,
                      status,
+                     pinned,
                      name,
                      llmTechId,
                      agentId,
@@ -254,6 +266,7 @@ export class ChatSettingsModel {
                      id,
                      baseChatSettingsId,
                      status,
+                     pinned,
                      name,
                      llmTechId,
                      agentId,
