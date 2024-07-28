@@ -261,8 +261,8 @@ export class GoogleGeminiLlmService {
       previousRole = role
     }
 
-    console.log(`${fnName}: messagesWithRoles: ` +
-                JSON.stringify(messagesWithRoles))
+    // console.log(`${fnName}: messagesWithRoles: ` +
+    //             JSON.stringify(messagesWithRoles))
 
     /* Estimate the input and output tokens
     const estimatedInputTokens =
