@@ -171,7 +171,7 @@ export class GoogleGeminiLlmService {
     const text = response.text()
 
     // Debug
-    console.log(`${fnName} response.text(): ${text}`)
+    // console.log(`${fnName} response.text(): ${text}`)
 
     // Return
     return {
@@ -230,7 +230,7 @@ export class GoogleGeminiLlmService {
     for (const message of messages) {
 
       // Test
-      console.log(`${fnName}: message: ${JSON.stringify(message)}`)
+      // console.log(`${fnName}: message: ${JSON.stringify(message)}`)
 
       // Determine role
       var role: string = ''
@@ -334,7 +334,7 @@ export class GoogleGeminiLlmService {
               jsonMode)
 
     // Log
-    console.log(`${fnName}: completion: ${JSON.stringify(completion)}`)
+    // console.log(`${fnName}: completion: ${JSON.stringify(completion)}`)
 
     // Validate the results
     if (completion == null) {

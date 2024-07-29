@@ -249,6 +249,16 @@ model ChatSettings {
 
 // Cache and rate-limiting
 
+model CachedEmbedding {
+  id                           String               @id @default(cuid())
+  text                         String               @unique
+  embedding                    Unsupported("vector(768)")?
+  created                      DateTime             @default(now())
+
+  @@map("cached_embedding")
+  @@schema("public")
+}
+
 model LlmCache {
   id                           String               @id @default(cuid())
   key                          String               @unique
