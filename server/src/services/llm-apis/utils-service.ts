@@ -1,13 +1,14 @@
 import { CustomError } from '@/serene-core-server/types/errors'
 import { AiTechDefs } from '../../types/tech-defs'
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
+import { CommonTypes } from '../../types/types'
 import { ChatSettingsModel } from '../../models/chat/chat-settings-model'
+import { AgentsService } from '../agents/agents-service'
 import { GoogleGeminiLlmService } from './google-gemini/llm-api'
 import { GoogleGeminiLlmUtilsService } from './google-gemini/utils'
 import { OpenAIGenericLlmService } from './openai/llm-generic-service'
 import { OpenAiLlmService } from './openai/llm-service'
 import { OpenAiLlmUtilsService } from './openai/utils'
-import { CommonTypes } from '../../types/types'
 
 export class LlmUtilsService {
 
@@ -19,6 +20,7 @@ export class LlmUtilsService {
   techModel = new TechModel()
 
   // Services
+  agentsService = new AgentsService()
   googleGeminiLlmService = new GoogleGeminiLlmService()
   googleGeminiLlmUtilsService = new GoogleGeminiLlmUtilsService()
   openAIGenericLlmService = new OpenAIGenericLlmService()

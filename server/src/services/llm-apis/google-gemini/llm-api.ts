@@ -98,8 +98,8 @@ export class GoogleGeminiLlmService {
     // Debug
     const fnName = `${this.clName}.getChatCompletions()`
 
-    // console.log(`${fnName}: starting with messagesWithRoles: ` +
-    //             JSON.stringify(messagesWithRoles))
+    console.log(`${fnName}: starting with messagesWithRoles: ` +
+                JSON.stringify(messagesWithRoles))
 
     console.log(`${fnName}: starting with model: ` + JSON.stringify(model))
 

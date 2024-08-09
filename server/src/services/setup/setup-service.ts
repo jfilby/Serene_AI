@@ -58,7 +58,7 @@ export class SereneAiSetup {
     await this.rateLimitedApiModel.upsert(
             prisma,
             undefined,  // id
-            geminiV1pt5ProTech.id,
+            geminiV1pt5FlashTech.id,
             15)
 
     // ChatGPT 4o

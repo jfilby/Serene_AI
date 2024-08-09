@@ -262,7 +262,7 @@ export class UsersService {
               prisma,
               userProfileId)
 
-    if (userProfile == null) {
+    if (userProfile.userId == null) {
       return false
     } else {
       return true
