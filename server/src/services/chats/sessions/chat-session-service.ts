@@ -313,70 +313,21 @@ export class ChatSessionService {
     }
 
     // Get records
-    const chatSessions = await
-            this.chatSessionModel.filter(
-              prisma,
-              status,
-              userProfileId)
+    var chatSessions = await
+          this.chatSessionModel.filter(
+            prisma,
+            status,
+            userProfileId)
 
-    // Check if any chatSessions have a null/blank name, if not return
-    var hasNullOrBlankName = false
+      // Prep chat sessions for return
+      chatSessions = await
+        this.prepChatSessionsForReturn(
+          prisma,
+          chatSessions)
 
-    for (const chatSession of chatSessions) {
-      if (chatSession.name == null ||
-          chatSession.name.trim() === '') {
-
-        hasNullOrBlankName = true
-        break
-      }
-    }
-
-    if (hasNullOrBlankName === false) {
+      // Return
       return chatSessions
     }
-
-    // Get first message as name, if name not specified
-    var updatedChatSessions: any[] = []
-
-    for (var chatSession of chatSessions) {
-
-      if (chatSession.name == null ||
-          chatSession.name.trim() === '') {
-
-        const chatMessage = await
-                this.chatMessageModel.getFirst(
-                  prisma,
-                  chatSession.id)
-
-        // Get message text
-        var firstMessageText: string | undefined
-
-        for (const message of JSON.parse(chatMessage.message)) {
-
-          if (message.type === '') {
-            firstMessageText = message.text
-            break
-          }
-        }
-
-        // Update chatMessage.name
-        chatSession = await
-          this.chatSessionModel.update(
-            prisma,
-            chatSession.id,
-            undefined,  // chatSettingsId
-            undefined,  // status
-            firstMessageText,
-            undefined)  // createdById
-      }
-
-      // Add the chatSession, which may have been updated
-      updatedChatSessions.push(chatSession)
-    }
-
-    // Return
-    return updatedChatSessions
-  }
 
   async getOrCreateChatSession(
           prisma: any,
@@ -454,6 +405,69 @@ export class ChatSessionService {
       status: true,
       chatSession: chatSession
     }
+  }
+
+  async prepChatSessionsForReturn(
+          prisma: any,
+          chatSessions: any[]) {
+
+    // Check if any chatSessions have a null/blank name, if not return
+    var hasNullOrBlankName = false
+
+    for (const chatSession of chatSessions) {
+      if (chatSession.name == null ||
+          chatSession.name.trim() === '') {
+
+        hasNullOrBlankName = true
+        break
+      }
+    }
+
+    if (hasNullOrBlankName === false) {
+      return chatSessions
+    }
+
+    // Get first message as name, if name not specified
+    var updatedChatSessions: any[] = []
+
+    for (var chatSession of chatSessions) {
+
+      if (chatSession.name == null ||
+          chatSession.name.trim() === '') {
+
+        const chatMessage = await
+                this.chatMessageModel.getFirst(
+                  prisma,
+                  chatSession.id)
+
+        // Get message text
+        var firstMessageText: string | undefined
+
+        for (const message of JSON.parse(chatMessage.message)) {
+
+          if (message.type === '') {
+            firstMessageText = message.text
+            break
+          }
+        }
+
+        // Update chatMessage.name
+        chatSession = await
+          this.chatSessionModel.update(
+            prisma,
+            chatSession.id,
+            undefined,  // chatSettingsId
+            undefined,  // status
+            firstMessageText,
+            undefined)  // createdById
+      }
+
+      // Add the chatSession, which may have been updated
+      updatedChatSessions.push(chatSession)
+    }
+
+    // Return
+    return updatedChatSessions
   }
 
   async runSessionTurn(

@@ -1,3 +1,4 @@
+const blake2b = require('blake2b')
 import { jsonrepair } from 'jsonrepair'
 import { CustomError } from '@/serene-core-server/types/errors'
 import { sleepSeconds } from '@/serene-core-server/services/process/sleep'
@@ -99,7 +100,8 @@ export class ChatService {
           agent: any,
           messagesWithRoles: any[],
           systemPrompt: string | undefined = undefined,
-          jsonMode: boolean = false) {
+          jsonMode: boolean = false,
+          tryGetFromCache: boolean = false) {
 
     // Debug
     const fnName = `${this.clName}.llmRequest()`
@@ -118,12 +120,14 @@ export class ChatService {
           agent,
           messagesWithRoles,
           systemPrompt,
-          jsonMode)
+          jsonMode,
+          tryGetFromCache)
 
       if (chatCompletionResults.isRateLimited === false) {
 
         // Try to parse JSON
-        if (jsonMode === true) {
+        if (jsonMode === true &&
+            chatCompletionResults.json == null) {
 
           const jsonExtracts =
                   this.textParsingService.getJsonExtractExcludingQuotesWithBraces(
@@ -163,23 +167,11 @@ export class ChatService {
                   agent: any,
                   messagesWithRoles: any[],
                   systemPrompt: string | undefined = undefined,
-                  jsonMode: boolean = false) {
+                  jsonMode: boolean = false,
+                  tryGetFromCache: boolean = false) {
 
     // Debug
     const fnName = `${this.clName}.prepAndSendLlmRequest()`
-
-    // Get the messages as a lowercase string
-    const lowerMessagesStr = JSON.stringify(messagesWithRoles).toLowerCase()
-
-    /* Try the cache
-    const llmCache = await
-            this.llmCacheModel.getByKey(
-              prisma,
-              lowerMessagesStr)
-
-    if (llmCache != null) {
-      return llmCache.value.split('\n')
-    } */
 
     // If llmTechId isn't specified, get the default
     var tech: any
@@ -198,6 +190,42 @@ export class ChatService {
 
     if (llmTechId == null) {
       throw new CustomError(`${fnName}: no LLM default LLM tech available`)
+    }
+
+    // Get the cache key if required
+    var cacheKey: string | undefined
+
+    if (tryGetFromCache === true) {
+
+      const cacheKeyOutput = new Uint8Array(64)
+      const cacheKeyInput = Buffer.from(JSON.stringify(messagesWithRoles).toLowerCase())
+
+      cacheKey = blake2b(cacheKeyOutput.length).update(cacheKeyInput).digest('hex')
+    }
+
+    // Try the cache
+    if (tryGetFromCache === true &&
+        cacheKey != null) {
+
+      const llmCache = await
+              this.llmCacheModel.getByTechIdAndKey(
+                prisma,
+                llmTechId,
+                cacheKey)
+
+      if (llmCache != null) {
+        return {
+          status: true,
+          isRateLimited: false,
+          waitSeconds: 0,
+          llmTechId: llmTechId,
+          fromCache: true,
+          cacheKey: cacheKey,
+          message: llmCache.stringValue,
+          messages: llmCache.stringValues,
+          json: llmCache.jsonValue
+        }
+      }
     }
 
     // Get userProfileId if agent specified
@@ -226,7 +254,12 @@ export class ChatService {
         return {
           isRateLimited: rateLimitedData.isRateLimited,
           waitSeconds: rateLimitedData.waitSeconds,
-          messages: undefined
+          message: undefined,
+          messages: undefined,
+          json: undefined,
+          llmTechId: llmTechId,
+          fromCache: false,
+          cacheKey: cacheKey,
         }
       }
 
@@ -275,7 +308,7 @@ export class ChatService {
       this.llmCacheModel.upsert(
         prisma,
         undefined,  // id
-        lowerMessagesStr,
+        cacheKey,
         messageText) */
 
       // Convert to generic message format
@@ -291,13 +324,16 @@ export class ChatService {
       status: results.status,
       isRateLimited: false,
       waitSeconds: 0,
+      llmTechId: llmTechId,
       message: results.message,
       messages: results.messages,
+      json: jsonEmpty,  // Set by caller, llmRequest()
       model: results.model,
       actualTech: results.actualTech,
       inputTokens: results.inputTokens,
       outputTokens: results.outputTokens,
-      json: jsonEmpty  // Set by caller, llmRequest()
+      fromCache: false,
+      cacheKey: cacheKey
     }
   }
 }

@@ -6,8 +6,11 @@ export class LlmCacheModel {
   // Code
   async create(
           prisma: any,
+          techId: string,
           key: string,
-          value: string) {
+          stringValue: string | null,
+          stringValues: string[],
+          jsonValue: any | null) {
 
     // Debug
     const fnName = `${this.clName}.create()`
@@ -16,8 +19,11 @@ export class LlmCacheModel {
     try {
       return await prisma.llmCache.create({
         data: {
+          techId: techId,
           key: key,
-          value: value
+          stringValue: stringValue,
+          stringValues: stringValues,
+          jsonValue: jsonValue
         }
       })
     } catch(error) {
@@ -52,14 +58,15 @@ export class LlmCacheModel {
     return llmCache
   }
 
-  async getByKey(
+  async getByTechIdAndKey(
           prisma: any,
+          techId: string,
           key: string) {
 
     // Debug
-    const fnName = `${this.clName}.getByKey()`
+    const fnName = `${this.clName}.getByTechIdAndKey()`
 
-    console.log(`${fnName}: starting..`)
+    // console.log(`${fnName}: starting..`)
 
     // Query
     var llmCache: any = null
@@ -67,6 +74,7 @@ export class LlmCacheModel {
     try {
       llmCache = await prisma.llmCache.findFirst({
         where: {
+          techId: techId,
           key: key
         }
       })
@@ -78,7 +86,7 @@ export class LlmCacheModel {
     }
 
     // Return
-    console.log(`${fnName}: returning..`)
+    // console.log(`${fnName}: returning..`)
 
     return llmCache
   }
@@ -86,8 +94,11 @@ export class LlmCacheModel {
   async update(
           prisma: any,
           id: string,
+          techId: string | undefined,
           key: string,
-          value: string) {
+          stringValue: string | null | undefined,
+          stringValues: string[] | undefined,
+          jsonValue: any) {
 
     // Debug
     const fnName = `${this.clName}.update()`
@@ -96,8 +107,11 @@ export class LlmCacheModel {
     try {
       return await prisma.llmCache.update({
         data: {
+          techId: techId,
           key: key,
-          value: value
+          stringValue: stringValue,
+          stringValues: stringValues,
+          jsonValue: jsonValue
         },
         where: {
           id: id
@@ -111,18 +125,24 @@ export class LlmCacheModel {
 
   async upsert(prisma: any,
                id: string | undefined,
+               techId: string | undefined,
                key: string,
-               value: string) {
+               stringValue: string | null | undefined,
+               stringValues: string[] | undefined,
+               jsonValue: any) {
 
     // Debug
     const fnName = `${this.clName}.upsert()`
 
     // Try to get by key if id not specified
-    if (id == null) {
+    if (id == null &&
+        techId != null &&
+        key != null) {
 
       const llmCache = await
-              this.getByKey(
+              this.getByTechIdAndKey(
                 prisma,
+                techId,
                 key)
 
       if (llmCache != null) {
@@ -136,11 +156,35 @@ export class LlmCacheModel {
       // Create
       // console.log(`${fnName}: create..`)
 
+      // Validate for create (mainly for type validation of the create call)
+      if (techId == null) {
+        console.error(`${fnName}: id is null and techId is null`)
+        throw 'Prisma error'
+      }
+
+      if (stringValue === undefined) {
+        console.error(`${fnName}: id is null and stringValue is undefined`)
+        throw 'Prisma error'
+      }
+
+      if (stringValues === undefined) {
+        console.error(`${fnName}: id is null and stringValues is undefined`)
+        throw 'Prisma error'
+      }
+
+      if (jsonValue === undefined) {
+        console.error(`${fnName}: id is null and jsonValue is undefined`)
+        throw 'Prisma error'
+      }
+
       return await
                this.create(
                  prisma,
+                 techId,
                  key,
-                 value)
+                 stringValue,
+                 stringValues,
+                 jsonValue)
     } else {
 
       // Update
@@ -150,8 +194,11 @@ export class LlmCacheModel {
                this.update(
                  prisma,
                  id,
+                 techId,
                  key,
-                 value)
+                 stringValue,
+                 stringValues,
+                 jsonValue)
     }
   }
 }

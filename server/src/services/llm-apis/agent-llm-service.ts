@@ -23,7 +23,8 @@ export class AgentLlmService {
           agentName: string,
           agentRole: string,
           prompt: string,
-          jsonMode: boolean) {
+          jsonMode: boolean,
+          tryGetFromCache: boolean = false) {
 
     // Single-shot agent LLM request
 
@@ -49,7 +50,7 @@ export class AgentLlmService {
     const tech = chatSettingsResults.tech
 
     // Build the messages
-    const messagesWithRolesFullResults = await
+    const inputMessagesWithRoles = await
             this.llmUtilsService.buildMessagesWithRolesForSinglePrompt(
               prisma,
               undefined,  // tech
@@ -63,9 +64,10 @@ export class AgentLlmService {
               tech.id,    // llmTechId
               undefined,  // userProfileId
               agent,
-              messagesWithRolesFullResults,
+              inputMessagesWithRoles,
               undefined,  // systemPrompt
-              jsonMode)
+              jsonMode,
+              tryGetFromCache)
 
     // Validate
     if (chatCompletionResults.messages == null) {
@@ -79,9 +81,12 @@ export class AgentLlmService {
     }
 
     return {
+      llmTechId: chatCompletionResults.llmTechId,
+      cacheKey: chatCompletionResults.cacheKey,
       message: chatCompletionResults.message,
       messages: chatCompletionResults.messages,
-      json: chatCompletionResults.json
+      json: chatCompletionResults.json,
+      fromCache: chatCompletionResults.fromCache
     }
   }
 }

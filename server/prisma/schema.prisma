@@ -145,6 +145,7 @@ model Tech {
   provides                     String
 
   ofChatSettings               ChatSettings[]
+  ofLlmCaches                  LlmCache[]
   ofRateLimitedApis            RateLimitedApi[]
 
   @@map("tech")
@@ -261,9 +262,14 @@ model CachedEmbedding {
 
 model LlmCache {
   id                           String               @id @default(cuid())
+  techId                       String?              @map("tech_id")
+  tech                         Tech?                @relation(fields: [techId], references: [id])
   key                          String               @unique
-  value                        String
+  stringValue                  String?              @map("string_value")
+  stringValues                 String[]             @map("string_values")
+  jsonValue                    Json?
 
+  @@unique([key, techId])
   @@map("llm_cache")
   @@schema("public")
 }
