@@ -190,7 +190,7 @@ export class UsersService {
             prisma,
             signedInUser.id)
 
-    console.log(`signedInUserProfile: ${signedInUserProfile}`)
+    // console.log(`signedInUserProfile: ` + JSON.stringify(signedInUserProfile))
 
     if (signedInUserProfile == null) {
 
