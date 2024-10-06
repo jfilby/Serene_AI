@@ -181,6 +181,10 @@ export class TextParsingService {
     // Split into multiple lines
     const lines = input.split('\n')
 
+    // Debug
+    // console.log(`${fnName}: input: ${input}`)
+    // console.log(`${fnName}: lines: ${lines.length}`)
+
     // Check for no lines
     if (lines.length === 0) {
       return {
