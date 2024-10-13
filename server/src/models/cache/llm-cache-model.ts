@@ -68,6 +68,17 @@ export class LlmCacheModel {
 
     // console.log(`${fnName}: starting..`)
 
+    // Validate
+    if (techId == null) {
+      console.error(`${fnName}: id is null and techId is null`)
+      throw 'Prisma error'
+    }
+
+    if (key == null) {
+      console.error(`${fnName}: id is null and key is null`)
+      throw 'Prisma error'
+    }
+
     // Query
     var llmCache: any = null
 

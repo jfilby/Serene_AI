@@ -88,6 +88,12 @@ export class ChatMessageModel {
     // Debug
     const fnName = `${this.clName}.getByChatSessionId()`
 
+    // Validate
+    if (chatSessionId == null) {
+      console.error(`${fnName}: id is null and chatSessionId is null`)
+      throw 'Prisma error'
+    }
+
     // Query records
     try {
       return await prisma.chatMessage.findMany({

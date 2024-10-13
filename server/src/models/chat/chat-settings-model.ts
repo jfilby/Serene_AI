@@ -92,6 +92,12 @@ export class ChatSettingsModel {
     // Debug
     const fnName = `${this.clName}.getByName()`
 
+    // Validate
+    if (name == null) {
+      console.error(`${fnName}: id is null and name is null`)
+      throw 'Prisma error'
+    }
+
     // Query record
     var chatSettings: any = undefined
 
