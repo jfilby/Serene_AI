@@ -146,6 +146,37 @@ export class ChatSessionService {
     return chatSession
   }
 
+  async getAgentInfo(
+          prisma: any,
+          chatSessionId: string) {
+
+    // Get the chatParticipant record of the bot
+    const toChatParticipant = await
+            this.chatParticipantModel.getByChatSessionIdAndOwnerType(
+              prisma,
+              chatSessionId,
+              UserTypes.botRoleOwnerType)
+
+    // Get the userProfileId of the bot
+    const toUserProfile = await
+            this.usersService.getById(
+              prisma,
+              toChatParticipant.userProfileId)
+
+    // Get agent name
+    const agent = await
+            this.agentModel.getByUserProfileId(
+              prisma,
+              toUserProfile.id)
+
+    // Return
+    return {
+      toChatParticipant: toChatParticipant,
+      toUserProfile: toUserProfile,
+      agent: agent
+    }
+  }
+
   async getChatMessages(
           prisma: any,
           chatSessionId: string,
@@ -494,24 +525,10 @@ export class ChatSessionService {
     // Debug
     // console.log(`${fnName}: chatSession: ` + JSON.stringify(chatSession))
 
-    // Get the chatParticipant record of the bot
-    const toChatParticipant = await
-            this.chatParticipantModel.getByChatSessionIdAndOwnerType(
+    const agentInfo = await
+            this.getAgentInfo(
               prisma,
-              chatSessionId,
-              UserTypes.botRoleOwnerType)
-
-    // Get the userProfileId of the bot
-    const toUserProfile = await
-            this.usersService.getById(
-              prisma,
-              toChatParticipant.userProfileId)
-
-    // Get agent name
-    const agent = await
-            this.agentModel.getByUserProfileId(
-              prisma,
-              toUserProfile.id)
+              chatSessionId)
 
     // Get chat messages
     const chatMessages = await
@@ -532,7 +549,7 @@ export class ChatSessionService {
               chatMessages,
               fromContents,
               [fromChatParticipantId],
-              [toChatParticipant.id])
+              [agentInfo.toChatParticipant.id])
 
     // Call Gemini
     const chatCompletionResults = await
@@ -540,7 +557,7 @@ export class ChatSessionService {
               prisma,
               chatSession.chatSettings.llmTechId,
               fromUserProfileId,
-              agent,
+              agentInfo.agent,
               messagesWithRoles,
               chatSession.chatSettings.prompt,
               false)  // jsonMode
@@ -556,9 +573,9 @@ export class ChatSessionService {
       chatSession: chatSession,
       fromChatParticipantId: fromChatParticipantId,
       fromContents: fromContents,
-      toChatParticipantId: toChatParticipant.id,
-      toUserProfileId: toUserProfile.id,
-      toName: agent.name,
+      toChatParticipantId: agentInfo.toChatParticipant.id,
+      toUserProfileId: agentInfo.toUserProfile.id,
+      toName: agentInfo.agent.name,
       toContents: chatCompletionResults.messages
     }
   }
