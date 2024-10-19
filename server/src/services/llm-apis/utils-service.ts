@@ -71,6 +71,7 @@ export class LlmUtilsService {
           prisma: any,
           tech: any,
           userProfileId: string,
+          jsonMode: boolean,
           prompt: string) {
 
     // Debug
@@ -84,6 +85,7 @@ export class LlmUtilsService {
                 prisma,
                 undefined,  // baseChatSettingsId
                 userProfileId,
+                jsonMode,
                 undefined,  // no need to store the prompt in chatSettings
                 true)       // getTech
 
@@ -118,6 +120,7 @@ export class LlmUtilsService {
           prisma: any,
           baseChatSettingsId: string | undefined,
           userProfileId: string,
+          jsonMode: boolean | undefined,
           prompt: string | undefined,
           getTech: boolean = false) {
 
@@ -146,7 +149,8 @@ export class LlmUtilsService {
     // If a prompt is specified, then create a ChatSettings record
     var chatSettings = baseChatSettings
 
-    if (prompt != null) {
+    if (jsonMode != null ||
+        prompt != null) {
 
       // Get base ChatSettings record
       if (baseChatSettingsId != null &&
@@ -172,7 +176,23 @@ export class LlmUtilsService {
 
     // Create new ChatSettings record
     if (baseChatSettings != null &&
-        prompt != null) {
+        (jsonMode != null ||
+         prompt != null)) {
+
+      var thisJsonMode = jsonMode
+      var thisPrompt = prompt
+
+      if (baseChatSettings != null &&
+          jsonMode == null) {
+
+        thisJsonMode = baseChatSettings.jsonMode
+      }
+
+      if (baseChatSettings != null &&
+          prompt == null) {
+
+        thisPrompt = baseChatSettings.prompt
+      }
 
       chatSettings = await
         this.chatSettingsModel.create(
@@ -183,6 +203,7 @@ export class LlmUtilsService {
           undefined,  // name
           tech.id,    // baseChatSettings.llmTechId,
           baseChatSettings.agentId,
+          baseChatSettings.jsonMode,
           prompt,
           userProfileId)
     }

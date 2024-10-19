@@ -234,6 +234,7 @@ model ChatSettings {
   llmTech                      Tech?                @relation(fields: [llmTechId], references: [id])
   agentId                      String               @map("agent_id")
   agent                        Agent                @relation(fields: [agentId], references: [id])
+  jsonMode                     Boolean              @map("json_mode")
   prompt                       String?
   agentRole                    String?              @map("agent_role")
   createdById                  String               @map("created_by_id")

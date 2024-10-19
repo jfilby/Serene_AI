@@ -39,6 +39,7 @@ export class ChatSessionService {
           prisma: any,
           baseChatSettingsId: string | undefined,
           userProfileId: string,
+          jsonMode: boolean | undefined,
           prompt: string | undefined,
           name: string | undefined) {
 
@@ -52,6 +53,7 @@ export class ChatSessionService {
               prisma,
               baseChatSettingsId,
               userProfileId,
+              jsonMode,
               prompt)
 
     // Verify that chatSettingsId is set
@@ -365,6 +367,7 @@ export class ChatSessionService {
           chatSessionId: string,
           baseChatSettingsId: string | undefined,
           userProfileId: string,
+          jsonMode: boolean | undefined,
           prompt: string | undefined,
           name: string | undefined,
           createIfNotExists: boolean = true) {
@@ -393,6 +396,7 @@ export class ChatSessionService {
           prisma,
           baseChatSettingsId,
           userProfileId,
+          jsonMode,
           prompt,
           name)
 
@@ -560,7 +564,7 @@ export class ChatSessionService {
               agentInfo.agent,
               messagesWithRoles,
               chatSession.chatSettings.prompt,
-              false)  // jsonMode
+              chatSession.chatSettings.jsonMode)
 
     // Debug
     console.log(`${fnName}: chatCompletionResults: ` +
@@ -576,7 +580,8 @@ export class ChatSessionService {
       toChatParticipantId: agentInfo.toChatParticipant.id,
       toUserProfileId: agentInfo.toUserProfile.id,
       toName: agentInfo.agent.name,
-      toContents: chatCompletionResults.messages
+      toContents: chatCompletionResults.messages,
+      toJson: chatCompletionResults.json
     }
   }
 

@@ -11,6 +11,7 @@ export class ChatSettingsModel {
                name: string | undefined,
                llmTechId: string,
                agentId: string,
+               jsonMode: boolean,
                prompt: string | undefined,
                createdById: string) {
 
@@ -29,6 +30,7 @@ export class ChatSettingsModel {
           name: name,
           llmTechId: llmTechId,
           agentId: agentId,
+          jsonMode: jsonMode,
           prompt: prompt,
           createdById: createdById
         }
@@ -167,6 +169,7 @@ export class ChatSettingsModel {
                name: string | undefined,
                llmTechId: string | undefined,
                agentId: string | undefined,
+               jsonMode: boolean | undefined,
                prompt: string | undefined,
                createdById: string | undefined) {
 
@@ -183,6 +186,7 @@ export class ChatSettingsModel {
           name: name,
           llmTechId: llmTechId,
           agentId: agentId,
+          jsonMode: jsonMode,
           prompt: prompt,
           createdById: createdById
         },
@@ -204,6 +208,7 @@ export class ChatSettingsModel {
                name: string | undefined,
                llmTechId: string | undefined,
                agentId: string | undefined,
+               jsonMode: boolean | undefined,
                prompt: string | undefined,
                createdById: string | undefined) {
 
@@ -250,6 +255,11 @@ export class ChatSettingsModel {
         throw 'Prisma error'
       }
 
+      if (jsonMode == null) {
+        console.error(`${fnName}: id is null and jsonMode is null`)
+        throw 'Prisma error'
+      }
+
       if (createdById == null) {
         console.error(`${fnName}: id is null and createdById is null`)
         throw 'Prisma error'
@@ -263,6 +273,7 @@ export class ChatSettingsModel {
                      name,
                      llmTechId,
                      agentId,
+                     jsonMode,
                      prompt,
                      createdById)
     } else {
@@ -276,6 +287,7 @@ export class ChatSettingsModel {
                      name,
                      llmTechId,
                      agentId,
+                     jsonMode,
                      prompt,
                      createdById)
     }

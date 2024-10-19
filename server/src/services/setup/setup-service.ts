@@ -57,9 +57,9 @@ export class SereneAiSetup {
 
     await this.rateLimitedApiModel.upsert(
             prisma,
-            undefined,  // id
+            undefined,    // id
             geminiV1pt5FlashTech.id,
-            15)
+            15 - 1)       // -1 for a buffer (found to be needed in actual runs)
 
     // ChatGPT 4o
     const chatGpt4oTech = await

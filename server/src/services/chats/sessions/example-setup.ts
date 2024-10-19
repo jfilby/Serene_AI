@@ -45,6 +45,7 @@ export class ExampleChatSessionSetupService {
               'Test chat setting',  // name
               tech.id,
               agent.id,
+              false,                // jsonMode
               'Talk about anything tech related',
               userProfileId)
   }

@@ -173,6 +173,8 @@ export class ChatService {
     // Debug
     const fnName = `${this.clName}.prepAndSendLlmRequest()`
 
+    // console.log(`${fnName}: starting with jsonMode: ${jsonMode}`)
+
     // If llmTechId isn't specified, get the default
     var tech: any
 

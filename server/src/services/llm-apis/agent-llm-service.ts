@@ -44,6 +44,7 @@ export class AgentLlmService {
               prisma,
               undefined,  // baseChatSettingsId
               agent.userProfileId,
+              jsonMode,
               undefined,  // prompt
               true)       // getTech
 
@@ -55,6 +56,7 @@ export class AgentLlmService {
               prisma,
               undefined,  // tech
               agent.userProfileId,
+              jsonMode,
               prompt)
 
     // Make the LLM request
