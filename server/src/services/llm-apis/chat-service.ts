@@ -108,8 +108,10 @@ export class ChatService {
 
     // Loop until not rate-limited
     var chatCompletionResults
+    var tries = 0
+    const maxTries = 5
 
-    while (true) {
+    while (tries < maxTries) {
 
       // Call Gemini to get full results
       chatCompletionResults = await
@@ -129,22 +131,32 @@ export class ChatService {
         if (jsonMode === true &&
             chatCompletionResults.json == null) {
 
-          const jsonExtracts =
-                  this.textParsingService.getJsonExtractExcludingQuotesWithBraces(
-                    chatCompletionResults.messages[0].text)
+          // Log the chatCompletionResults
+          console.log(
+            `${fnName}: jsonMode === true, but json not provided.\n` +
+            `ChatCompletionResults: ` +
+            JSON.stringify(chatCompletionResults))
 
-          var jsonStr: string
+          // Manually parse JSON
+          var jsonText = chatCompletionResults.messages[0].text
 
-          try {
-            jsonStr =
-              jsonrepair(
-                jsonExtracts.extracts.join('\n').trim())
-          } catch(e) {
-            console.log(`${fnName}: jsonRepair failed, retrying..`)
-            continue
+          if (jsonText !== '[' && jsonText !== '{') {
+
+            const jsonExtracts =
+                    this.textParsingService.getJsonExtractExcludingQuotesWithBraces(
+                      jsonText)
+
+            try {
+              jsonText =
+                jsonrepair(
+                  jsonExtracts.extracts.join('\n').trim())
+            } catch(e) {
+              console.log(`${fnName}: jsonRepair failed, retrying..`)
+              continue
+            }
           }
 
-          chatCompletionResults.json = JSON.parse(jsonStr)
+          chatCompletionResults.json = JSON.parse(jsonText)
         }
 
         // Done
@@ -154,6 +166,12 @@ export class ChatService {
           await sleepSeconds(chatCompletionResults.waitSeconds)
         }
       }
+    }
+
+    // Failed?
+    if (tries === maxTries) {
+
+      throw new CustomError(`${fnName}: failed after ${maxTries} tries`)
     }
 
     return chatCompletionResults
