@@ -29,6 +29,7 @@ export async function getOrCreateChatSession(
           args.chatSessionId,
           undefined,  // baseChatSettingsId
           args.userProfileId,
+          false,      // jsonMode
           args.prompt,
           undefined)  // name
     } catch (error) {
