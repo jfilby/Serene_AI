@@ -107,7 +107,10 @@ export class ChatService {
     const fnName = `${this.clName}.llmRequest()`
 
     // Loop until not rate-limited
-    var chatCompletionResults
+    var chatCompletionResults: any = {
+      message: `${fnName}: Not initialized`
+    }
+
     var tries = 0
     const maxTries = 5
 
@@ -125,7 +128,11 @@ export class ChatService {
           jsonMode,
           tryGetFromCache)
 
+      // If not rate-limited
       if (chatCompletionResults.isRateLimited === false) {
+
+        // Inc tries
+        tries += 1
 
         // Try to parse JSON
         if (jsonMode === true &&
