@@ -138,11 +138,13 @@ export class ChatService {
         if (jsonMode === true &&
             chatCompletionResults.json == null) {
 
-          // Log the chatCompletionResults
-          console.log(
-            `${fnName}: jsonMode === true, but json not provided.\n` +
-            `ChatCompletionResults: ` +
-            JSON.stringify(chatCompletionResults))
+          // Note: some LLMs (e.g. Google Gemini) return the JSON as text, even
+          // for JSON mode.
+
+          // Debug
+          // console.log(
+          //   `${fnName}: jsonMode === true, chatCompletionResults: ` +
+          //   JSON.stringify(chatCompletionResults))
 
           // Manually parse JSON
           var jsonText = chatCompletionResults.messages[0].text
