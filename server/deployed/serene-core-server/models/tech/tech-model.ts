@@ -93,6 +93,12 @@ export class TechModel {
 
     // console.log(`${fnName}: variantName: ${variantName}`)
 
+    // Validate
+    if (variantName == null) {
+      console.error(`${fnName}: id is null and variantName is null`)
+      throw 'Prisma error'
+    }
+
     // Query
     var tech: any = null
 

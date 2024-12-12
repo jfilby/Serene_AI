@@ -79,8 +79,13 @@ export class MailingListSubscriberModel {
     const fnName = `${this.clName}.getByMailingListIdAndEmail()`
 
     // Validate
-    if (name == null) {
-      console.error(`${fnName}: name == null`)
+    if (mailingListId == null) {
+      console.error(`${fnName}: mailingListId == null`)
+      throw 'Validation error'
+    }
+
+    if (email == null) {
+      console.error(`${fnName}: email == null`)
       throw 'Validation error'
     }
 

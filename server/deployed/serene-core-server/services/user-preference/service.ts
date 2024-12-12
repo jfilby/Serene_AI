@@ -1,57 +1,47 @@
+import { CustomError } from '../../types/errors'
+import { UserPreferenceModel } from '../../models/users/user-preference-model'
+
 export class UserPreferenceService {
+
+  // Consts
+  clName = 'UserPreferenceService'
 
   zipCountries = [ 'Philippines',
                    'United States' ]
 
+  // Models
+  userPreferenceModel = new UserPreferenceModel()
+
+  // Code
   async createIfNotExists(
           prisma: any,
           userProfileId: string,
           category: string,
           key: string,
-          value: string | null | undefined,
-          values: string[] | null | undefined) {
+          value: string | null,
+          values: string[] | null) {
 
     // console.log('createIfNotExists()')
 
     // Find if exists
-    var userPreference: any = null
-
-    try {
-      userPreference = await prisma.userPreference.findFirst({
-        where: {
-          userProfileId: userProfileId,
-          category: category,
-          key: key
-        }
-      })
-    } catch(NotFound) {}
+    const userPreference = await
+            this.userPreferenceModel.getByUniqueKey(
+              prisma,
+              userProfileId,
+              key)
 
     if (userPreference != null) {
       return
     }
 
-    // Values that could be null must be undefined (Prisma rule)
-    var createValue = value
-    var createValues = values
-
-    if (createValue == null) {
-      createValue = undefined
-    }
-
-    if (createValues == null) {
-      createValues = undefined
-    }
-
     // Create (doesn't exist yet)
-    await prisma.userPreference.create({
-      data: {
-        userProfileId: userProfileId,
-        category: category,
-        key: key,
-        value: createValue,
-        values: createValues
-      }
-    })
+    await this.userPreferenceModel.create(
+            prisma,
+            userProfileId,
+            category,
+            key,
+            value,
+            values)
   }
 
   async delete(
@@ -60,13 +50,31 @@ export class UserPreferenceService {
           category: string,
           key: string) {
 
-    await prisma.userPreference.delete({
-      where: {
-        userProfileId: userProfileId,
-        category: category,
-        key: key
-      }
-    })
+    // Debug
+    const fnName = `${this.clName}.delete()`
+
+    // Try to get the record
+    const userPreference = await
+            this.userPreferenceModel.getByUniqueKey(
+              prisma,
+              userProfileId,
+              key)
+
+    if (userPreference == null) {
+      return
+    }
+
+    // Validate category is as expected
+    if (category != null &&
+        userPreference.category !== category) {
+
+      throw new CustomError(`${fnName}: userPreference.category !== category`)
+    }
+
+    // Delete the record
+    await this.userPreferenceModel.deleteById(
+            prisma,
+            userPreference.id)
   }
 
   async getUserPreferences(
@@ -79,87 +87,23 @@ export class UserPreferenceService {
     var userPreferences: any[] = []
 
     if (keys != null) {
-      try {
-        userPreferences = await prisma.userPreference.findMany({
-          where: {
-            userProfileId: userProfileId,
-            category: category,
-            key: {
-              in: keys
-            }
-          }
-        })
-      } catch(NotFound) {}
+      
+      userPreferences = await
+        this.userPreferenceModel.filterManyKeys(
+          prisma,
+          userProfileId,
+          keys)
     } else {
-      try {
-        userPreferences = await prisma.userPreference.findMany({
-          where: {
-            userProfileId: userProfileId,
-            category: category
-          }
-        })
-      } catch(NotFound) {}
+
+      userPreferences = await
+        this.userPreferenceModel.filter(
+          prisma,
+          userProfileId,
+          category,
+          undefined)  // key
     }
 
     // Return
     return userPreferences
   }
-
-  async upsert(
-          prisma: any,
-          userProfileId: string,
-          category: string,
-          key: string,
-          value: string | null,
-          values: string[] | null) {
-
-    var valueData: any = null
-    var valuesData: any = []
-
-    if (value != null) {
-      valueData = value
-    }
-
-    if (values != null) {
-      valuesData = values
-    }
-
-    // Get existing record if it exists
-    var userPreference: any = null
-
-    try {
-      userPreference = await prisma.userPreference.findFirst({
-        where: {
-          userProfileId: userProfileId,
-          category: category,
-          key: key
-        }
-      })
-    } catch (NotFound) { }
-
-    if (userPreference == null) {
-      await prisma.userPreference.create({
-        data: {
-          userProfileId: userProfileId,
-          category: category,
-          key: key,
-          value: valueData,
-          values: valuesData
-        }
-      })
-    } else {
-      await prisma.userPreference.update({
-        data: {
-          value: valueData,
-          values: valuesData
-        },
-        where: {
-          id: userPreference.id
-        }
-      })
-    }
-
-    return true
-  }
-
 }

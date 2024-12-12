@@ -61,6 +61,12 @@ export class RateLimitedApiModel {
     // Debug
     const fnName = `${this.clName}.getByTechId()`
 
+    // Validate
+    if (techId == null) {
+      console.error(`${fnName}: id is null and techId is null`)
+      throw 'Prisma error'
+    }
+
     // Query record
     var rateLimitedApi: any = undefined
 

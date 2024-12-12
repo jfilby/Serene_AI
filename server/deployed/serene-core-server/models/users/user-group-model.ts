@@ -6,6 +6,7 @@ export class UserGroupModel {
   // Code
   async create(
           prisma: any,
+          ownerUserProfileId: string,
           name: string) {
 
     // Debug
@@ -15,6 +16,7 @@ export class UserGroupModel {
     try {
       return await prisma.userGroup.create({
         data: {
+          ownerUserProfileId: ownerUserProfileId,
           name: name
         }
       })
@@ -51,12 +53,19 @@ export class UserGroupModel {
     return userGroup
   }
 
-  async getByName(
+  async getByUniqueKey(
           prisma: any,
+          ownerUserProfileId: string,
           name: string) {
 
     // Debug
-    const fnName = `${this.clName}.getByName()`
+    const fnName = `${this.clName}.getByUniqueKey()`
+
+    // Validate
+    if (name == null) {
+      console.error(`${fnName}: id is null and name is null`)
+      throw 'Prisma error'
+    }
 
     // Query
     var userGroup: any = null
@@ -64,6 +73,7 @@ export class UserGroupModel {
     try {
       userGroup = await prisma.userGroup.findFirst({
         where: {
+          ownerUserProfileId: ownerUserProfileId,
           name: name
         }
       })
@@ -81,7 +91,8 @@ export class UserGroupModel {
   async update(
           prisma: any,
           id: string,
-          name: string) {
+          ownerUserProfileId: string | undefined,
+          name: string | undefined) {
 
     // Debug
     const fnName = `${this.clName}.update()`
@@ -90,6 +101,7 @@ export class UserGroupModel {
     try {
       return await prisma.userGroup.update({
         data: {
+          ownerUserProfileId: ownerUserProfileId,
           name: name
         },
         where: {
@@ -103,18 +115,22 @@ export class UserGroupModel {
   }
 
   async upsert(prisma: any,
+               ownerUserProfileId: string | undefined,
                id: string | undefined,
-               name: string) {
+               name: string | undefined) {
 
     // Debug
     const fnName = `${this.clName}.upsert()`
 
     // If id isn't specified, try to get by the unique key
-    if (id == null) {
+    if (id == null &&
+        ownerUserProfileId != null &&
+        name != null) {
 
       const userGroup = await
-              this.getByName(
+              this.getByUniqueKey(
                 prisma,
+                ownerUserProfileId,
                 name)
 
       if (userGroup != null) {
@@ -125,10 +141,22 @@ export class UserGroupModel {
     // Upsert
     if (id == null) {
 
+      // Validate for create (mainly for type validation of the create call)
+      if (ownerUserProfileId == null) {
+        console.error(`${fnName}: id is null and ownerUserProfileId is null`)
+        throw 'Prisma error'
+      }
+
+      if (name == null) {
+        console.error(`${fnName}: id is null and name is null`)
+        throw 'Prisma error'
+      }
+
       // Create
       return await
                this.create(
                  prisma,
+                 ownerUserProfileId,
                  name)
     } else {
 
@@ -137,6 +165,7 @@ export class UserGroupModel {
                this.update(
                  prisma,
                  id,
+                 ownerUserProfileId,
                  name)
     }
   }

@@ -1,4 +1,5 @@
 import { UserModel } from '../../models/users/user-model'
+import { UserPreferenceModel } from '../../models/users/user-preference-model'
 import { UserProfileModel } from '../../models/users/user-profile-model'
 import { countries } from '../locale/countries'
 import { UserPreferenceService } from '../user-preference/service'
@@ -32,6 +33,7 @@ export class ProfileService {
   // Models
   userModel = new UserModel()
   userProfileModel = new UserProfileModel()
+  userPreferenceModel = new UserPreferenceModel()
 
   // Code
   userPreferenceService = new UserPreferenceService()
@@ -110,104 +112,117 @@ export class ProfileService {
     const userPreferenceService: UserPreferenceService = new UserPreferenceService()
 
     // Upsert all records
-    await userPreferenceService.upsert(
+    await this.userPreferenceModel.upsert(
             prisma,
+            undefined,  // id
             userProfileId,
             this.personalDetails,
             this.firstName,
             firstName,
             null)
 
-    await userPreferenceService.upsert(
+    await this.userPreferenceModel.upsert(
             prisma,
+            undefined,  // id
             userProfileId,
             this.personalDetails,
             this.fullName,
             fullName,
             null)
 
-    await userPreferenceService.upsert(
+    await this.userPreferenceModel.upsert(
             prisma,
+            undefined,  // id
             userProfileId,
             this.personalDetails,
             this.countryCode,
             countryCode,
             null)
 
-    /* await userPreferenceService.upsert(
+    /* await this.userPreferenceModel.upsert(
             prisma,
+            undefined,  // id
             userProfileId,
             this.billingAddress,
             this.billingNameAsMyName,
             billingNameAsMyName.toString(),
             null)
 
-    await userPreferenceService.upsert(
+    await this.userPreferenceModel.upsert(
             prisma,
+            undefined,  // id
             userProfileId,
             this.billingAddress,
             this.billingCountryAsMyCountry,
             billingCountryAsMyCountry.toString(),
             null)
 
-    await userPreferenceService.upsert(
+    await this.userPreferenceModel.upsert(
             prisma,
+            undefined,  // id
             userProfileId,
             this.billingAddress,
             this.billingCountryCode,
             billingCountryCode,
             null)
 
-    await userPreferenceService.upsert(
+    await this.userPreferenceModel.upsert(
             prisma,
+            undefined,  // id
             userProfileId,
             this.billingAddress,
             this.billingFirstName,
             billingFirstName,
             null)
 
-    await userPreferenceService.upsert(
+    await this.userPreferenceModel.upsert(
             prisma,
+            undefined,  // id
             userProfileId,
             this.billingAddress,
             this.billingLastName,
             billingLastName,
             null)
 
-    await userPreferenceService.upsert(
+    await this.userPreferenceModel.upsert(
             prisma,
+            undefined,  // id
             userProfileId,
             this.billingAddress,
             this.billingAddressLine1,
             billingAddressLine1,
             null)
 
-    await userPreferenceService.upsert(
+    await this.userPreferenceModel.upsert(
             prisma,
+            undefined,  // id
             userProfileId,
             this.billingAddress,
             this.billingAddressLine2,
             billingAddressLine2,
             null)
 
-    await userPreferenceService.upsert(
+    await this.userPreferenceModel.upsert(
             prisma,
+            undefined,  // id
             userProfileId,
             this.billingAddress,
             this.billingCity,
             billingCity,
             null)
 
-    await userPreferenceService.upsert(
+    await this.userPreferenceModel.upsert(
             prisma,
+            undefined,  // id
             userProfileId,
             this.billingAddress,
             this.billingState,
             billingState,
             null)
 
-    await userPreferenceService.upsert(
+    await this.userPreferenceModel.upsert(
             prisma,
+            undefined,  // id
             userProfileId,
             this.billingAddress,
             this.billingZip,
@@ -355,6 +370,7 @@ export class ProfileService {
     await this.userModel.update(
             prisma,
             userProfile.userId,
+            undefined,  // email
             body.fullName)
 
     // Respond

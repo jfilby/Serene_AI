@@ -7,8 +7,9 @@ export class UserProfileModel {
 
   // Code
   async create(prisma: any,
-               userId: string | undefined,
-               isAdmin: boolean) {
+               userId: string | null,
+               isAdmin: boolean,
+               deletePending: Date | null) {
 
     // Debug
     const fnName = `${this.clName}.create()`
@@ -18,7 +19,8 @@ export class UserProfileModel {
       return await prisma.userProfile.create({
         data: {
           userId: userId,
-          isAdmin: isAdmin
+          isAdmin: isAdmin,
+          deletePending: deletePending
         }
       })
     } catch(error: any) {
@@ -111,6 +113,94 @@ export class UserProfileModel {
     return {
       status: true,
       userProfile: userProfile
+    }
+  }
+
+  async update(prisma: any,
+               id: string,
+               userId: string | null | undefined,
+               isAdmin: boolean | undefined,
+               deletePending: Date | null | undefined) {
+
+    // Debug
+    const fnName = `${this.clName}.update()`
+
+    // Create record
+    try {
+      return await prisma.userProfile.update({
+        data: {
+          userId: userId,
+          isAdmin: isAdmin
+        },
+        where: {
+          id: id
+        }
+      })
+    } catch(error: any) {
+      console.error(`${fnName}: error: ${error}`)
+      throw 'Prisma error'
+    }
+  }
+
+  async upsert(prisma: any,
+               id: string | undefined,
+               userId: string | null | undefined,
+               isAdmin: boolean | undefined,
+               deletePending: Date | null | undefined) {
+
+    // Debug
+    const fnName = `${this.clName}.upsert()`
+
+    // If id isn't specified, but the unique keys are, try to get the record
+    if (id == null &&
+        userId != null) {
+
+      const userProfile = await
+              this.getByUserId(
+                prisma,
+                userId)
+
+      if (userProfile != null) {
+        id = userProfile.id
+      }
+    }
+
+    // Upsert
+    if (id == null) {
+
+      // Validate for create (mainly for type validation of the create call)
+      if (userId === undefined) {
+        console.error(`${fnName}: id is null and userId is undefined`)
+        throw 'Prisma error'
+      }
+
+      if (isAdmin == null) {
+        console.error(`${fnName}: id is null and isAdmin is null`)
+        throw 'Prisma error'
+      }
+
+      if (deletePending === undefined) {
+        console.error(`${fnName}: id is null and deletePending is undefined`)
+        throw 'Prisma error'
+      }
+
+      // Create
+      return await
+               this.create(
+                 prisma,
+                 userId,
+                 isAdmin,
+                 deletePending)
+    } else {
+
+      // Update
+      return await
+               this.update(
+                 prisma,
+                 id,
+                 userId,
+                 isAdmin,
+                 deletePending)
     }
   }
 }

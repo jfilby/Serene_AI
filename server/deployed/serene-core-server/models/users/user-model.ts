@@ -75,7 +75,8 @@ export class UserModel {
 
   async update(prisma: any,
                id: string,
-               name: string) {
+               email: string | undefined,
+               name: string | null | undefined) {
 
     // Debug
     const fnName = `${this.clName}.update()`
@@ -84,6 +85,7 @@ export class UserModel {
     try {
       return await prisma.user.update({
         data: {
+          email: email,
           name: name
         },
         where: {
@@ -93,6 +95,60 @@ export class UserModel {
     } catch(error: any) {
       console.error(`${fnName}: error: ${error}`)
       throw 'Prisma error'
+    }
+  }
+
+  async upsert(prisma: any,
+               id: string | undefined,
+               email: string,
+               name: string | null | undefined) {
+
+    // Debug
+    const fnName = `${this.clName}.upsert()`
+
+    // If id isn't specified, but the unique keys are, try to get the record
+    if (id == null &&
+        email != null) {
+
+      const user = await
+              this.getByEmail(
+                prisma,
+                email)
+
+      if (user != null) {
+        id = user.id
+      }
+    }
+
+    // Upsert
+    if (id == null) {
+
+      // Validate for create (mainly for type validation of the create call)
+      if (email == null) {
+        console.error(`${fnName}: id is null and email is null`)
+        throw 'Prisma error'
+      }
+
+      if (name == undefined) {
+        console.error(`${fnName}: id is null and name is undefined`)
+        throw 'Prisma error'
+      }
+
+      // Create
+      return await
+               this.create(
+                 prisma,
+                 email,
+                 name)
+    } else {
+
+      // Update
+      return await
+               this.update(
+                 prisma,
+                 id,
+                 email,
+                 name)
     }
   }
 }

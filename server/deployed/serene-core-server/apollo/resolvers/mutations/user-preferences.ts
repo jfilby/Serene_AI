@@ -1,7 +1,7 @@
 import { prisma } from '@/db'
-import { UserPreferenceService } from '../../../services/user-preference/service'
+import { UserPreferenceModel } from '../../../models/users/user-preference-model'
 
-const userPreferenceService = new UserPreferenceService()
+const userPreferenceModel = new UserPreferenceModel()
 
 export async function upsertUserPreference(
                         parent: any,
@@ -13,8 +13,9 @@ export async function upsertUserPreference(
 
   try {
     return await
-             userPreferenceService.upsert(
+             userPreferenceModel.upsert(
                prisma,
+               undefined,  // id
                args.userProfileId,
                args.category,
                args.key,
