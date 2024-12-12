@@ -17,10 +17,10 @@ export class GoogleGeminiLlmService {
   genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY)
   okMsg = 'ok'
 
-  apiVersionByModelName = {
+  /* apiVersionByModelName = {
     [AiTechDefs.googleGeminiV1ProModelName]: 'v1',
     [AiTechDefs.googleGeminiV1pt5ProModelName]: 'v1beta'
-  }
+  } */
 
   // Code
   convertGeminiChatCompletionResults(
@@ -116,9 +116,9 @@ export class GoogleGeminiLlmService {
     console.log(`${fnName}: got messagesWithRoles`)
 
     // Get the apiVersion
-    const apiVersion = this.apiVersionByModelName[model]
+    // const apiVersion = this.apiVersionByModelName[model]
 
-    console.log(`${fnName}: apiVersion: ${JSON.stringify(apiVersion)}`)
+    // console.log(`${fnName}: apiVersion: ${JSON.stringify(apiVersion)}`)
 
     // Get the model
     const generativeModel =

@@ -25,11 +25,13 @@ export class AiTechDefs {
   static googleGeminiV1Pro = 'Google Gemini v1 Pro'
   static googleGeminiV1pt5Pro = 'Google Gemini v1.5 Pro'
   static googleGeminiV1pt5Flash = 'Google Gemini v1.5 Flash'
+  static googleGeminiV2Flash = 'Google Gemini v2 Flash'
 
   static genericModel = 'Generic'
   static v1ProVersion = 'v1 Pro'
   static v1pt5ProVersion = 'v1.5 Pro'
   static v1pt5FlashVersion = 'v1.5 Flash'
+  static v2FlashVersion = 'v2 Flash'
 
   // OpenAI
   static chatGpt4o = 'ChatGPT-4o'
@@ -58,6 +60,11 @@ export class AiTechDefs {
       provider: this.googleGeminiProvider,
       variantName: this.googleGeminiV1pt5Flash,
       default: true
+    },
+    {
+      provider: this.googleGeminiProvider,
+      variantName: this.googleGeminiV2Flash,
+      default: true
     }
   ]
 
@@ -65,6 +72,7 @@ export class AiTechDefs {
   static googleGeminiV1ProModelName = 'gemini-pro'
   static googleGeminiV1pt5ProModelName = 'gemini-1.5-pro'
   static googleGeminiV1pt5FlashModelName = 'gemini-1.5-flash'
+  static googleGeminiV2FlashModelName = 'gemini-2.0-flash-exp'
 
   static chatGpt4oModelName = 'GPT-4o'
 
@@ -76,6 +84,7 @@ export class AiTechDefs {
     [AiTechDefs.googleGeminiV1Pro]: this.googleGeminiV1ProModelName,
     [AiTechDefs.googleGeminiV1pt5Pro]: this.googleGeminiV1pt5ProModelName,
     [AiTechDefs.googleGeminiV1pt5Flash]: this.googleGeminiV1pt5FlashModelName,
+    [AiTechDefs.googleGeminiV2Flash]: this.googleGeminiV2FlashModelName,
 
     // OpenAI
     [AiTechDefs.chatGpt4o]: this.chatGpt4oModelName,
@@ -89,6 +98,7 @@ export class AiTechDefs {
     [AiTechDefs.googleGeminiV1Pro]: this.googleGeminiProvider,
     [AiTechDefs.googleGeminiV1pt5Pro]: this.googleGeminiProvider,
     [AiTechDefs.googleGeminiV1pt5Flash]: this.googleGeminiProvider,
+    [AiTechDefs.googleGeminiV2Flash]: this.googleGeminiProvider,
 
     [AiTechDefs.chatGpt4o]: this.chatGptProvider,
     [AiTechDefs.llama3_8b]: this.chatGptProvider   // The Llama models use the OpenAI client
@@ -97,9 +107,10 @@ export class AiTechDefs {
   // Variant names to descriptions
   static variantNamesToDescriptions = {
     // Google Gemini
-    [AiTechDefs.googleGeminiV1Pro]: 'Gemini Pro v1 Pro',
-    [AiTechDefs.googleGeminiV1pt5Pro]: 'Gemini Pro v1.5 Pro',
-    [AiTechDefs.googleGeminiV1pt5Flash]: 'Gemini Pro v1.5 Flash',
+    [AiTechDefs.googleGeminiV1Pro]: 'Gemini v1 Pro',
+    [AiTechDefs.googleGeminiV1pt5Pro]: 'Gemini v1.5 Pro',
+    [AiTechDefs.googleGeminiV1pt5Flash]: 'Gemini v1.5 Flash',
+    [AiTechDefs.googleGeminiV2Flash]: 'Gemini v2 Flash',
 
     // Llama 3
     [AiTechDefs.llama3_8b]: 'Llama 3 8B'
@@ -115,6 +126,7 @@ export class AiTechDefs {
     [AiTechDefs.googleGeminiV1Pro]: 1048576,
     [AiTechDefs.googleGeminiV1pt5Pro]: 2097152,
     [AiTechDefs.googleGeminiV1pt5Flash]: 1048576,
+    [AiTechDefs.googleGeminiV2Flash]: 1048576,
 
     // Llama 3
     // Source: https://huggingface.co/meta-llama/Meta-Llama-3-8B
@@ -127,6 +139,7 @@ export class AiTechDefs {
     [AiTechDefs.googleGeminiV1Pro]: 8192,
     [AiTechDefs.googleGeminiV1pt5Pro]: 8192,
     [AiTechDefs.googleGeminiV1pt5Flash]: 8192,
+    [AiTechDefs.googleGeminiV2Flash]: 8192,
 
     // Llama 3
     // Source: https://huggingface.co/meta-llama/Meta-Llama-3-8B

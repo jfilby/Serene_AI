@@ -36,7 +36,7 @@ export class SereneAiSetup {
             this.techModel.upsert(
               prisma,
               undefined,  // id
-              true,       // isDefaultProvider
+              false,      // isDefaultProvider
               AiTechDefs.googleGeminiV1pt5Pro,
               AiTechDefs.llms)
 
@@ -51,7 +51,7 @@ export class SereneAiSetup {
             this.techModel.upsert(
               prisma,
               undefined,  // id
-              true,       // isDefaultProvider
+              false,      // isDefaultProvider
               AiTechDefs.googleGeminiV1pt5Flash,
               AiTechDefs.llms)
 
@@ -60,6 +60,21 @@ export class SereneAiSetup {
             undefined,    // id
             geminiV1pt5FlashTech.id,
             15 - 1)       // -1 for a buffer (found to be needed in actual runs)
+
+    // Gemini v2 Flash
+    const geminiV2FlashTech = await
+            this.techModel.upsert(
+              prisma,
+              undefined,  // id
+              true,       // isDefaultProvider
+              AiTechDefs.googleGeminiV2Flash,
+              AiTechDefs.llms)
+
+    await this.rateLimitedApiModel.upsert(
+            prisma,
+            undefined,    // id
+            geminiV2FlashTech.id,
+            10)
 
     // ChatGPT 4o
     const chatGpt4oTech = await
