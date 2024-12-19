@@ -21,8 +21,9 @@ export class UsersService {
 
     return await this.userProfileModel.create(
                    prisma,
-                   undefined,  // userId
-                   false)      // isAdmin
+                   null,       // userId
+                   false,      // isAdmin
+                   null)       // deletePending
   }
 
   async createDefaultUserPreferences(
@@ -69,7 +70,8 @@ export class UsersService {
         this.userProfileModel.create(
           transactionPrisma,
           user.id,
-          false)  // isAdmin
+          false,  // isAdmin
+          null)   // deletePending
     })
 
     return userProfile.id
@@ -199,7 +201,8 @@ export class UsersService {
         this.userProfileModel.create(
           prisma,
           signedInUser.id,  // userId
-          false)            // isAdmin
+          false,            // isAdmin
+          null)             // deletePending
     }
 
     // Create default user preferences

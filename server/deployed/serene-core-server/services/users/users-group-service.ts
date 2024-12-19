@@ -14,16 +14,17 @@ export class UsersGroupService {
   userGroupModel = new UserGroupModel()
 
   // Code
-  async verifyGroupMemberWithAdmin(
+  async verifyGroupMemberByOwner(
           prisma: any,
           memberUserProfileId: string,
-          adminUserProfileId: string,
+          ownerUserProfileId: string,
           groupName: string) {
 
     // Get the UserGroup record
     const userGroup = await
-            this.userGroupModel.getByName(
+            this.userGroupModel.getByUniqueKey(
               prisma,
+              ownerUserProfileId,
               groupName)
 
     if (userGroup == null) {
@@ -51,26 +52,26 @@ export class UsersGroupService {
     }
 
     // Verify the admin is present for the group (and is an admin of the group)
-    const adminUserGroupMember = await
+    const ownerUserGroupMember = await
             this.userGroupMemberModel.getByUniqueKey(
               prisma,
               userGroup.id,
-              adminUserProfileId)
+              ownerUserProfileId)
 
-    if (adminUserGroupMember == null) {
+    if (ownerUserGroupMember == null) {
 
       return {
         status: false,
-        message: `Admin: ${adminUserProfileId} not found for group: ` +
+        message: `Admin: ${ownerUserProfileId} not found for group: ` +
                  groupName
       }
     }
 
-    if (adminUserGroupMember.isGroupAdmin === false) {
+    if (ownerUserGroupMember.isGroupAdmin === false) {
 
       return {
         status: false,
-        message: `Admin: ${adminUserProfileId} is not an admin for group: ` +
+        message: `Owner: ${ownerUserProfileId} is not an admin for group: ` +
                  groupName
       }
     }
