@@ -112,7 +112,6 @@ export class ExternalUserModel {
     // Query
     var externalUser: any = null
 
-    // Try with versionBranchId first
     try {
       externalUser = await prisma.externalUser.findFirst({
         where: {

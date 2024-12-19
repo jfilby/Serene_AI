@@ -146,7 +146,6 @@ export class UserPreferenceModel {
     // Query
     var userpreference: any = null
 
-    // Try with versionBranchId first
     try {
       userpreference = await prisma.userpreference.findFirst({
         where: {
