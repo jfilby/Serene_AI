@@ -610,23 +610,32 @@ export class ChatSessionService {
     }
 
     // Save from message
-    await this.chatMessageModel.create(
-            prisma,
-            undefined,  // id
-            chatSession.id,
-            sessionTurnData.fromChatParticipantId,
-            sessionTurnData.toChatParticipantId,
-            false,      // sentByAi
-            JSON.stringify(sessionTurnData.fromContents))
+    const userChatMessage = await
+            this.chatMessageModel.create(
+              prisma,
+              undefined,  // id
+              chatSession.id,
+              sessionTurnData.fromChatParticipantId,
+              sessionTurnData.toChatParticipantId,
+              false,      // sentByAi
+              JSON.stringify(sessionTurnData.fromContents))
 
     // Save to message
-    await this.chatMessageModel.create(
-            prisma,
-            undefined,  // id
-            chatSession.id,
-            sessionTurnData.toChatParticipantId,
-            sessionTurnData.fromChatParticipantId,
-            true,       // sentByAi
-            JSON.stringify(sessionTurnData.toContents))
+    const aiReplyChatMessage = await
+            this.chatMessageModel.create(
+              prisma,
+              undefined,  // id
+              chatSession.id,
+              sessionTurnData.toChatParticipantId,
+              sessionTurnData.fromChatParticipantId,
+              true,       // sentByAi
+              JSON.stringify(sessionTurnData.toContents))
+
+    // Return
+    return {
+      status: true,
+      userChatMessage: userChatMessage,
+      aiReplyChatMessage: aiReplyChatMessage
+    }
   }
 }
