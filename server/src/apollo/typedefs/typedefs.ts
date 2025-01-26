@@ -1,6 +1,6 @@
 export const typeDefs = `#graphql
 
-  # Serene Gemini Types
+  # Serene AI Types
   # ----
 
   type ChatMessage {
@@ -137,7 +137,7 @@ export const typeDefs = `#graphql
       category: String!,
       keys: [String]): [UserPreference]
 
-    # Serene Gemini
+    # Serene AI
     # ---
 
     # Chats
@@ -192,7 +192,7 @@ export const typeDefs = `#graphql
       value: String,
       values: [String]): Boolean
 
-    # Serene Gemini
+    # Serene AI
     # ---
 
     # Admin
