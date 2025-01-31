@@ -5,14 +5,14 @@ export class ChatSettingsModel {
 
   // Code
   async create(prisma: any,
-               baseChatSettingsId: string | undefined,
+               baseChatSettingsId: string | null,
                status: string,
                pinned: boolean,
-               name: string | undefined,
+               name: string | null,
                llmTechId: string,
                agentId: string,
                jsonMode: boolean,
-               prompt: string | undefined,
+               prompt: string | null,
                createdById: string) {
 
     // Debug
@@ -163,14 +163,14 @@ export class ChatSettingsModel {
 
   async update(prisma: any,
                id: string,
-               baseChatSettingsId: string | undefined,
+               baseChatSettingsId: string | null | undefined,
                status: string | undefined,
                pinned: boolean | undefined,
-               name: string | undefined,
+               name: string | null | undefined,
                llmTechId: string | undefined,
                agentId: string | undefined,
                jsonMode: boolean | undefined,
-               prompt: string | undefined,
+               prompt: string | null | undefined,
                createdById: string | undefined) {
 
     // Debug
@@ -202,14 +202,14 @@ export class ChatSettingsModel {
 
   async upsert(prisma: any,
                id: string | undefined,
-               baseChatSettingsId: string | undefined,
+               baseChatSettingsId: string | null | undefined,
                status: string | undefined,
                pinned: boolean | undefined,
-               name: string | undefined,
+               name: string | null | undefined,
                llmTechId: string | undefined,
                agentId: string | undefined,
                jsonMode: boolean | undefined,
-               prompt: string | undefined,
+               prompt: string | null | undefined,
                createdById: string | undefined) {
 
     // Debug
@@ -235,6 +235,11 @@ export class ChatSettingsModel {
     if (id == null) {
 
       // Validate for create (mainly for type validation of the create call)
+      if (baseChatSettingsId === undefined) {
+        console.error(`${fnName}: id is null and baseChatSettingsId is undefined`)
+        throw 'Prisma error'
+      }
+
       if (status == null) {
         console.error(`${fnName}: id is null and status is null`)
         throw 'Prisma error'
@@ -242,6 +247,11 @@ export class ChatSettingsModel {
 
       if (pinned == null) {
         console.error(`${fnName}: id is null and pinned is null`)
+        throw 'Prisma error'
+      }
+
+      if (name === undefined) {
+        console.error(`${fnName}: id is null and name is undefined`)
         throw 'Prisma error'
       }
 
@@ -257,6 +267,11 @@ export class ChatSettingsModel {
 
       if (jsonMode == null) {
         console.error(`${fnName}: id is null and jsonMode is null`)
+        throw 'Prisma error'
+      }
+
+      if (prompt === undefined) {
+        console.error(`${fnName}: id is null and prompt is undefined`)
         throw 'Prisma error'
       }
 

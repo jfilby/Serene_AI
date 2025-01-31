@@ -18,12 +18,7 @@ export class UserProfileModel {
     try {
       return await prisma.userProfile.create({
         data: {
-          userId: userId != null ? {
-            connect: {
-            user: {
-              id: userId
-            }
-          }} : undefined,
+          userId: userId,
           isAdmin: isAdmin,
           deletePending: deletePending
         }

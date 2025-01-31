@@ -19,7 +19,7 @@ export class ChatSessionModel {
                id: string | undefined,
                chatSettingsId: string,
                status: string,
-               name: string | undefined,
+               name: string | null,
                createdById: string) {
 
     // Debug
@@ -180,7 +180,7 @@ export class ChatSessionModel {
                id: string,
                chatSettingsId: string | undefined,
                status: string | undefined,
-               name: string | undefined,
+               name: string | null | undefined,
                createdById: string | undefined) {
 
     // Debug
@@ -209,7 +209,7 @@ export class ChatSessionModel {
                id: string,
                chatSettingsId: string | undefined,
                status: string | undefined,
-               name: string | undefined,
+               name: string | null | undefined,
                createdById: string) {
 
     // Debug
@@ -239,6 +239,11 @@ export class ChatSessionModel {
 
       if (status == null) {
         console.error(`${fnName}: id is null and status is null`)
+        throw 'Prisma error'
+      }
+
+      if (name === undefined) {
+        console.error(`${fnName}: id is null and name is undefined`)
         throw 'Prisma error'
       }
 

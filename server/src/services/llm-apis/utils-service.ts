@@ -83,10 +83,10 @@ export class LlmUtilsService {
       const chatSettingsResults = await
               this.getOrCreateChatSettings(
                 prisma,
-                undefined,  // baseChatSettingsId
+                null,       // baseChatSettingsId
                 userProfileId,
                 jsonMode,
-                undefined,  // no need to store the prompt in chatSettings
+                null,       // no need to store the prompt in chatSettings
                 true)       // getTech
 
       tech = chatSettingsResults.tech
@@ -118,10 +118,10 @@ export class LlmUtilsService {
 
   async getOrCreateChatSettings(
           prisma: any,
-          baseChatSettingsId: string | undefined,
+          baseChatSettingsId: string | null,
           userProfileId: string,
-          jsonMode: boolean | undefined,
-          prompt: string | undefined,
+          jsonMode: boolean | null,
+          prompt: string | null,
           getTech: boolean = false) {
 
     // Debug
@@ -130,7 +130,7 @@ export class LlmUtilsService {
     // If no baseChatSettingsId is specified, then get the default
     var chatSettings
     var baseChatSettings
-    var defaultBaseChatSettingsId: string | undefined = ''
+    var defaultBaseChatSettingsId: string | null = ''
 
     if (baseChatSettingsId == null) {
 
@@ -200,7 +200,7 @@ export class LlmUtilsService {
           baseChatSettingsId,
           CommonTypes.activeStatus,
           false,      // pinned
-          undefined,  // name
+          null,       // name
           tech.id,    // baseChatSettings.llmTechId,
           baseChatSettings.agentId,
           baseChatSettings.jsonMode,

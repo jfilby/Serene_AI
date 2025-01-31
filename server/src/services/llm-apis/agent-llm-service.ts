@@ -42,10 +42,10 @@ export class AgentLlmService {
     const chatSettingsResults = await
             this.llmUtilsService.getOrCreateChatSettings(
               prisma,
-              undefined,  // baseChatSettingsId
+              null,       // baseChatSettingsId
               agent.userProfileId,
               jsonMode,
-              undefined,  // prompt
+              null,       // prompt
               true)       // getTech
 
     const tech = chatSettingsResults.tech

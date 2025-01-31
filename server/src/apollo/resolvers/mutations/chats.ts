@@ -27,11 +27,11 @@ export async function getOrCreateChatSession(
         chatSessionService.getOrCreateChatSession(
           transactionPrisma,
           args.chatSessionId,
-          undefined,  // baseChatSettingsId
+          null,       // baseChatSettingsId
           args.userProfileId,
           false,      // jsonMode
           args.prompt,
-          undefined)  // name
+          null)       // name
     } catch (error) {
       if (error instanceof CustomError) {
         return {

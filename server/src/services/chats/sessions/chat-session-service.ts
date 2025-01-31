@@ -37,11 +37,11 @@ export class ChatSessionService {
   // Code
   async createChatSession(
           prisma: any,
-          baseChatSettingsId: string | undefined,
+          baseChatSettingsId: string | null,
           userProfileId: string,
-          jsonMode: boolean | undefined,
-          prompt: string | undefined,
-          name: string | undefined) {
+          jsonMode: boolean | null,
+          prompt: string | null,
+          name: string | null) {
 
     // Debug
     const fnName = `${this.clName}.createChatSession()`
@@ -365,11 +365,11 @@ export class ChatSessionService {
   async getOrCreateChatSession(
           prisma: any,
           chatSessionId: string,
-          baseChatSettingsId: string | undefined,
+          baseChatSettingsId: string | null,
           userProfileId: string,
-          jsonMode: boolean | undefined,
-          prompt: string | undefined,
-          name: string | undefined,
+          jsonMode: boolean | null,
+          prompt: string | null,
+          name: string | null,
           createIfNotExists: boolean = true) {
 
     // Debug
