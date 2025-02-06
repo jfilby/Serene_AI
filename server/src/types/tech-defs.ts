@@ -79,8 +79,8 @@ export class AiTechDefs {
   static googleGeminiV1ProModelName = 'gemini-pro'
   static googleGeminiV1pt5ProModelName = 'gemini-1.5-pro'
   static googleGeminiV1pt5FlashModelName = 'gemini-1.5-flash'
-  static googleGeminiV2FlashModelName = 'gemini-2.0-flash-exp'
-  static googleGeminiLatestExpModelName = 'gemini-exp-1206'
+  static googleGeminiV2FlashModelName = 'gemini-2.0-flash'
+  static googleGeminiLatestExpModelName = 'gemini-2.0-pro-exp-02-05'
 
   static chatGpt4oModelName = 'GPT-4o'
 
