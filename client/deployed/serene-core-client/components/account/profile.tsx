@@ -292,7 +292,7 @@ export default function Profile({
             <TextField
               autoFocus
               fullWidth
-              variant='standard'
+              variant='outlined'
               label='Full name'
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
@@ -313,7 +313,7 @@ export default function Profile({
             <br/><br/>
             <TextField
               fullWidth
-              variant='standard'
+              variant='outlined'
               label='First name'
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
@@ -333,7 +333,7 @@ export default function Profile({
                 label='Country'
                 native
                 onChange={(e) => setCountry(e.target.value)}
-                variant='standard'
+                variant='outlined'
                 value={country}>
                 {countries.map((country) => (
                   <option key={country.name} value={country.name}>
@@ -358,7 +358,7 @@ export default function Profile({
                 <TextField
                   autoFocus
                   fullWidth
-                  variant='standard'
+                  variant='outlined'
                   label='First name'
                   value={billingFirstName}
                   onChange={(e) => setBillingFirstName(e.target.value)}
@@ -366,7 +366,7 @@ export default function Profile({
                 <br/><br/>
                 <TextField
                   fullWidth
-                  variant='standard'
+                  variant='outlined'
                   label='Last name'
                   value={billingLastName}
                   onChange={(e) => setBillingLastName(e.target.value)}
@@ -392,7 +392,7 @@ export default function Profile({
                     label='Country'
                     native
                     onChange={(e) => setBillingCountry(e.target.value)}
-                    variant='standard'
+                    variant='outlined'
                     value={billingCountry}>
                     <option key='blankBillingCountry' value=''></option>
                     {countries.map((country) => (
@@ -409,7 +409,7 @@ export default function Profile({
             }
             <TextField
               fullWidth
-              variant='standard'
+              variant='outlined'
               label='Line 1'
               value={billingAddressLine1}
               onChange={(e) => setBillingAddressLine1(e.target.value)}
@@ -417,14 +417,14 @@ export default function Profile({
             <br/><br/>
             <TextField
               fullWidth
-              variant='standard'
+              variant='outlined'
               label='Line 2'
               value={billingAddressLine2}
               onChange={(e) => setBillingAddressLine2(e.target.value)} />
             <br/><br/>
             <TextField
               fullWidth
-              variant='standard'
+              variant='outlined'
               label='City'
               value={billingCity}
               onChange={(e) => setBillingCity(e.target.value)}
@@ -432,14 +432,14 @@ export default function Profile({
             <br/><br/>
             <TextField
               fullWidth
-              variant='standard'
+              variant='outlined'
               label='State'
               value={billingState}
               onChange={(e) => setBillingState(e.target.value)} />
             <br/><br/>
             <TextField
               fullWidth
-              variant='standard'
+              variant='outlined'
               label={zipLabel}
               value={billingZip}
               onChange={(e) => setBillingZip(e.target.value)}

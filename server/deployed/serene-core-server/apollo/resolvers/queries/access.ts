@@ -1,5 +1,5 @@
 import { prisma } from '@/db'
-import { AccessService } from '../../../services/access/service'
+import { AccessService } from '../../../services/access/access-service'
 
 const accessService = new AccessService()
 
