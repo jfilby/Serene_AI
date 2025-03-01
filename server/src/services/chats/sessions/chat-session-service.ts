@@ -22,7 +22,7 @@ export class ChatSessionService {
 
   // Models
   agentModel = new AgentModel()
-  chatMessageModel = new ChatMessageModel()
+  chatMessageModel
   chatParticipantModel = new ChatParticipantModel()
   chatSessionModel = new ChatSessionModel()
   chatSettingsModel = new ChatSettingsModel()
@@ -35,10 +35,16 @@ export class ChatSessionService {
   usersService = new UsersService()
 
   // Code
+  constructor(encryptionKey: string | undefined) {
+
+    this.chatMessageModel = new ChatMessageModel(encryptionKey)
+  }
+
   async createChatSession(
           prisma: any,
           baseChatSettingsId: string | null,
           userProfileId: string,
+          encryptedAtRest: boolean,
           jsonMode: boolean | null,
           prompt: string | null,
           name: string | null) {
@@ -53,6 +59,7 @@ export class ChatSessionService {
               prisma,
               baseChatSettingsId,
               userProfileId,
+              encryptedAtRest,
               jsonMode,
               prompt)
 
@@ -71,6 +78,7 @@ export class ChatSessionService {
             undefined,  // id,
             chatSettings.id,
             CommonTypes.newStatus,
+            encryptedAtRest,
             name,
             userProfileId)
 
@@ -191,11 +199,17 @@ export class ChatSessionService {
     console.log(`${fnName}: starting with chatSessionId: ` +
                 JSON.stringify(chatSessionId))
 
+    // Get ChatSession record
+    const chatSession = await
+            this.chatSessionModel.getById(
+              prisma,
+              chatSessionId)
+
     // Get messages
     var chatMessages = await
           this.chatMessageModel.getByChatSessionId(
             prisma,
-            chatSessionId)
+            chatSession)
 
     // Enrich with names
     var chatParticipantCache = new Map<string, any>()
@@ -350,6 +364,7 @@ export class ChatSessionService {
           this.chatSessionModel.filter(
             prisma,
             status,
+            undefined,  // isEncryptedAtRest,
             userProfileId)
 
       // Prep chat sessions for return
@@ -367,6 +382,7 @@ export class ChatSessionService {
           chatSessionId: string,
           baseChatSettingsId: string | null,
           userProfileId: string,
+          encryptedAtRest: boolean,
           jsonMode: boolean | null,
           prompt: string | null,
           name: string | null,
@@ -396,6 +412,7 @@ export class ChatSessionService {
           prisma,
           baseChatSettingsId,
           userProfileId,
+          encryptedAtRest,
           jsonMode,
           prompt,
           name)
@@ -473,7 +490,7 @@ export class ChatSessionService {
         const chatMessage = await
                 this.chatMessageModel.getFirst(
                   prisma,
-                  chatSession.id)
+                  chatSession)
 
         // Get message text
         var firstMessageText: string | undefined
@@ -493,6 +510,7 @@ export class ChatSessionService {
             chatSession.id,
             undefined,  // chatSettingsId
             undefined,  // status
+            undefined,  // isEncryptedAtRest
             firstMessageText,
             undefined)  // createdById
       }
@@ -538,7 +556,7 @@ export class ChatSessionService {
     const chatMessages = await
             this.chatMessageModel.getByChatSessionId(
               prisma,
-              chatSessionId)
+              chatSession)
 
     // Get Tech
     const llmTech = await
@@ -564,11 +582,11 @@ export class ChatSessionService {
               agentInfo.agent,
               messagesWithRoles,
               chatSession.chatSettings.prompt,
-              chatSession.chatSettings.jsonMode)
+              chatSession.chatSettings.isJsonMode)
 
     // Debug
-    console.log(`${fnName}: chatCompletionResults: ` +
-                JSON.stringify(chatCompletionResults))
+    // console.log(`${fnName}: chatCompletionResults: ` +
+    //             JSON.stringify(chatCompletionResults))
 
     // Return
     return {
@@ -605,6 +623,7 @@ export class ChatSessionService {
           chatSession.id,
           undefined,  // chatSettingsId
           CommonTypes.activeStatus,
+          undefined,  // isEncryptedAtRest
           undefined,  // name
           undefined)  // createdById
     }
@@ -614,7 +633,7 @@ export class ChatSessionService {
             this.chatMessageModel.create(
               prisma,
               undefined,  // id
-              chatSession.id,
+              chatSession,
               sessionTurnData.fromChatParticipantId,
               sessionTurnData.toChatParticipantId,
               false,      // sentByAi
@@ -625,7 +644,7 @@ export class ChatSessionService {
             this.chatMessageModel.create(
               prisma,
               undefined,  // id
-              chatSession.id,
+              chatSession,
               sessionTurnData.toChatParticipantId,
               sessionTurnData.fromChatParticipantId,
               true,       // sentByAi

@@ -209,6 +209,7 @@ model ChatSession {
   chatSettingsId               String               @map("chat_settings_id")
   chatSettings                 ChatSettings         @relation(fields: [chatSettingsId], references: [id])
   status                       String               @db.Char(1)
+  isEncryptedAtRest            Boolean              @map("is_encrypted_at_rest")
   token                        String
   name                         String?
   createdById                  String               @map("created_by_id")
@@ -228,13 +229,14 @@ model ChatSettings {
   baseChatSettingsId           String?              @map("base_chat_settings_id")
   baseChatSettings             ChatSettings?        @relation("base", fields: [baseChatSettingsId], references: [id])
   status                       String               @db.Char(1)
-  pinned                       Boolean
+  isEncryptedAtRest            Boolean              @map("is_encrypted_at_rest")
+  isJsonMode                   Boolean              @map("is_json_mode")
+  isPinned                     Boolean              @map("is_pinned")
   name                         String?              @unique  // Only unique for baseChatSettingsId == null
   llmTechId                    String?              @map("llm_tech_id")
   llmTech                      Tech?                @relation(fields: [llmTechId], references: [id])
   agentId                      String               @map("agent_id")
   agent                        Agent                @relation(fields: [agentId], references: [id])
-  jsonMode                     Boolean              @map("json_mode")
   prompt                       String?
   agentRole                    String?              @map("agent_role")
   createdById                  String               @map("created_by_id")

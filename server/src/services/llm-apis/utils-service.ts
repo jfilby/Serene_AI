@@ -71,7 +71,8 @@ export class LlmUtilsService {
           prisma: any,
           tech: any,
           userProfileId: string,
-          jsonMode: boolean,
+          isEncryptedAtRest: boolean,
+          isJsonMode: boolean,
           prompt: string) {
 
     // Debug
@@ -85,7 +86,8 @@ export class LlmUtilsService {
                 prisma,
                 null,       // baseChatSettingsId
                 userProfileId,
-                jsonMode,
+                isEncryptedAtRest,
+                isJsonMode,
                 null,       // no need to store the prompt in chatSettings
                 true)       // getTech
 
@@ -120,7 +122,8 @@ export class LlmUtilsService {
           prisma: any,
           baseChatSettingsId: string | null,
           userProfileId: string,
-          jsonMode: boolean | null,
+          isEncryptedAtRest: boolean | null,
+          isJsonMode: boolean | null,
           prompt: string | null,
           getTech: boolean = false) {
 
@@ -149,7 +152,7 @@ export class LlmUtilsService {
     // If a prompt is specified, then create a ChatSettings record
     var chatSettings = baseChatSettings
 
-    if (jsonMode != null ||
+    if (isJsonMode != null ||
         prompt != null) {
 
       // Get base ChatSettings record
@@ -176,16 +179,23 @@ export class LlmUtilsService {
 
     // Create new ChatSettings record
     if (baseChatSettings != null &&
-        (jsonMode != null ||
+        (isJsonMode != null ||
          prompt != null)) {
 
-      var thisJsonMode = jsonMode
+      var thisIsEncryptedAtRest = isEncryptedAtRest
+      var thisIsJsonMode = isJsonMode
       var thisPrompt = prompt
 
       if (baseChatSettings != null &&
-          jsonMode == null) {
+          isEncryptedAtRest == null) {
 
-        thisJsonMode = baseChatSettings.jsonMode
+        thisIsEncryptedAtRest = baseChatSettings.isEncryptedAtRest
+      }
+
+      if (baseChatSettings != null &&
+          isJsonMode == null) {
+
+        thisIsJsonMode = baseChatSettings.isJsonMode
       }
 
       if (baseChatSettings != null &&
@@ -194,16 +204,29 @@ export class LlmUtilsService {
         thisPrompt = baseChatSettings.prompt
       }
 
+      // Validate
+      if (thisIsEncryptedAtRest == null) {
+
+        throw new CustomError(`${fnName}: thisIsEncryptedAtRest == null`)
+      }
+
+      if (thisIsJsonMode == null) {
+
+        throw new CustomError(`${fnName}: thisIsJsonMode == null`)
+      }
+
+      // Create ChatSettings record
       chatSettings = await
         this.chatSettingsModel.create(
           prisma,
           baseChatSettingsId,
           CommonTypes.activeStatus,
-          false,      // pinned
+          thisIsEncryptedAtRest,
+          thisIsJsonMode,
+          false,      // isPinned
           null,       // name
           tech.id,    // baseChatSettings.llmTechId,
           baseChatSettings.agentId,
-          baseChatSettings.jsonMode,
           prompt,
           userProfileId)
     }

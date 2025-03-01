@@ -11,7 +11,6 @@ export class ChatSessionModel {
   newStatus = 'N'
 
   // Models
-  chatMessageModel = new ChatMessageModel()
   chatParticipantModel = new ChatParticipantModel()
 
   // Code
@@ -19,6 +18,7 @@ export class ChatSessionModel {
                id: string | undefined,
                chatSettingsId: string,
                status: string,
+               isEncryptedAtRest: boolean,
                name: string | null,
                createdById: string) {
 
@@ -35,6 +35,7 @@ export class ChatSessionModel {
           id: id,
           chatSettingsId: chatSettingsId,
           status: status,
+          isEncryptedAtRest: isEncryptedAtRest,
           token: token,
           name: name,
           createdById: createdById
@@ -73,10 +74,18 @@ export class ChatSessionModel {
     // Debug
     const fnName = `${this.clName}.deleteByIdCascade()`
 
-    // Delete chat messages
-    await this.chatMessageModel.deleteByChatSessionId(
-            prisma,
-            id)
+    // Delete chat messages (code copied directly from chat-message-model.ts
+    // to avoid setting the encryption key via the constructor).
+    try {
+      await prisma.chatMessage.deleteMany({
+        where: {
+          chatSessionId: id
+        }
+      })
+    } catch(error: any) {
+      console.error(`${fnName}: error: ${error}`)
+      throw 'Prisma error'
+    }
 
     // Delete chat participants
     await this.chatParticipantModel.deleteByChatSessionId(
@@ -92,6 +101,7 @@ export class ChatSessionModel {
   async filter(
           prisma: any,
           status: string | undefined,
+          isEncryptedAtRest: boolean | undefined,
           createdById: string) {
 
     // Debug
@@ -102,6 +112,7 @@ export class ChatSessionModel {
       return await prisma.chatSession.findMany({
         where: {
           status: status,
+          isEncryptedAtRest: isEncryptedAtRest,
           createdById: createdById
         },
         orderBy: [
@@ -180,6 +191,7 @@ export class ChatSessionModel {
                id: string,
                chatSettingsId: string | undefined,
                status: string | undefined,
+               isEncryptedAtRest: boolean | undefined,
                name: string | null | undefined,
                createdById: string | undefined) {
 
@@ -192,6 +204,7 @@ export class ChatSessionModel {
         data: {
           chatSettingsId: chatSettingsId,
           status: status,
+          isEncryptedAtRest: isEncryptedAtRest,
           name: name,
           createdById: createdById
         },
@@ -209,6 +222,7 @@ export class ChatSessionModel {
                id: string,
                chatSettingsId: string | undefined,
                status: string | undefined,
+               isEncryptedAtRest: boolean | undefined,
                name: string | null | undefined,
                createdById: string) {
 
@@ -247,12 +261,18 @@ export class ChatSessionModel {
         throw 'Prisma error'
       }
 
+      if (isEncryptedAtRest == null) {
+        console.error(`${fnName}: id is null and isEncryptedAtRest is null`)
+        throw 'Prisma error'
+      }
+
       // Create
       return await this.create(
                      prisma,
                      undefined,  // id
                      chatSettingsId,
                      status,
+                     isEncryptedAtRest,
                      name,
                      createdById)
     } else {
@@ -263,6 +283,7 @@ export class ChatSessionModel {
                      id,
                      chatSettingsId,
                      status,
+                     isEncryptedAtRest,
                      name,
                      createdById)
     }

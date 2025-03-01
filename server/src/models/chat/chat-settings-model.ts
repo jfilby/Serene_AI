@@ -7,11 +7,12 @@ export class ChatSettingsModel {
   async create(prisma: any,
                baseChatSettingsId: string | null,
                status: string,
-               pinned: boolean,
+               isEncryptedAtRest: boolean,
+               isJsonMode: boolean,
+               isPinned: boolean,
                name: string | null,
                llmTechId: string,
                agentId: string,
-               jsonMode: boolean,
                prompt: string | null,
                createdById: string) {
 
@@ -26,11 +27,12 @@ export class ChatSettingsModel {
         data: {
           baseChatSettingsId: baseChatSettingsId,
           status: status,
-          pinned: pinned,
+          isEncryptedAtRest: isEncryptedAtRest,
+          isJsonMode: isJsonMode,
+          isPinned: isPinned,
           name: name,
           llmTechId: llmTechId,
           agentId: agentId,
-          jsonMode: jsonMode,
           prompt: prompt,
           createdById: createdById
         }
@@ -165,11 +167,12 @@ export class ChatSettingsModel {
                id: string,
                baseChatSettingsId: string | null | undefined,
                status: string | undefined,
-               pinned: boolean | undefined,
+               isEncryptedAtRest: boolean | undefined,
+               isJsonMode: boolean | undefined,
+               isPinned: boolean | undefined,
                name: string | null | undefined,
                llmTechId: string | undefined,
                agentId: string | undefined,
-               jsonMode: boolean | undefined,
                prompt: string | null | undefined,
                createdById: string | undefined) {
 
@@ -182,11 +185,12 @@ export class ChatSettingsModel {
         data: {
           baseChatSettingsId: baseChatSettingsId,
           status: status,
-          pinned: pinned,
+          isEncryptedAtRest: isEncryptedAtRest,
+          isJsonMode: isJsonMode,
+          isPinned: isPinned,
           name: name,
           llmTechId: llmTechId,
           agentId: agentId,
-          jsonMode: jsonMode,
           prompt: prompt,
           createdById: createdById
         },
@@ -204,11 +208,12 @@ export class ChatSettingsModel {
                id: string | undefined,
                baseChatSettingsId: string | null | undefined,
                status: string | undefined,
-               pinned: boolean | undefined,
+               isEncryptedAtRest: boolean | undefined,
+               isJsonMode: boolean | undefined,
+               isPinned: boolean | undefined,
                name: string | null | undefined,
                llmTechId: string | undefined,
                agentId: string | undefined,
-               jsonMode: boolean | undefined,
                prompt: string | null | undefined,
                createdById: string | undefined) {
 
@@ -245,8 +250,18 @@ export class ChatSettingsModel {
         throw 'Prisma error'
       }
 
-      if (pinned == null) {
-        console.error(`${fnName}: id is null and pinned is null`)
+      if (isEncryptedAtRest == null) {
+        console.error(`${fnName}: id is null and isEncryptedAtRest is null`)
+        throw 'Prisma error'
+      }
+
+      if (isJsonMode == null) {
+        console.error(`${fnName}: id is null and isJsonMode is null`)
+        throw 'Prisma error'
+      }
+
+      if (isPinned == null) {
+        console.error(`${fnName}: id is null and isPinned is null`)
         throw 'Prisma error'
       }
 
@@ -265,11 +280,6 @@ export class ChatSettingsModel {
         throw 'Prisma error'
       }
 
-      if (jsonMode == null) {
-        console.error(`${fnName}: id is null and jsonMode is null`)
-        throw 'Prisma error'
-      }
-
       if (prompt === undefined) {
         console.error(`${fnName}: id is null and prompt is undefined`)
         throw 'Prisma error'
@@ -284,11 +294,12 @@ export class ChatSettingsModel {
                      prisma,
                      baseChatSettingsId,
                      status,
-                     pinned,
+                     isEncryptedAtRest,
+                     isJsonMode,
+                     isPinned,
                      name,
                      llmTechId,
                      agentId,
-                     jsonMode,
                      prompt,
                      createdById)
     } else {
@@ -298,11 +309,12 @@ export class ChatSettingsModel {
                      id,
                      baseChatSettingsId,
                      status,
-                     pinned,
+                     isEncryptedAtRest,
+                     isJsonMode,
+                     isPinned,
                      name,
                      llmTechId,
                      agentId,
-                     jsonMode,
                      prompt,
                      createdById)
     }

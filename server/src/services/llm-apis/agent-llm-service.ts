@@ -23,7 +23,8 @@ export class AgentLlmService {
           agentName: string,
           agentRole: string,
           prompt: string,
-          jsonMode: boolean,
+          isEncryptedAtRest: boolean,
+          isJsonMode: boolean,
           tryGetFromCache: boolean = false) {
 
     // Single-shot agent LLM request
@@ -44,7 +45,8 @@ export class AgentLlmService {
               prisma,
               null,       // baseChatSettingsId
               agent.userProfileId,
-              jsonMode,
+              isEncryptedAtRest,
+              isJsonMode,
               null,       // prompt
               true)       // getTech
 
@@ -56,7 +58,8 @@ export class AgentLlmService {
               prisma,
               undefined,  // tech
               agent.userProfileId,
-              jsonMode,
+              isEncryptedAtRest,
+              isJsonMode,
               prompt)
 
     // Make the LLM request
@@ -68,7 +71,7 @@ export class AgentLlmService {
               agent,
               inputMessagesWithRoles,
               undefined,  // systemPrompt
-              jsonMode,
+              isJsonMode,
               tryGetFromCache)
 
     // Validate
@@ -76,7 +79,7 @@ export class AgentLlmService {
       throw new CustomError(`${fnName}: no messages`)
     }
 
-    if (jsonMode === true &&
+    if (isJsonMode === true &&
         chatCompletionResults.json == null) {
 
       throw new CustomError(`${fnName}: expected json`)

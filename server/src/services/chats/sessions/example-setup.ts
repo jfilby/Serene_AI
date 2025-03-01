@@ -41,11 +41,12 @@ export class ExampleChatSessionSetupService {
               undefined,            // id
               undefined,            // baseChatSettingsId
               CommonTypes.activeStatus,
-              false,                // pinned
+              false,                // isEncryptedAtRest
+              false,                // isJsonMode
+              false,                // isPinned
               'Test chat setting',  // name
               tech.id,
               agent.id,
-              false,                // jsonMode
               'Talk about anything tech related',
               userProfileId)
   }

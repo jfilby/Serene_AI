@@ -1,3 +1,6 @@
+import { Encrypter } from '@/serene-core-server/services/access/encrypt-service'
+import { CustomError } from '@/serene-core-server/types/errors'
+
 export class ChatMessageModel {
 
   // Consts
@@ -5,10 +8,18 @@ export class ChatMessageModel {
 
   msPerMinute = 60000
 
+  // Services
+  encrypter
+
   // Code
+  constructor(encryptionKey: string | undefined) {
+
+    this.encrypter = new Encrypter(encryptionKey)
+  }
+
   async create(prisma: any,
                id: string | undefined,
-               chatSessionId: string,
+               chatSession: any,
                fromChatParticipantId: string,
                toChatParticipantId: string,
                sentByAi: boolean,
@@ -17,12 +28,24 @@ export class ChatMessageModel {
     // Debug
     const fnName = `${this.clName}.create()`
 
+    // Validate
+    if (chatSession == null) {
+
+      throw new CustomError(`${fnName}: chatMessage == null`)
+    }
+
+    // Encrypt the message if required
+    if (chatSession.isEncryptedAtRest === true) {
+
+      message = this.encrypter.encrypt(message)
+    }
+
     // Create record
     try {
       return await prisma.chatMessage.create({
         data: {
           id: id,
-          chatSessionId: chatSessionId,
+          chatSessionId: chatSession.id,
           fromChatParticipantId: fromChatParticipantId,
           toChatParticipantId: toChatParticipantId,
           sentByAi: sentByAi,
@@ -56,10 +79,17 @@ export class ChatMessageModel {
   }
 
   async getById(prisma: any,
-                id: string) {
+                id: string,
+                chatSession: any) {
 
     // Debug
     const fnName = `${this.clName}.getById()`
+
+    // Validate
+    if (chatSession == null) {
+
+      throw new CustomError(`${fnName}: chatMessage == null`)
+    }
 
     // Query record
     var chatMessage: any = undefined
@@ -77,28 +107,41 @@ export class ChatMessageModel {
       }
     }
 
+    // Decrypt message if required
+    if (chatSession.isEncryptedAtRest === true) {
+
+      chatMessage.message = this.encrypter.decrypt(chatMessage.message)
+    }
+
     // Return OK
     return chatMessage
   }
 
   async getByChatSessionId(
           prisma: any,
-          chatSessionId: string) {
+          chatSession: any) {
 
     // Debug
     const fnName = `${this.clName}.getByChatSessionId()`
 
     // Validate
-    if (chatSessionId == null) {
-      console.error(`${fnName}: id is null and chatSessionId is null`)
+    if (chatSession == null) {
+      console.error(`${fnName}: chatSessionId == null`)
+      throw 'Prisma error'
+    }
+
+    if (chatSession.id == null) {
+      console.error(`${fnName}: chatSession.id == null`)
       throw 'Prisma error'
     }
 
     // Query records
+    var chatMessages: any[] = []
+
     try {
-      return await prisma.chatMessage.findMany({
+      chatMessages = await prisma.chatMessage.findMany({
         where: {
-          chatSessionId: chatSessionId
+          chatSessionId: chatSession.id
         },
         orderBy: [
           {
@@ -110,15 +153,33 @@ export class ChatMessageModel {
       console.error(`${fnName}: error: ${error}`)
       throw 'Prisma error'
     }
+
+    // Decrypts message if required
+    if (chatSession.isEncryptedAtRest === true) {
+
+      for (const chatMessage of chatMessages) {
+
+        chatMessage.message = this.encrypter.decrypt(chatMessage.message)
+      }
+    }
+
+    // Return
+    return chatMessages
   }
 
   async getByLastMessageId(
           prisma: any,
-          chatSessionId: string,
+          chatSession: any,
           lastMessageId: string) {
 
     // Debug
     const fnName = `${this.clName}.getByLastMessageId()`
+
+    // Validate
+    if (chatSession == null) {
+
+      throw new CustomError(`${fnName}: chatMessage == null`)
+    }
 
     // Get the last message if specified
     var lastMessageCreated = new Date()
@@ -128,7 +189,8 @@ export class ChatMessageModel {
       const lastMessage = await
               this.getById(
                 prisma,
-                lastMessageId)
+                lastMessageId,
+                chatSession)
 
       if (lastMessage != null) {
         lastMessageCreated = lastMessage.created
@@ -136,10 +198,12 @@ export class ChatMessageModel {
     }
 
     // Query records
+    var chatMessages: any[] = []
+
     try {
-      return await prisma.chatMessage.findMany({
+      chatMessages = await prisma.chatMessage.findMany({
         where: {
-          chatSessionId: chatSessionId,
+          chatSessionId: chatSession.id,
           created: {
             gt: lastMessageCreated
           }
@@ -156,13 +220,32 @@ export class ChatMessageModel {
         throw 'Prisma error'
       }
     }
+
+    // Decrypts message if required
+    if (chatSession.isEncryptedAtRest === true) {
+
+      for (const chatMessage of chatMessages) {
+
+        chatMessage.message = this.encrypter.decrypt(chatMessage.message)
+      }
+    }
+
+    // Return
+    return chatMessages
   }
 
   async getEarliestUnread(
           prisma: any,
-          chatSessionId: string) {
+          chatSession: any) {
 
+    // Debug
     const fnName = `${this.clName}.getEarliestUnread()`
+
+    // Validate
+    if (chatSession == null) {
+
+      throw new CustomError(`${fnName}: chatMessage == null`)
+    }
 
     // Query record
     var chatMessage: any = undefined
@@ -170,7 +253,7 @@ export class ChatMessageModel {
     try {
       chatMessage = await prisma.chatMessage.findFirst({
         where: {
-          chatSessionId: chatSessionId,
+          chatSessionId: chatSession.id,
           sent: true
         },
         orderBy: [
@@ -186,15 +269,28 @@ export class ChatMessageModel {
       }
     }
 
+    // Decrypt message if required
+    if (chatSession.isEncryptedAtRest === true) {
+
+      chatMessage.message = this.encrypter.decrypt(chatMessage.message)
+    }
+
     // Return OK
     return chatMessage
   }
 
   async getFirst(
           prisma: any,
-          chatSessionId: string) {
+          chatSession: any) {
 
+    // Debug
     const fnName = `${this.clName}.getFirst()`
+
+    // Validate
+    if (chatSession == null) {
+
+      throw new CustomError(`${fnName}: chatMessage == null`)
+    }
 
     // Query record
     var chatMessage: any = undefined
@@ -202,7 +298,7 @@ export class ChatMessageModel {
     try {
       chatMessage = await prisma.chatMessage.findFirst({
         where: {
-          chatSessionId: chatSessionId
+          chatSessionId: chatSession.id
         },
         orderBy: [
           {
@@ -217,15 +313,28 @@ export class ChatMessageModel {
       }
     }
 
+    // Decrypt message if required
+    if (chatSession.isEncryptedAtRest === true) {
+
+      chatMessage.message = this.encrypter.decrypt(chatMessage.message)
+    }
+
     // Return OK
     return chatMessage
   }
 
   async getLast(
           prisma: any,
-          chatSessionId: string) {
+          chatSession: any) {
 
+    // Debug
     const fnName = `${this.clName}.getLast()`
+
+    // Validate
+    if (chatSession == null) {
+
+      throw new CustomError(`${fnName}: chatMessage == null`)
+    }
 
     // Query record
     var chatMessage: any = undefined
@@ -233,7 +342,7 @@ export class ChatMessageModel {
     try {
       chatMessage = await prisma.chatMessage.findFirst({
         where: {
-          chatSessionId: chatSessionId
+          chatSessionId: chatSession.id
         },
         orderBy: [
           {
@@ -248,13 +357,19 @@ export class ChatMessageModel {
       }
     }
 
+    // Decrypt message if required
+    if (chatSession.isEncryptedAtRest === true) {
+
+      chatMessage.message = this.encrypter.decrypt(chatMessage.message)
+    }
+
     // Return OK
     return chatMessage
   }
 
   async update(prisma: any,
                id: string,
-               chatSessionId: string,
+               chatSession: any,
                fromChatParticipantId: string,
                toChatParticipantId: string,
                sentByAi: boolean,
@@ -263,11 +378,24 @@ export class ChatMessageModel {
     // Debug
     const fnName = `${this.clName}.update()`
 
+    // Validate
+    if (chatSession == null) {
+
+      throw new CustomError(`${fnName}: chatMessage == null`)
+    }
+
+    // Encrypt the message if required
+    if (message != null &&
+        chatSession.isEncryptedAtRest === true) {
+
+      message = this.encrypter.encrypt(message)
+    }
+
     // Create record
     try {
       return await prisma.chatMessage.update({
         data: {
-          chatSessionId: chatSessionId,
+          chatSessionId: chatSession.id,
           fromChatParticipantId: fromChatParticipantId,
           toChatParticipantId: toChatParticipantId,
           sentByAi: sentByAi,
@@ -285,7 +413,7 @@ export class ChatMessageModel {
 
   async upsert(prisma: any,
                id: string,
-               chatSessionId: string,
+               chatSession: any,
                fromChatParticipantId: string,
                toChatParticipantId: string,
                sentByAi: boolean,
@@ -300,7 +428,8 @@ export class ChatMessageModel {
       const chatMessage = await
               this.getById(
                 prisma,
-                id)
+                id,
+                chatSession)
 
       if (chatMessage != null) {
         id = chatMessage.id
@@ -313,7 +442,7 @@ export class ChatMessageModel {
       return await this.create(
                      prisma,
                      id,
-                     chatSessionId,
+                     chatSession,
                      fromChatParticipantId,
                      toChatParticipantId,
                      sentByAi,
@@ -323,7 +452,7 @@ export class ChatMessageModel {
       return await this.update(
                      prisma,
                      id,
-                     chatSessionId,
+                     chatSession,
                      fromChatParticipantId,
                      toChatParticipantId,
                      sentByAi,

@@ -4,7 +4,7 @@ import { ChatSessionService } from '../../../services/chats/sessions/chat-sessio
 
 
 // Services
-const chatSessionService = new ChatSessionService()
+const chatSessionService = new ChatSessionService(process.env.NEXT_PUBLIC_DB_ENCRYPT_SECRET)
 
 
 // Code
@@ -29,6 +29,7 @@ export async function getOrCreateChatSession(
           args.chatSessionId,
           null,       // baseChatSettingsId
           args.userProfileId,
+          true,       // encryptedAtRest
           false,      // jsonMode
           args.prompt,
           null)       // name
