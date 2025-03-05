@@ -529,7 +529,7 @@ export class ChatSessionService {
           fromChatParticipantId: string,
           fromUserProfileId: string,
           fromName: string,
-          fromContents: string) {
+          fromContents: any) {
 
     // Debug
     const fnName = `${this.clName}.runSessionTurn()`
