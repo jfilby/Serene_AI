@@ -212,6 +212,8 @@ model ChatSession {
   isEncryptedAtRest            Boolean              @map("is_encrypted_at_rest")
   token                        String
   name                         String?
+  externalIntegration          String?              @map("external_integration")
+  externalId                   String?              @map("external_id")
   createdById                  String               @map("created_by_id")
   createdByUserProfile         UserProfile          @relation(fields: [createdById], references: [id])
   created                      DateTime             @default(now())
@@ -220,6 +222,7 @@ model ChatSession {
   ofChatMessages               ChatMessage[]
   ofChatParticipants           ChatParticipant[]
 
+  @@index([externalId])
   @@map("chat_session")
   @@schema("public")
 }

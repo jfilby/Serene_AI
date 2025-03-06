@@ -44,19 +44,28 @@ export class Encrypter {
     // Encrypt string
     const encrypted = cipher.update(clearText, 'utf8', 'hex') + cipher.final('hex')
 
+    // Get the authTag
+    const authTag = cipher.getAuthTag().toString('hex')
+  
     // Return final string with metadata
     return [
       this.header,
       this.algorithm,
       encrypted,
       iv.toString('hex'),
+      authTag
     ].join('|')
   }
 
   decrypt(encryptedText: string) {
 
+    // Debug
+    const fnName = `${this.clName}.decrypt()`
+
+    // console.log(`${fnName}: starting with encryptedText: ${encryptedText}`)
+
     // Split string with metadata into separate vars
-    const [header, algorithm, encrypted, iv] = encryptedText.split('|')
+    const [header, algorithm, encrypted, iv, authTag] = encryptedText.split('|')
 
     // Validate
     if (header !== this.header) {
@@ -71,15 +80,33 @@ export class Encrypter {
       throw new Error('IV not found')
     }
 
+    if (!authTag) {
+      throw new Error('authTag not found')
+    }
+
+    // Debug
+    // console.log(`${fnName}: decipher encrypted text..`)
+
     // Decipher encrypted string
     const decipher =
             crypto.createDecipheriv(
               this.algorithm,
               this.key as unknown as CipherKey,
-              Buffer.from(iv, 'hex') as unknown as BinaryLike
-    )
+              Buffer.from(iv, 'hex') as unknown as BinaryLike)
+
+    decipher.setAuthTag(new Uint8Array(Buffer.from(authTag, 'hex')))
+
+    // Debug
+    // console.log(`${fnName}: decipher: ` + JSON.stringify(decipher))
+
+    // Get the final decrypted string
+    const decryptedText =
+            decipher.update(encrypted, 'hex', 'utf8') + decipher.final('utf8')
+
+    // Debug
+    // console.log(`${fnName}: returning decrypted text..`)
 
     // Return final decrypted string
-    return decipher.update(encrypted, 'hex', 'utf8') + decipher.final('utf8')
+    return decryptedText
   }
 }

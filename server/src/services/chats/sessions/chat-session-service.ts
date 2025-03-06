@@ -47,7 +47,9 @@ export class ChatSessionService {
           encryptedAtRest: boolean,
           jsonMode: boolean | null,
           prompt: string | null,
-          name: string | null) {
+          name: string | null,
+          externalIntegration: string | null = null,
+          externalId: string | null = null) {
 
     // Debug
     const fnName = `${this.clName}.createChatSession()`
@@ -80,6 +82,8 @@ export class ChatSessionService {
             CommonTypes.newStatus,
             encryptedAtRest,
             name,
+            externalIntegration,
+            externalId,
             userProfileId)
 
     // Get Agent
@@ -364,7 +368,8 @@ export class ChatSessionService {
           this.chatSessionModel.filter(
             prisma,
             status,
-            undefined,  // isEncryptedAtRest,
+            undefined,  // isEncryptedAtRest
+            undefined,  // externalIntegration
             userProfileId)
 
       // Prep chat sessions for return
@@ -512,6 +517,8 @@ export class ChatSessionService {
             undefined,  // status
             undefined,  // isEncryptedAtRest
             firstMessageText,
+            undefined,  // externalIntegration
+            undefined,  // externalId
             undefined)  // createdById
       }
 
@@ -625,6 +632,8 @@ export class ChatSessionService {
           CommonTypes.activeStatus,
           undefined,  // isEncryptedAtRest
           undefined,  // name
+          undefined,  // externalIntegration
+          undefined,  // externalId
           undefined)  // createdById
     }
 

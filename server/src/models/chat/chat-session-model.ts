@@ -1,4 +1,3 @@
-import { ChatMessageModel } from './chat-message-model'
 import { ChatParticipantModel } from './chat-participant-model'
 
 const { v4: uuidv4 } = require('uuid')
@@ -20,6 +19,8 @@ export class ChatSessionModel {
                status: string,
                isEncryptedAtRest: boolean,
                name: string | null,
+               externalIntegration: string | null,
+               externalId: string | null,
                createdById: string) {
 
     // Debug
@@ -38,6 +39,8 @@ export class ChatSessionModel {
           isEncryptedAtRest: isEncryptedAtRest,
           token: token,
           name: name,
+          externalIntegration: externalIntegration,
+          externalId: externalId,
           createdById: createdById
         }
       })
@@ -102,6 +105,7 @@ export class ChatSessionModel {
           prisma: any,
           status: string | undefined,
           isEncryptedAtRest: boolean | undefined,
+          externalIntegration: string | null | undefined,
           createdById: string) {
 
     // Debug
@@ -113,6 +117,7 @@ export class ChatSessionModel {
         where: {
           status: status,
           isEncryptedAtRest: isEncryptedAtRest,
+          externalIntegration: externalIntegration,
           createdById: createdById
         },
         orderBy: [
@@ -127,6 +132,39 @@ export class ChatSessionModel {
         throw 'Prisma error'
       }
     }
+  }
+
+  async getByExternalIntegrationAndExternalId(
+          prisma: any,
+          externalIntegration: string,
+          externalId: string,
+          includeChatSettings: boolean = false) {
+
+    // Debug
+    const fnName = `${this.clName}.getByExternalIntegrationAndExternalId()`
+
+    // Query record
+    var chatSession: any = undefined
+
+    try {
+      chatSession = await prisma.chatSession.findFirst({
+        include: {
+          chatSettings: includeChatSettings
+        },
+        where: {
+          externalIntegration: externalIntegration,
+          externalId: externalId
+        }
+      })
+    } catch(error: any) {
+      if (!(error instanceof error.NotFound)) {
+        console.error(`${fnName}: error: ${error}`)
+        throw 'Prisma error'
+      }
+    }
+
+    // Return OK
+    return chatSession
   }
 
   async getById(prisma: any,
@@ -193,6 +231,8 @@ export class ChatSessionModel {
                status: string | undefined,
                isEncryptedAtRest: boolean | undefined,
                name: string | null | undefined,
+               externalIntegration: string | null | undefined,
+               externalId: string | null | undefined,
                createdById: string | undefined) {
 
     // Debug
@@ -206,6 +246,8 @@ export class ChatSessionModel {
           status: status,
           isEncryptedAtRest: isEncryptedAtRest,
           name: name,
+          externalIntegration: externalIntegration,
+          externalId: externalId,
           createdById: createdById
         },
         where: {
@@ -224,6 +266,8 @@ export class ChatSessionModel {
                status: string | undefined,
                isEncryptedAtRest: boolean | undefined,
                name: string | null | undefined,
+               externalIntegration: string | null | undefined,
+               externalId: string | null | undefined,
                createdById: string) {
 
     // Debug
@@ -261,6 +305,16 @@ export class ChatSessionModel {
         throw 'Prisma error'
       }
 
+      if (externalIntegration === undefined) {
+        console.error(`${fnName}: id is null and externalIntegration is undefined`)
+        throw 'Prisma error'
+      }
+
+      if (externalId === undefined) {
+        console.error(`${fnName}: id is null and externalId is undefined`)
+        throw 'Prisma error'
+      }
+
       if (isEncryptedAtRest == null) {
         console.error(`${fnName}: id is null and isEncryptedAtRest is null`)
         throw 'Prisma error'
@@ -274,6 +328,8 @@ export class ChatSessionModel {
                      status,
                      isEncryptedAtRest,
                      name,
+                     externalIntegration,
+                     externalId,
                      createdById)
     } else {
 
@@ -285,6 +341,8 @@ export class ChatSessionModel {
                      status,
                      isEncryptedAtRest,
                      name,
+                     externalIntegration,
+                     externalId,
                      createdById)
     }
   }
