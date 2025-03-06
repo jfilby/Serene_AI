@@ -31,6 +31,11 @@ export class Encrypter {
 
   encrypt(clearText: string) {
 
+    return this.encryptAes256Gcm(clearText)
+  }
+
+  encryptAes256Gcm(clearText: string) {
+
     // Get IV
     const iv: Buffer = crypto.randomBytes(16)
 
@@ -59,8 +64,13 @@ export class Encrypter {
 
   decrypt(encryptedText: string) {
 
+    return this.decryptAes256Gcm(encryptedText)
+  }
+
+  decryptAes256Gcm(encryptedText: string) {
+
     // Debug
-    const fnName = `${this.clName}.decrypt()`
+    const fnName = `${this.clName}.decryptAes256Gcm()`
 
     // console.log(`${fnName}: starting with encryptedText: ${encryptedText}`)
 
