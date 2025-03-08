@@ -183,32 +183,32 @@ export class ChatSettingsModel {
     try {
       return await prisma.chatSettings.update({
         data: {
-          baseChatSettings: {
+          baseChatSettings: baseChatSettingsId != null ? {
             connect: {
               id: baseChatSettingsId
             }
-          },
+          } : undefined,
           status: status,
           isEncryptedAtRest: isEncryptedAtRest,
           isJsonMode: isJsonMode,
           isPinned: isPinned,
           name: name,
-          llmTech: {
+          llmTech: llmTechId != null ? {
             connect: {
               id: llmTechId
             }
-          },
-          agentUser: {
+          } : undefined,
+          agentUser: agentUserId != null ? {
             connect: {
               id: agentUserId
             }
-          },
+          } : undefined,
           prompt: prompt,
-          createdByUserProfile: {
+          createdByUserProfile: createdById != null ? {
             connect: {
               id: createdById
             }
-          }
+          } : undefined
         },
         where: {
           id: id
