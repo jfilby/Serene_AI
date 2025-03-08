@@ -6,6 +6,7 @@ interface Props {
   label: string
   minRows: number
   onChange: any
+  required?: boolean
   value: string
   style?: any
 }
@@ -15,6 +16,7 @@ export default function TextAreaField({
                           label,
                           minRows = 5,
                           onChange = {},
+                          required = false,
                           value,
                           style = {}
                         }: Props) {
@@ -25,7 +27,7 @@ export default function TextAreaField({
       <FormControl fullWidth>
         <InputLabel
           htmlFor={id}
-          required
+          required={required}
           style={{
             position: 'absolute',
             top: value ? '-18pt' : '4pt',
