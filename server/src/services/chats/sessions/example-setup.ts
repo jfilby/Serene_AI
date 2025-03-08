@@ -1,7 +1,7 @@
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
 import { CommonTypes } from '../../../types/types'
 import { AiTechDefs } from '../../../types/tech-defs'
-import { AgentModel } from '../../../models/agents/agent-model'
+import { AgentUserModel } from '../../../models/agents/agent-user-model'
 import { ChatSettingsModel } from '../../../models/chat/chat-settings-model'
 
 export class ExampleChatSessionSetupService {
@@ -10,7 +10,7 @@ export class ExampleChatSessionSetupService {
   clName = 'ExampleChatSessionSetupService'
 
   // Models
-  agentModel = new AgentModel()
+  agentUserModel = new AgentUserModel()
   chatSettingsModel = new ChatSettingsModel()
   techModel = new TechModel()
 
@@ -20,10 +20,11 @@ export class ExampleChatSessionSetupService {
           userProfileId: string) {
 
     // Upsert an example agent
-    const agent = await
-            this.agentModel.upsert(
+    const agentUser = await
+            this.agentUserModel.upsert(
               prisma,
-              undefined,  // id
+              undefined,                     // id
+              'Serene AI|example settings',  // uniqueRefId
               'Test agent',
               'Generalist',
               'Talk about AI')
@@ -46,7 +47,7 @@ export class ExampleChatSessionSetupService {
               false,                // isPinned
               'Test chat setting',  // name
               tech.id,
-              agent.id,
+              agentUser.id,
               'Talk about anything tech related',
               userProfileId)
   }

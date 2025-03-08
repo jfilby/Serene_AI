@@ -20,6 +20,7 @@ export class AgentLlmService {
   // Code
   async agentSingleShotLlmRequest(
           prisma: any,
+          agentUniqueRefId: string | null,
           agentName: string,
           agentRole: string,
           prompt: string,
@@ -33,9 +34,10 @@ export class AgentLlmService {
     const fnName = `${this.clName}.agentSingleShotLlmRequest()`
 
     // Get or create agent
-    const agent = await
+    const agentUser = await
             this.agentsService.getOrCreate(
               prisma,
+              agentUniqueRefId,
               agentName,
               agentRole)
 
@@ -44,7 +46,7 @@ export class AgentLlmService {
             this.llmUtilsService.getOrCreateChatSettings(
               prisma,
               null,       // baseChatSettingsId
-              agent.userProfileId,
+              agentUser.userProfileId,
               isEncryptedAtRest,
               isJsonMode,
               null,       // prompt
@@ -57,7 +59,7 @@ export class AgentLlmService {
             this.llmUtilsService.buildMessagesWithRolesForSinglePrompt(
               prisma,
               undefined,  // tech
-              agent.userProfileId,
+              agentUser.userProfileId,
               isEncryptedAtRest,
               isJsonMode,
               prompt)
@@ -68,7 +70,7 @@ export class AgentLlmService {
               prisma,
               tech.id,    // llmTechId
               undefined,  // userProfileId
-              agent,
+              agentUser,
               inputMessagesWithRoles,
               undefined,  // systemPrompt
               isJsonMode,

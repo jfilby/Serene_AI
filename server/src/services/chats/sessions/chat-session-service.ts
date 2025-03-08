@@ -3,7 +3,7 @@ import { UserTypes } from '@/serene-core-server/types/user-types'
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
 import { UsersService } from '@/serene-core-server/services/users/service'
 import { CommonTypes } from '../../../types/types'
-import { AgentModel } from '../../../models/agents/agent-model'
+import { AgentUserModel } from '../../../models/agents/agent-user-model'
 import { ChatMessageModel } from '../../../models/chat/chat-message-model'
 import { ChatParticipantModel } from '../../../models/chat/chat-participant-model'
 import { ChatSessionModel } from '../../../models/chat/chat-session-model'
@@ -21,7 +21,7 @@ export class ChatSessionService {
     `Keep your answers concise and inline with the objective.\n`
 
   // Models
-  agentModel = new AgentModel()
+  agentUserModel = new AgentUserModel()
   chatMessageModel
   chatParticipantModel = new ChatParticipantModel()
   chatSessionModel = new ChatSessionModel()
@@ -87,17 +87,17 @@ export class ChatSessionService {
             userProfileId)
 
     // Get Agent
-    const agent = await
-            this.agentModel.getById(
+    const agentUser = await
+            this.agentUserModel.getById(
               prisma,
-              chatSettings.agentId)
+              chatSettings.agentUserId)
 
     // Add ChatParticipants
     var chatParticipants: any[] = []
 
-    // console.log(`${fnName}: agent: ${JSON.stringify(agent)}`)
+    // console.log(`${fnName}: agentUser: ${JSON.stringify(agent)}`)
 
-    if (agent == null) {
+    if (agentUser == null) {
       throw new CustomError(`${fnName}: agent == null`)
     }
 
@@ -107,7 +107,7 @@ export class ChatSessionService {
               prisma,
               undefined,  // id
               chatSession.id,
-              agent.userProfileId)
+              agentUser.userProfileId)
 
     chatParticipants.push(agentChatParticipant)
 
@@ -178,8 +178,8 @@ export class ChatSessionService {
               toChatParticipant.userProfileId)
 
     // Get agent name
-    const agent = await
-            this.agentModel.getByUserProfileId(
+    const agentUser = await
+            this.agentUserModel.getByUserProfileId(
               prisma,
               toUserProfile.id)
 
@@ -187,7 +187,7 @@ export class ChatSessionService {
     return {
       toChatParticipant: toChatParticipant,
       toUserProfile: toUserProfile,
-      agent: agent
+      agentUser: agentUser
     }
   }
 
@@ -272,12 +272,12 @@ export class ChatSessionService {
     switch (userProfile.ownerType) {
 
       case UserTypes.botRoleOwnerType: {
-        const agent = await
-                this.agentModel.getByUserProfileId(
+        const agentUser = await
+                this.agentUserModel.getByUserProfileId(
                   prisma,
                   userProfileId)
 
-        return agent.name
+        return agentUser.name
       }
 
       case UserTypes.humanRoleOwnerType: {
@@ -586,7 +586,7 @@ export class ChatSessionService {
               prisma,
               chatSession.chatSettings.llmTechId,
               fromUserProfileId,
-              agentInfo.agent,
+              agentInfo.agentUser,
               messagesWithRoles,
               chatSession.chatSettings.prompt,
               chatSession.chatSettings.isJsonMode)
@@ -604,7 +604,7 @@ export class ChatSessionService {
       fromContents: fromContents,
       toChatParticipantId: agentInfo.toChatParticipant.id,
       toUserProfileId: agentInfo.toUserProfile.id,
-      toName: agentInfo.agent.name,
+      toName: agentInfo.agentUser.name,
       toContents: chatCompletionResults.messages,
       toJson: chatCompletionResults.json
     }

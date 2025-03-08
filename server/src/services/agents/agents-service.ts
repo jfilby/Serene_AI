@@ -1,4 +1,4 @@
-import { AgentModel } from '../../models/agents/agent-model'
+import { AgentUserModel } from '../../models/agents/agent-user-model'
 
 export class AgentsService {
 
@@ -6,11 +6,12 @@ export class AgentsService {
   clName = 'AgentsService'
 
   // Models
-  agentModel = new AgentModel()
+  agentUserModel = new AgentUserModel()
 
   // Code
   async getOrCreate(
           prisma: any,
+          uniqueRefId: string | null,
           name: string,
           role: string) {
 
@@ -18,24 +19,30 @@ export class AgentsService {
     const fnName = `${this.clName}.upsert()`
 
     // Try to get the agent record
-    var agent = await
-          this.agentModel.getByName(
-            prisma,
-            name)
+    var agentUser: any
 
-    if (agent != null) {
-      return agent
+    if (uniqueRefId != null) {
+
+      agentUser = await
+        this.agentUserModel.getByUniqueRefId(
+          prisma,
+          uniqueRefId)
+
+      if (agentUser != null) {
+        return agentUser
+      }
     }
 
     // Create agent and userProfile records
-    agent = await
-      this.agentModel.create(
+    agentUser = await
+      this.agentUserModel.create(
         prisma,
+        uniqueRefId,
         name,
         role,
-        undefined)  // defaultPrompt
+        null)  // defaultPrompt
 
     // Return agent and userProfile records
-    return agent
+    return agentUser
   }
 }

@@ -1,16 +1,17 @@
 import { UserTypes } from '@/serene-core-server/types/user-types'
 
-export class AgentModel {
+export class AgentUserModel {
 
   // Consts
-  clName = 'AgentModel'
+  clName = 'AgentUserModel'
 
   // Code
   async create(
           prisma: any,
+          uniqueRefId: string | null,
           name: string,
           role: string,
-          defaultPrompt: string | undefined) {
+          defaultPrompt: string | null) {
 
     // Debug
     const fnName = `${this.clName}.create()`
@@ -34,12 +35,13 @@ export class AgentModel {
     }
 
     // Create and return Agent record
-    console.log(`${fnName}: creating agent record..`)
+    console.log(`${fnName}: creating agentUser record..`)
 
     try {
-      return await prisma.agent.create({
+      return await prisma.agentUser.create({
         data: {
           userProfileId: userProfile.id,
+          uniqueRefId: uniqueRefId,
           name: name,
           role: role
         }
@@ -58,7 +60,7 @@ export class AgentModel {
   
     // Get record
     try {
-      return await prisma.agent.findUnique({
+      return await prisma.agentUser.findUnique({
         where: {
           id: id
         }
@@ -71,12 +73,12 @@ export class AgentModel {
     }
   }
 
-  async getByName(
+  async getByUniqueRefId(
           prisma: any,
-          name: string) {
+          uniqueRefId: string) {
 
     // Debug
-    const fnName = `${this.clName}.getByName()`
+    const fnName = `${this.clName}.getByUniqueRefId()`
 
     // Validate
     if (name == null) {
@@ -86,9 +88,9 @@ export class AgentModel {
 
     // Get Agent record
     try {
-      return await prisma.agent.findUnique({
+      return await prisma.agentUser.findUnique({
         where: {
-          name: name
+          uniqueRefId: uniqueRefId
         }
       })
     } catch(error: any) {
@@ -110,7 +112,7 @@ export class AgentModel {
 
     // Query
     try {
-      return await prisma.agent.findUnique({
+      return await prisma.agentUser.findUnique({
         where: {
           userProfileId: userProfileId
         }
@@ -124,17 +126,18 @@ export class AgentModel {
 
   async update(prisma: any,
                id: string,
-               name: string,
-               role: string,
+               uniqueRefId: string | null | undefined,
+               name: string | undefined,
+               role: string | undefined,
                defaultPrompt: string | undefined) {
 
     // Debug
     const fnName = `${this.clName}.update()`
 
-    console.log(`${fnName}: creating agent record..`)
+    console.log(`${fnName}: creating agentUser record..`)
 
     try {
-      return await prisma.agent.update({
+      return await prisma.agentUser.update({
         data: {
           name: name,
           role: role,
@@ -151,6 +154,7 @@ export class AgentModel {
 
   async upsert(prisma: any,
                id: string | undefined,
+               uniqueRefId: string | null | undefined,
                name: string,
                role: string,
                defaultPrompt: string | undefined) {
@@ -159,21 +163,35 @@ export class AgentModel {
     const fnName = `${this.clName}.upsert()`
 
     // Try to get by name
-    if (id == null) {
+    if (id == null &&
+        uniqueRefId != null) {
 
-      const agent = await
-              this.getByName(
+      const agentUser = await
+              this.getByUniqueRefId(
                 prisma,
-                name)
+                uniqueRefId)
 
-      if (agent != null) {
-        id = agent.id
+      if (agentUser != null) {
+        id = agentUser.id
       }
     }
 
     if (id == null) {
+
+      // Validate for create (mainly for type validation of the create call)
+      if (uniqueRefId == null) {
+        console.error(`${fnName}: id is null and uniqueRefId is null`)
+        throw 'Prisma error'
+      }
+
+      if (defaultPrompt === undefined) {
+        console.error(`${fnName}: id is null and defaultPrompt is undefined`)
+        throw 'Prisma error'
+      }
+
       return await this.create(
                      prisma,
+                     uniqueRefId,
                      name,
                      role,
                      defaultPrompt)
@@ -181,6 +199,7 @@ export class AgentModel {
       return await this.update(
                      prisma,
                      id,
+                     uniqueRefId,
                      name,
                      role,
                      defaultPrompt)

@@ -98,7 +98,7 @@ model UserProfile {
   ownerType                   String?      @db.Char(1) @map("owner_type")  // Human or Bot
   roles                       String[]
 
-  ofAgents                    Agent[]
+  ofAgentUsers                AgentUser[]
   ofChatParticipants          ChatParticipant[]
   ofChatSessions              ChatSession[]
   ofChatSettings              ChatSettings[]
@@ -154,17 +154,18 @@ model Tech {
 
 // Serene Gemini AI
 
-model Agent {
+model AgentUser {
   id                   String         @id @default(cuid())
   userProfileId        String         @map("user_profile_id") @unique
   userProfile          UserProfile    @relation(fields: [userProfileId], references: [id])
-  name                 String         @unique
+  uniqueRefId          String?        @unique
+  name                 String
   role                 String
   defaultPrompt        String?
 
   ofChatSettings       ChatSettings[]
 
-  @@map("agent")
+  @@map("agent_user")
   @@schema("public")
 }
 
@@ -238,8 +239,8 @@ model ChatSettings {
   name                         String?              @unique  // Only unique for baseChatSettingsId == null
   llmTechId                    String?              @map("llm_tech_id")
   llmTech                      Tech?                @relation(fields: [llmTechId], references: [id])
-  agentId                      String               @map("agent_id")
-  agent                        Agent                @relation(fields: [agentId], references: [id])
+  agentUserId                  String               @map("agent_user_id")
+  agentUser                    AgentUser            @relation(fields: [agentUserId], references: [id])
   prompt                       String?
   agentRole                    String?              @map("agent_role")
   createdById                  String               @map("created_by_id")

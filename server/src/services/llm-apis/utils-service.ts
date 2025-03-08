@@ -226,7 +226,7 @@ export class LlmUtilsService {
           false,      // isPinned
           null,       // name
           tech.id,    // baseChatSettings.llmTechId,
-          baseChatSettings.agentId,
+          baseChatSettings.agentUserId,
           prompt,
           userProfileId)
     }
@@ -292,7 +292,7 @@ export class LlmUtilsService {
   async prepareAndSendChatMessages(
           prisma: any,
           tech: any,
-          agent: any,
+          agentUser: any,
           systemPrompt: string | undefined,
           messagesWithRoles: any[],
           jsonMode: boolean) {
@@ -313,8 +313,8 @@ export class LlmUtilsService {
                 this.openAIGenericLlmService.prepareMessages(
                   prisma,
                   tech,
-                  agent.name,
-                  agent.role,
+                  agentUser.name,
+                  agentUser.role,
                   systemPrompt,
                   messagesWithRoles,
                   false)  // anonymize
@@ -332,8 +332,8 @@ export class LlmUtilsService {
         const prepareMessagesResults =
                 this.googleGeminiLlmService.prepareMessages(
                   tech,
-                  agent.name,
-                  agent.role,
+                  agentUser.name,
+                  agentUser.role,
                   systemPrompt,
                   messagesWithRoles,
                   false)  // anonymize

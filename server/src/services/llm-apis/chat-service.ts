@@ -97,7 +97,7 @@ export class ChatService {
           prisma: any,
           llmTechId: string | undefined,
           userProfileId: string | undefined,
-          agent: any,
+          agentUser: any,
           messagesWithRoles: any[],
           systemPrompt: string | undefined = undefined,
           jsonMode: boolean = false,
@@ -122,7 +122,7 @@ export class ChatService {
           prisma,
           llmTechId,
           userProfileId,
-          agent,
+          agentUser,
           messagesWithRoles,
           systemPrompt,
           jsonMode,
@@ -191,7 +191,7 @@ export class ChatService {
                   prisma: any,
                   llmTechId: string | undefined,
                   userProfileId: string | undefined,
-                  agent: any,
+                  agentUser: any,
                   messagesWithRoles: any[],
                   systemPrompt: string | undefined = undefined,
                   jsonMode: boolean = false,
@@ -259,9 +259,9 @@ export class ChatService {
 
     // Get userProfileId if agent specified
     if (userProfileId == null &&
-        agent != null) {
+        agentUser != null) {
 
-      userProfileId = agent.userProfileId
+      userProfileId = agentUser.userProfileId
     }
 
     if (userProfileId == null) {
@@ -314,7 +314,7 @@ export class ChatService {
             this.llmUtilsService.prepareAndSendChatMessages(
               prisma,
               tech,
-              agent,
+              agentUser,
               systemPrompt,
               messagesWithRoles,
               jsonMode)
