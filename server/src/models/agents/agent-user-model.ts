@@ -26,15 +26,14 @@ export class AgentUserModel {
         data: {
           isAdmin: false,
           ownerType: UserTypes.botRoleOwnerType,
-          roles: [role],
-          defaultPrompt: defaultPrompt
+          roles: [role]
         }
       })
     } catch(error) {
       console.error(`${fnName}: error: ${error}`)
     }
 
-    // Create and return Agent record
+    // Create and return AgentUser record
     console.log(`${fnName}: creating agentUser record..`)
 
     try {
@@ -43,7 +42,8 @@ export class AgentUserModel {
           userProfileId: userProfile.id,
           uniqueRefId: uniqueRefId,
           name: name,
-          role: role
+          role: role,
+          defaultPrompt: defaultPrompt
         }
       })
     } catch(error) {
@@ -81,12 +81,12 @@ export class AgentUserModel {
     const fnName = `${this.clName}.getByUniqueRefId()`
 
     // Validate
-    if (name == null) {
-      console.error(`${fnName}: id is null and name is null`)
+    if (uniqueRefId == null) {
+      console.error(`${fnName}: uniqueRefId must be specified`)
       throw 'Prisma error'
     }
 
-    // Get Agent record
+    // Get AgentUser record
     try {
       return await prisma.agentUser.findUnique({
         where: {
@@ -129,7 +129,7 @@ export class AgentUserModel {
                uniqueRefId: string | null | undefined,
                name: string | undefined,
                role: string | undefined,
-               defaultPrompt: string | undefined) {
+               defaultPrompt: string | null | undefined) {
 
     // Debug
     const fnName = `${this.clName}.update()`
@@ -157,7 +157,7 @@ export class AgentUserModel {
                uniqueRefId: string | null | undefined,
                name: string,
                role: string,
-               defaultPrompt: string | undefined) {
+               defaultPrompt: string | null | undefined) {
 
     // Debug
     const fnName = `${this.clName}.upsert()`

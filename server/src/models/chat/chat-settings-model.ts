@@ -12,7 +12,7 @@ export class ChatSettingsModel {
                isPinned: boolean,
                name: string | null,
                llmTechId: string,
-               agentId: string,
+               agentUserId: string,
                prompt: string | null,
                createdById: string) {
 
@@ -32,7 +32,7 @@ export class ChatSettingsModel {
           isPinned: isPinned,
           name: name,
           llmTechId: llmTechId,
-          agentId: agentId,
+          agentUserId: agentUserId,
           prompt: prompt,
           createdById: createdById
         }
@@ -172,7 +172,7 @@ export class ChatSettingsModel {
                isPinned: boolean | undefined,
                name: string | null | undefined,
                llmTechId: string | undefined,
-               agentId: string | undefined,
+               agentUserId: string | undefined,
                prompt: string | null | undefined,
                createdById: string | undefined) {
 
@@ -183,16 +183,32 @@ export class ChatSettingsModel {
     try {
       return await prisma.chatSettings.update({
         data: {
-          baseChatSettingsId: baseChatSettingsId,
+          baseChatSettings: {
+            connect: {
+              id: baseChatSettingsId
+            }
+          },
           status: status,
           isEncryptedAtRest: isEncryptedAtRest,
           isJsonMode: isJsonMode,
           isPinned: isPinned,
           name: name,
-          llmTechId: llmTechId,
-          agentId: agentId,
+          llmTech: {
+            connect: {
+              id: llmTechId
+            }
+          },
+          agentUser: {
+            connect: {
+              id: agentUserId
+            }
+          },
           prompt: prompt,
-          createdById: createdById
+          createdByUserProfile: {
+            connect: {
+              id: createdById
+            }
+          }
         },
         where: {
           id: id
@@ -213,7 +229,7 @@ export class ChatSettingsModel {
                isPinned: boolean | undefined,
                name: string | null | undefined,
                llmTechId: string | undefined,
-               agentId: string | undefined,
+               agentUserId: string | undefined,
                prompt: string | null | undefined,
                createdById: string | undefined) {
 
@@ -275,8 +291,8 @@ export class ChatSettingsModel {
         throw 'Prisma error'
       }
 
-      if (agentId == null) {
-        console.error(`${fnName}: id is null and agentId is null`)
+      if (agentUserId == null) {
+        console.error(`${fnName}: id is null and agentUserId is null`)
         throw 'Prisma error'
       }
 
@@ -299,7 +315,7 @@ export class ChatSettingsModel {
                      isPinned,
                      name,
                      llmTechId,
-                     agentId,
+                     agentUserId,
                      prompt,
                      createdById)
     } else {
@@ -314,7 +330,7 @@ export class ChatSettingsModel {
                      isPinned,
                      name,
                      llmTechId,
-                     agentId,
+                     agentUserId,
                      prompt,
                      createdById)
     }
