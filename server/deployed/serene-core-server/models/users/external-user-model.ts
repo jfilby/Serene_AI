@@ -1,14 +1,14 @@
-export class ExternalUserModel {
+export class ExternalUserIntegrationModel {
 
   // Consts
-  clName = 'ExternalUserModel'
+  clName = 'ExternalUserIntegrationModel'
 
   // Code
   async create(
           prisma: any,
           userProfileId: string,
-          externalUserId: string,
-          externalSystem: string | null) {
+          externalIntegrationUserId: string,
+          externalIntegration: string) {
 
     // Debug
     const fnName = `${this.clName}.create()`
@@ -18,8 +18,8 @@ export class ExternalUserModel {
       return await prisma.externalUser.create({
         data: {
           userProfileId: userProfileId,
-          externalUserId: externalUserId,
-          externalSystem: externalSystem
+          externalIntegrationUserId: externalIntegrationUserId,
+          externalIntegration: externalIntegration
         }
       })
     } catch(error) {
@@ -53,8 +53,8 @@ export class ExternalUserModel {
   async filter(
           prisma: any,
           userProfileId: string | undefined,
-          externalUserId: string | undefined,
-          externalSystem: string | null | undefined) {
+          externalIntegrationUserId: string | undefined,
+          externalIntegration: string | undefined) {
 
     // Debug
     const fnName = `${this.clName}.filter()`
@@ -64,8 +64,8 @@ export class ExternalUserModel {
       return await prisma.externalUser.findMany({
         where: {
           userProfileId: userProfileId,
-          externalUserId: externalUserId,
-          externalSystem: externalSystem
+          externalIntegrationUserId: externalIntegrationUserId,
+          externalIntegration: externalIntegration
         }
       })
     } catch(error: any) {
@@ -103,8 +103,8 @@ export class ExternalUserModel {
 
   async getByUniqueKey(
           prisma: any,
-          externalUserId: string,
-          externalSystem: string | null) {
+          externalIntegrationUserId: string,
+          externalIntegration: string) {
 
     // Debug
     const fnName = `${this.clName}.getByUniqueKey()`
@@ -115,8 +115,8 @@ export class ExternalUserModel {
     try {
       externalUser = await prisma.externalUser.findFirst({
         where: {
-          externalUserId: externalUserId,
-          externalSystem: externalSystem
+          externalIntegrationUserId: externalIntegrationUserId,
+          externalIntegration: externalIntegration
         }
       })
     } catch(error: any) {
@@ -133,8 +133,8 @@ export class ExternalUserModel {
           prisma: any,
           id: string,
           userProfileId: string | undefined,
-          externalUserId: string | undefined,
-          externalSystem: string | null | undefined) {
+          externalIntegrationUserId: string | undefined,
+          externalIntegration: string | undefined) {
 
     // Debug
     const fnName = `${this.clName}.update()`
@@ -144,8 +144,8 @@ export class ExternalUserModel {
       return await prisma.externalUser.update({
         data: {
           userProfileId: userProfileId,
-          externalUserId: externalUserId,
-          externalSystem: externalSystem
+          externalIntegrationUserId: externalIntegrationUserId,
+          externalIntegration: externalIntegration
         },
         where: {
           id: id
@@ -160,22 +160,22 @@ export class ExternalUserModel {
   async upsert(prisma: any,
                id: string | undefined,
                userProfileId: string | undefined,
-               externalUserId: string | undefined,
-               externalSystem: string | null | undefined) {
+               externalIntegrationUserId: string | undefined,
+               externalIntegration: string | undefined) {
 
     // Debug
     const fnName = `${this.clName}.upsert()`
 
     // If id isn't specified, but the unique keys are, try to get the record
     if (id == null &&
-        externalUserId != null &&
-        externalSystem != null) {
+        externalIntegrationUserId != null &&
+        externalIntegration != null) {
 
       const externalUser = await
               this.getByUniqueKey(
                 prisma,
-                externalUserId,
-                externalSystem)
+                externalIntegrationUserId,
+                externalIntegration)
 
       if (externalUser != null) {
         id = externalUser.id
@@ -191,13 +191,13 @@ export class ExternalUserModel {
         throw 'Prisma error'
       }
 
-      if (externalUserId == null) {
-        console.error(`${fnName}: id is null and externalUserId is null`)
+      if (externalIntegrationUserId == null) {
+        console.error(`${fnName}: id is null and externalIntegrationUserId is null`)
         throw 'Prisma error'
       }
 
-      if (externalSystem == null) {
-        console.error(`${fnName}: id is null and externalSystem is null`)
+      if (externalIntegration == null) {
+        console.error(`${fnName}: id is null and externalIntegration is null`)
         throw 'Prisma error'
       }
 
@@ -206,8 +206,8 @@ export class ExternalUserModel {
                this.create(
                  prisma,
                  userProfileId,
-                 externalUserId,
-                 externalSystem)
+                 externalIntegrationUserId,
+                 externalIntegration)
     } else {
 
       // Update
@@ -216,8 +216,8 @@ export class ExternalUserModel {
                  prisma,
                  id,
                  userProfileId,
-                 externalUserId,
-                 externalSystem)
+                 externalIntegrationUserId,
+                 externalIntegration)
     }
   }
 }
