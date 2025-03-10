@@ -643,8 +643,10 @@ export class ChatSessionService {
               prisma,
               undefined,  // id
               chatSession,
+              null,       // replyToId
               sessionTurnData.fromChatParticipantId,
               sessionTurnData.toChatParticipantId,
+              null,       // externalId
               false,      // sentByAi
               JSON.stringify(sessionTurnData.fromContents))
 
@@ -652,11 +654,13 @@ export class ChatSessionService {
     const aiReplyChatMessage = await
             this.chatMessageModel.create(
               prisma,
-              undefined,  // id
+              undefined,           // id
               chatSession,
+              userChatMessage.id,  // replyToId
               sessionTurnData.toChatParticipantId,
               sessionTurnData.fromChatParticipantId,
-              true,       // sentByAi
+              null,                // externalId
+              true,                // sentByAi
               JSON.stringify(sessionTurnData.toContents))
 
     // Return

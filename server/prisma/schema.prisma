@@ -174,10 +174,12 @@ model ChatMessage {
   id                           String            @id @default(cuid())
   chatSessionId                String?           @map("chat_session_id")
   chatSession                  ChatSession?      @relation(fields: [chatSessionId], references: [id])
+  replyToId                    String?           @map("reply_to_id")
   fromChatParticipantId        String            @map("from_chat_participant_id")
   fromChatParticipant          ChatParticipant   @relation("fromChatParticipant", fields: [fromChatParticipantId], references: [id])
   toChatParticipantId          String?           @map("to_chat_participant_id")
   toChatParticipant            ChatParticipant?  @relation("toChatParticipant", fields: [toChatParticipantId], references: [id])
+  externalId                   String?           @map("external_id")
   sentByAi                     Boolean           @map("sent_by_ai")
   message                      String
   created                      DateTime          @default(now())
@@ -185,6 +187,7 @@ model ChatMessage {
 
   @@index([chatSessionId])
   @@index([created])
+  @@unique([chatSessionId, externalId])
   @@map("chat_message")
   @@schema("public")
 }

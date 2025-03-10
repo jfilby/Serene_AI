@@ -20,8 +20,10 @@ export class ChatMessageModel {
   async create(prisma: any,
                id: string | undefined,
                chatSession: any,
+               replyToId: string | null,
                fromChatParticipantId: string,
                toChatParticipantId: string,
+               externalId: string | null,
                sentByAi: boolean,
                message: string) {
 
@@ -46,8 +48,10 @@ export class ChatMessageModel {
         data: {
           id: id,
           chatSessionId: chatSession.id,
+          replyToId: replyToId,
           fromChatParticipantId: fromChatParticipantId,
           toChatParticipantId: toChatParticipantId,
+          externalId: externalId,
           sentByAi: sentByAi,
           message: message
         }
@@ -70,6 +74,26 @@ export class ChatMessageModel {
       await prisma.chatMessage.deleteMany({
         where: {
           chatSessionId: chatSessionId
+        }
+      })
+    } catch(error: any) {
+      console.error(`${fnName}: error: ${error}`)
+      throw 'Prisma error'
+    }
+  }
+
+  async deleteById(
+          prisma: any,
+          id: string) {
+
+    // Debug
+    const fnName = `${this.clName}.deleteById()`
+
+    // Delete record
+    try {
+      await prisma.chatMessage.delete({
+        where: {
+          id: id
         }
       })
     } catch(error: any) {
@@ -165,6 +189,52 @@ export class ChatMessageModel {
 
     // Return
     return chatMessages
+  }
+
+  async getByChatSessionAndExternalId(
+          prisma: any,
+          chatSession: any,
+          externalId: string) {
+
+    // Debug
+    const fnName = `${this.clName}.getByChatSessionIdAndExternalId()`
+
+    // Validate
+    if (chatSession == null) {
+
+      throw new CustomError(`${fnName}: chatSessionId == null`)
+    }
+
+    if (externalId == null) {
+
+      throw new CustomError(`${fnName}: externalId == null`)
+    }
+
+    // Query record
+    var chatMessage: any = undefined
+
+    try {
+      chatMessage = await prisma.chatMessage.findFirst({
+        where: {
+          chatSessionId: chatSession.id,
+          externalId: externalId
+        }
+      })
+    } catch(error: any) {
+      if (!(error instanceof error.NotFound)) {
+        console.error(`${fnName}: error: ${error}`)
+        throw 'Prisma error'
+      }
+    }
+
+    // Decrypt message if required
+    if (chatSession.isEncryptedAtRest === true) {
+
+      chatMessage.message = this.encrypter.decrypt(chatMessage.message)
+    }
+
+    // Return OK
+    return chatMessage
   }
 
   async getByLastMessageId(
@@ -367,13 +437,50 @@ export class ChatMessageModel {
     return chatMessage
   }
 
+  async setExternalId(
+          prisma: any,
+          id: string,
+          externalId: string | null) {
+
+    // Debug
+    const fnName = `${this.clName}.setExternalId()`
+
+    // Validate
+    if (id == null) {
+
+      throw new CustomError(`${fnName}: id == null`)
+    }
+
+    if (externalId === undefined) {
+
+      throw new CustomError(`${fnName}: externalId == null`)
+    }
+
+    // Update record
+    try {
+      return await prisma.chatMessage.update({
+        data: {
+          externalId: externalId
+        },
+        where: {
+          id: id
+        }
+      })
+    } catch(error) {
+      console.error(`${fnName}: error: ${error}`)
+      throw 'Prisma error'
+    }
+  }
+
   async update(prisma: any,
                id: string,
                chatSession: any,
-               fromChatParticipantId: string,
-               toChatParticipantId: string,
-               sentByAi: boolean,
-               message: string) {
+               replyToId: string | null | undefined,
+               fromChatParticipantId: string | undefined,
+               toChatParticipantId: string | undefined,
+               externalId: string | null | undefined,
+               sentByAi: boolean | undefined,
+               message: string | undefined) {
 
     // Debug
     const fnName = `${this.clName}.update()`
@@ -391,13 +498,15 @@ export class ChatMessageModel {
       message = this.encrypter.encrypt(message)
     }
 
-    // Create record
+    // Update record
     try {
       return await prisma.chatMessage.update({
         data: {
           chatSessionId: chatSession.id,
+          replyToId: replyToId,
           fromChatParticipantId: fromChatParticipantId,
           toChatParticipantId: toChatParticipantId,
+          externalId: externalId,
           sentByAi: sentByAi,
           message: message
         },
@@ -414,10 +523,12 @@ export class ChatMessageModel {
   async upsert(prisma: any,
                id: string,
                chatSession: any,
-               fromChatParticipantId: string,
-               toChatParticipantId: string,
-               sentByAi: boolean,
-               message: string) {
+               replyToId: string | null | undefined,
+               fromChatParticipantId: string | undefined,
+               toChatParticipantId: string | undefined,
+               externalId: string | null | undefined,
+               sentByAi: boolean | undefined,
+               message: string | undefined) {
 
     // Debug
     const fnName = `${this.clName}.upsert()`
@@ -439,22 +550,59 @@ export class ChatMessageModel {
     // Upsert
     if (id == null) {
 
+      // Validate for create (mainly for type validation of the create call)
+      if (replyToId === undefined) {
+        console.error(`${fnName}: id is null and replyToId is undefined`)
+        throw 'Prisma error'
+      }
+
+      if (fromChatParticipantId === undefined) {
+        console.error(`${fnName}: id is null and fromChatParticipantId is undefined`)
+        throw 'Prisma error'
+      }
+
+      if (toChatParticipantId === undefined) {
+        console.error(`${fnName}: id is null and toChatParticipantId is undefined`)
+        throw 'Prisma error'
+      }
+
+      if (externalId === undefined) {
+        console.error(`${fnName}: id is null and externalId is undefined`)
+        throw 'Prisma error'
+      }
+
+      if (sentByAi === undefined) {
+        console.error(`${fnName}: id is null and sentByAi is undefined`)
+        throw 'Prisma error'
+      }
+
+      if (message === undefined) {
+        console.error(`${fnName}: id is null and message is undefined`)
+        throw 'Prisma error'
+      }
+
+      // Create
       return await this.create(
                      prisma,
                      id,
                      chatSession,
+                     replyToId,
                      fromChatParticipantId,
                      toChatParticipantId,
+                     externalId,
                      sentByAi,
                      message)
     } else {
 
+      // Update
       return await this.update(
                      prisma,
                      id,
                      chatSession,
+                     replyToId,
                      fromChatParticipantId,
                      toChatParticipantId,
+                     externalId,
                      sentByAi,
                      message)
     }
