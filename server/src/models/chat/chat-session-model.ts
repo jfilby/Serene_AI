@@ -106,7 +106,7 @@ export class ChatSessionModel {
           status: string | undefined,
           isEncryptedAtRest: boolean | undefined,
           externalIntegration: string | null | undefined,
-          createdById: string) {
+          createdById: string | undefined) {
 
     // Debug
     const fnName = `${this.clName}.filter()`
