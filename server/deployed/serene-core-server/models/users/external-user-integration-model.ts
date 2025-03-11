@@ -15,7 +15,7 @@ export class ExternalUserIntegrationModel {
 
     // Create record
     try {
-      return await prisma.externalUser.create({
+      return await prisma.externalUserIntegration.create({
         data: {
           userProfileId: userProfileId,
           externalIntegrationUserId: externalIntegrationUserId,
@@ -37,7 +37,7 @@ export class ExternalUserIntegrationModel {
 
     // Delete
     try {
-      return await prisma.externalUser.delete({
+      return await prisma.externalUserIntegration.delete({
         where: {
           id: id
         }
@@ -61,7 +61,7 @@ export class ExternalUserIntegrationModel {
 
     // Query
     try {
-      return await prisma.externalUser.findMany({
+      return await prisma.externalUserIntegration.findMany({
         where: {
           userProfileId: userProfileId,
           externalIntegrationUserId: externalIntegrationUserId,
@@ -82,10 +82,10 @@ export class ExternalUserIntegrationModel {
     const fnName = `${this.clName}.getById()`
 
     // Query
-    var externalUser: any = null
+    var externalUserIntegration: any = null
 
     try {
-      externalUser = await prisma.externalUser.findUnique({
+      externalUserIntegration = await prisma.externalUserIntegration.findUnique({
         where: {
           id: id
         }
@@ -98,7 +98,7 @@ export class ExternalUserIntegrationModel {
     }
 
     // Return
-    return externalUser
+    return externalUserIntegration
   }
 
   async getByUniqueKey(
@@ -109,11 +109,22 @@ export class ExternalUserIntegrationModel {
     // Debug
     const fnName = `${this.clName}.getByUniqueKey()`
 
+    // Validate
+    if (externalIntegrationUserId == null) {
+      console.error(`${fnName}: externalIntegrationUserId is null`)
+      throw 'Prisma error'
+    }
+
+    if (externalIntegration == null) {
+      console.error(`${fnName}: externalIntegration is null`)
+      throw 'Prisma error'
+    }
+
     // Query
-    var externalUser: any = null
+    var externalUserIntegration: any = null
 
     try {
-      externalUser = await prisma.externalUser.findFirst({
+      externalUserIntegration = await prisma.externalUserIntegration.findFirst({
         where: {
           externalIntegrationUserId: externalIntegrationUserId,
           externalIntegration: externalIntegration
@@ -126,7 +137,7 @@ export class ExternalUserIntegrationModel {
       }
     }
     // Return
-    return externalUser
+    return externalUserIntegration
   }
 
   async update(
@@ -141,7 +152,7 @@ export class ExternalUserIntegrationModel {
 
     // Update record
     try {
-      return await prisma.externalUser.update({
+      return await prisma.externalUserIntegration.update({
         data: {
           userProfileId: userProfileId,
           externalIntegrationUserId: externalIntegrationUserId,
@@ -171,14 +182,14 @@ export class ExternalUserIntegrationModel {
         externalIntegrationUserId != null &&
         externalIntegration != null) {
 
-      const externalUser = await
+      const externalUserIntegration = await
               this.getByUniqueKey(
                 prisma,
                 externalIntegrationUserId,
                 externalIntegration)
 
-      if (externalUser != null) {
-        id = externalUser.id
+      if (externalUserIntegration != null) {
+        id = externalUserIntegration.id
       }
     }
 
