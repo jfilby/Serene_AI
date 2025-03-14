@@ -329,7 +329,8 @@ export class ChatSessionService {
     var chatSession = await
           this.chatSessionModel.getById(
             prisma,
-            chatSessionId)
+            chatSessionId,
+            true)  // includeChatSettings
 
     if (chatSession.createdById !== userProfileId) {
 
