@@ -158,10 +158,10 @@ model AgentUser {
   id                   String         @id @default(cuid())
   userProfileId        String         @map("user_profile_id") @unique
   userProfile          UserProfile    @relation(fields: [userProfileId], references: [id])
-  uniqueRefId          String?        @unique
+  uniqueRefId          String?        @map("unique_ref_id") @unique
   name                 String
   role                 String
-  defaultPrompt        String?
+  defaultPrompt        String?        @map("default_prompt")
 
   ofChatSettings       ChatSettings[]
 
