@@ -36,7 +36,7 @@ export class AiTechDefs {
   static expVersion = 'Experimental'
 
   // OpenAI
-  static chatGpt4o = 'ChatGPT-4o'
+  static chatGpt4o = 'GPT-4o'
 
   // The Llama models use OpenAI's client (provider)
   static llama3_8b = 'Llama 3 8B'
@@ -72,6 +72,13 @@ export class AiTechDefs {
       provider: this.googleGeminiProvider,
       variantName: this.googleGeminiLatestExp,
       default: true
+    },
+
+    // OpenAI
+    {
+      provider: this.chatGptProvider,
+      variantName: this.chatGpt4o,
+      default: false
     }
   ]
 
@@ -82,7 +89,7 @@ export class AiTechDefs {
   static googleGeminiV2FlashModelName = 'gemini-2.0-flash'
   static googleGeminiLatestExpModelName = 'gemini-2.0-pro-exp-02-05'
 
-  static chatGpt4oModelName = 'GPT-4o'
+  static chatGpt4oModelName = 'gpt-4o'
 
   static llama3_8bModelName = 'llama3-8b-8192'
 
@@ -123,6 +130,9 @@ export class AiTechDefs {
     [AiTechDefs.googleGeminiV2Flash]: 'Gemini v2 Flash',
     [AiTechDefs.googleGeminiLatestExp]: 'Gemini Latest Experimental',
 
+    // OpenAI
+    [AiTechDefs.chatGpt4o]: 'GPT-4o',
+
     // Llama 3
     [AiTechDefs.llama3_8b]: 'Llama 3 8B'
   }
@@ -140,6 +150,9 @@ export class AiTechDefs {
     [AiTechDefs.googleGeminiV2Flash]: 1048576,
     [AiTechDefs.googleGeminiLatestExp]: 1048576,
 
+    // OpenAI
+    [AiTechDefs.chatGpt4o]: 128000,
+
     // Llama 3
     // Source: https://huggingface.co/meta-llama/Meta-Llama-3-8B
     [AiTechDefs.llama3_8b]: 8000
@@ -153,6 +166,9 @@ export class AiTechDefs {
     [AiTechDefs.googleGeminiV1pt5Flash]: 8192,
     [AiTechDefs.googleGeminiV2Flash]: 8192,
     [AiTechDefs.googleGeminiLatestExp]: 8192,
+
+    // OpenAI
+    [AiTechDefs.chatGpt4o]: 16384,
 
     // Llama 3
     // Source: https://huggingface.co/meta-llama/Meta-Llama-3-8B
