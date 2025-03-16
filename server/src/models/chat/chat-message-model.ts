@@ -143,7 +143,8 @@ export class ChatMessageModel {
 
   async getByChatSessionId(
           prisma: any,
-          chatSession: any) {
+          chatSession: any,
+          maxPrevMessages: number | null) {
 
     // Debug
     const fnName = `${this.clName}.getByChatSessionId()`
@@ -162,20 +163,45 @@ export class ChatMessageModel {
     // Query records
     var chatMessages: any[] = []
 
-    try {
-      chatMessages = await prisma.chatMessage.findMany({
-        where: {
-          chatSessionId: chatSession.id
-        },
-        orderBy: [
-          {
-            created: 'asc'
-          }
-        ]
-      })
-    } catch(error) {
-      console.error(`${fnName}: error: ${error}`)
-      throw 'Prisma error'
+    if (maxPrevMessages == null) {
+
+      // No max prev messages; get all messages
+      try {
+        chatMessages = await prisma.chatMessage.findMany({
+          where: {
+            chatSessionId: chatSession.id
+          },
+          orderBy: [
+            {
+              created: 'asc'
+            }
+          ]
+        })
+      } catch(error) {
+        console.error(`${fnName}: error: ${error}`)
+        throw 'Prisma error'
+      }
+    } else {
+
+      // Limit by max prev messages
+      try {
+        chatMessages = await prisma.chatMessage.findMany({
+          take: maxPrevMessages,
+          where: {
+            chatSessionId: chatSession.id
+          },
+          orderBy: [
+            {
+              created: 'desc'
+            }
+          ]
+        })
+      } catch(error) {
+        console.error(`${fnName}: error: ${error}`)
+        throw 'Prisma error'
+      }
+
+      chatMessages.reverse()
     }
 
     // Decrypts message if required

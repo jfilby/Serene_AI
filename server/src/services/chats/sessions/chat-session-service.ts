@@ -213,7 +213,8 @@ export class ChatSessionService {
     var chatMessages = await
           this.chatMessageModel.getByChatSessionId(
             prisma,
-            chatSession)
+            chatSession,
+            null)  // maxPrevMessages
 
     // Enrich with names
     var chatParticipantCache = new Map<string, any>()
@@ -564,7 +565,8 @@ export class ChatSessionService {
     const chatMessages = await
             this.chatMessageModel.getByChatSessionId(
               prisma,
-              chatSession)
+              chatSession,
+              agentInfo.agentUser.maxPrevMessages)
 
     // Get Tech
     const llmTech = await
@@ -581,7 +583,7 @@ export class ChatSessionService {
               [fromChatParticipantId],
               [agentInfo.toChatParticipant.id])
 
-    // Call Gemini
+    // Call the LLM
     const chatCompletionResults = await
             this.chatService.llmRequest(
               prisma,

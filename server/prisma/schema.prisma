@@ -161,6 +161,7 @@ model AgentUser {
   uniqueRefId          String?        @map("unique_ref_id") @unique
   name                 String
   role                 String
+  maxPrevMessages      Int?           @map("max_prev_messages")  // The max previous messages in the session to include in the prompt
   defaultPrompt        String?        @map("default_prompt")
 
   ofChatSettings       ChatSettings[]

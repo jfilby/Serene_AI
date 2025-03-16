@@ -27,6 +27,7 @@ export class ExampleChatSessionSetupService {
               'Serene AI|example settings',  // uniqueRefId
               'Test agent',
               'Generalist',
+              10,                            // maxPrevMessages
               'Talk about AI')
 
     // Get the default Tech

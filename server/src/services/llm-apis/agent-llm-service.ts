@@ -39,7 +39,8 @@ export class AgentLlmService {
               prisma,
               agentUniqueRefId,
               agentName,
-              agentRole)
+              agentRole,
+              null)
 
     // Get LLM tech
     const chatSettingsResults = await

@@ -11,6 +11,7 @@ export class AgentUserModel {
           uniqueRefId: string | null,
           name: string,
           role: string,
+          maxPrevMessages: number | null,
           defaultPrompt: string | null) {
 
     // Debug
@@ -43,6 +44,7 @@ export class AgentUserModel {
           uniqueRefId: uniqueRefId,
           name: name,
           role: role,
+          maxPrevMessages: maxPrevMessages,
           defaultPrompt: defaultPrompt
         }
       })
@@ -129,6 +131,7 @@ export class AgentUserModel {
                uniqueRefId: string | null | undefined,
                name: string | undefined,
                role: string | undefined,
+               maxPrevMessages: number | null | undefined,
                defaultPrompt: string | null | undefined) {
 
     // Debug
@@ -141,6 +144,7 @@ export class AgentUserModel {
         data: {
           name: name,
           role: role,
+          maxPrevMessages: maxPrevMessages,
           defaultPrompt: defaultPrompt
         },
         where: {
@@ -157,6 +161,7 @@ export class AgentUserModel {
                uniqueRefId: string | null | undefined,
                name: string,
                role: string,
+               maxPrevMessages: number | null | undefined,
                defaultPrompt: string | null | undefined) {
 
     // Debug
@@ -184,6 +189,11 @@ export class AgentUserModel {
         throw 'Prisma error'
       }
 
+      if (maxPrevMessages === undefined) {
+        console.error(`${fnName}: id is null and maxPrevMessages is undefined`)
+        throw 'Prisma error'
+      }
+
       if (defaultPrompt === undefined) {
         console.error(`${fnName}: id is null and defaultPrompt is undefined`)
         throw 'Prisma error'
@@ -194,6 +204,7 @@ export class AgentUserModel {
                      uniqueRefId,
                      name,
                      role,
+                     maxPrevMessages,
                      defaultPrompt)
     } else {
       return await this.update(
@@ -202,6 +213,7 @@ export class AgentUserModel {
                      uniqueRefId,
                      name,
                      role,
+                     maxPrevMessages,
                      defaultPrompt)
     }
   }

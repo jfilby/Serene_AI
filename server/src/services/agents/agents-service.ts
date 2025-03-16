@@ -13,7 +13,8 @@ export class AgentsService {
           prisma: any,
           uniqueRefId: string | null,
           name: string,
-          role: string) {
+          role: string,
+          maxPrevMessages: number | null) {
 
     // Debug
     const fnName = `${this.clName}.upsert()`
@@ -40,6 +41,7 @@ export class AgentsService {
         uniqueRefId,
         name,
         role,
+        maxPrevMessages,
         null)  // defaultPrompt
 
     // Return agent and userProfile records
