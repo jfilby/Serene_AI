@@ -17,6 +17,32 @@ export class ChatMessageModel {
     this.encrypter = new Encrypter(encryptionKey)
   }
 
+  async countMessages(
+          prisma: any,
+          userProfileId: string,
+          startDate: Date,
+          sentByAi: boolean) {
+
+    // Debug
+    const fnName = `${this.clName}.countMessages()`
+
+    // Query
+    const count = await prisma.chatMessage.count({
+      where: {
+        sentByAi: sentByAi,
+        chatSession: {
+          createdById: userProfileId,
+        },
+        created: {
+          gte: startDate,
+        },
+      },
+    })
+
+    // Return
+    return count
+  }
+
   async create(prisma: any,
                id: string | undefined,
                chatSession: any,
