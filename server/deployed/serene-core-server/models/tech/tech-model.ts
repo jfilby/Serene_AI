@@ -1,3 +1,5 @@
+import { CustomError } from '../../types/errors'
+
 export class TechModel {
 
   // Consts
@@ -33,6 +35,11 @@ export class TechModel {
 
     // Debug
     const fnName = `${this.clName}.getById()`
+
+    // Validate
+    if (id == null) {
+      throw new CustomError(`${fnName}: id == null`)
+    }
 
     // Query
     var tech: any = null

@@ -533,6 +533,7 @@ export class ChatSessionService {
 
   async runSessionTurn(
           prisma: any,
+          llmTechId: string | undefined,
           chatSessionId: string,
           fromChatParticipantId: string,
           fromUserProfileId: string,
@@ -568,10 +569,22 @@ export class ChatSessionService {
               agentInfo.agentUser.maxPrevMessages)
 
     // Get Tech
-    const llmTech = await
-            this.techModel.getById(
-              prisma,
-              chatSession.chatSettings.llmTechId)
+    var llmTech: string | undefined
+
+    if (llmTechId != null) {
+
+      llmTech = await
+        this.techModel.getById(
+          prisma,
+          llmTechId)
+    } else {
+
+      // Get default tech if not specified
+      llmTech = await
+        this.techModel.getByVariantName(
+          prisma,
+          process.env.NEXT_PUBLIC_DEFAULT_LLM_VARIANT as string)
+    }
 
     // Build messagesWithRoles
     const messagesWithRoles =

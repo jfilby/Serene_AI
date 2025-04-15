@@ -218,58 +218,6 @@ export class LlmUtilsService {
     }
   }
 
-  async getTech(
-          prisma: any,
-          baseChatSettings: any) {
-
-    // Debug
-    const fnName = `${this.clName}.getTech()`
-
-    // Var
-    var tech: any
-
-    // Is a default LLM provider specified in the env file?
-    if (process.env.NEXT_PUBLIC_DEFAULT_LLM_VARIANT != null &&
-        process.env.NEXT_PUBLIC_DEFAULT_LLM_VARIANT !== '') {
-
-      // Debug
-      console.log(`${fnName}: getting variant (by env file): ` +
-                  process.env.NEXT_PUBLIC_DEFAULT_LLM_VARIANT)
-
-      // Get variant by name
-      tech = await
-        this.techModel.getByVariantName(
-          prisma,
-          process.env.NEXT_PUBLIC_DEFAULT_LLM_VARIANT)
-
-      if (tech == null) {
-        const message =
-                `${fnName}: tech not found for NEXT_PUBLIC_DEFAULT_LLM_VARIANT: ` +
-                JSON.stringify(process.env.NEXT_PUBLIC_DEFAULT_LLM_VARIANT)
-
-        console.error(message)
-        throw new CustomError(message)
-      } else {
-        baseChatSettings.llmTechId = tech.id
-      }
-
-      // Debug
-      console.log(`${fnName}: baseChatSettings.llmTechId: ` +
-                  JSON.stringify(baseChatSettings.llmTechId))
-    }
-
-    // Get tech
-    if (tech == null) {
-
-      tech = await
-        this.techModel.getById(
-          prisma,
-          baseChatSettings.llmTechId)
-    }
-
-    return tech
-  }
-
   async prepareAndSendChatMessages(
           prisma: any,
           tech: any,

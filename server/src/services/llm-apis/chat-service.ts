@@ -208,9 +208,9 @@ export class ChatService {
     if (llmTechId == null) {
 
       tech = await
-        this.techModel.getDefaultProvider(
+        this.techModel.getByVariantName(
           prisma,
-          AiTechDefs.llms)
+          process.env.NEXT_PUBLIC_DEFAULT_LLM_VARIANT as string)
 
       if (tech != null) {
         llmTechId = tech.id
