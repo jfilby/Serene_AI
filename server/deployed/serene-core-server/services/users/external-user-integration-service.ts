@@ -27,10 +27,7 @@ export class ExternalUserIntegrationService {
     // If found
     if (externalUserIntegration != null) {
 
-      return {
-        status: true,
-        userProfileId: externalUserIntegration.userProfileId
-      }
+      return externalUserIntegration.userProfileId
     }
 
     // Create UserProfile record
@@ -49,9 +46,6 @@ export class ExternalUserIntegrationService {
         externalIntegrationUserId,
         externalIntegration)
 
-    return {
-      status: true,
-      userProfileId: userProfile.id
-    }
+    return userProfile.id
   }
 }

@@ -621,8 +621,8 @@ export class ChatSessionService {
     // Debug
     const fnName = `${this.clName}.saveMessages()`
 
-    console.log(`${fnName}: sessionTurnData: ` +
-                JSON.stringify(sessionTurnData))
+    // console.log(`${fnName}: sessionTurnData: ` +
+    //             JSON.stringify(sessionTurnData))
 
     // Switch that status from N (new) to A (active)
     if (chatSession.status === CommonTypes.newStatus) {

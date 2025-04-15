@@ -518,9 +518,12 @@ export class ChatMessageModel {
           id: id
         }
       })
-    } catch(error) {
-      console.error(`${fnName}: error: ${error}`)
-      throw 'Prisma error'
+    } catch(error: any) {
+      // Don't fail, this can happen due to a unique constraint violation in
+      // some valid scenarios.
+      // Trying to handle the specific Prisma error code didn't work
+      console.warn(`${fnName}: warning: ` + JSON.stringify(error))
+      return null
     }
   }
 

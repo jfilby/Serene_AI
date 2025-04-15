@@ -137,7 +137,7 @@ export class AgentUserModel {
     // Debug
     const fnName = `${this.clName}.update()`
 
-    console.log(`${fnName}: creating agentUser record..`)
+    console.log(`${fnName}: updating agentUser record..`)
 
     try {
       return await prisma.agentUser.update({

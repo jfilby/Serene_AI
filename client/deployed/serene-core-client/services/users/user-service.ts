@@ -17,8 +17,12 @@ export class UsersService {
   // Code
   formatCreateBlankUser(json: any) {
 
-    console.log('formatCreateBlankUser: ' + JSON.stringify(json))
+    // Debug
+    const fnName = `${this.clName}.formatCreateBlankUser()`
 
+    // console.log(`${fnName}: json: ` + JSON.stringify(json))
+
+    // Formatting
     const userRecord = json.createBlankUser
 
     if (!userRecord) {
@@ -34,8 +38,12 @@ export class UsersService {
 
   formatUserById(json: any) {
 
-    console.log('formatUserById: ' + JSON.stringify(json))
+    // Debug
+    const fnName = `${this.clName}.formatUserById()`
 
+    // console.log(`${fnName}: json: ` + JSON.stringify(json))
+
+    // Formatting
     const userRecord = json.userById
 
     if (!userRecord) {
@@ -67,12 +75,18 @@ export class UsersService {
   getSignedOutUserIdFromCookie(
     { req, res }: ReqRes) {
 
+    // Debug
+    const fnName = `${this.clName}.getSignedOutUserIdFromCookie()`
+
+    // Get cookie
     const signedOutIdValue =
             getCookie(this.signedOutCookieName,
             { req, res })
 
-    console.log(`getSignedOutUserIdFromCookie(): signedOutIdValue: ${signedOutIdValue}`)
+    // Debug
+    // console.log(`${fnName}: signedOutIdValue: ${signedOutIdValue}`)
 
+    // Return
     var id
 
     if (signedOutIdValue == null) {
@@ -87,14 +101,19 @@ export class UsersService {
           { req, res }: ReqRes,
           apolloClient: any) {
 
+    // Debug
+    const fnName = `${this.clName}.getUserIdFromCookieAndVerify()`
+
     // Get signed-in userId
     const idValue: string | undefined =
             getCookie(
               this.signedInCookieName,
               { req, res })
 
-    console.log(`getUserIdFromCookieAndVerify: idValue: ${idValue}`)
+    // Debug
+    // console.log(`${fnName}: idValue: ${idValue}`)
 
+    // Set userProfileId if idValue not null
     var userProfileId: string | null | undefined
 
     if (idValue == null) {
@@ -115,7 +134,8 @@ export class UsersService {
       }
     }).then((result: any) => results = result)
       .catch((error: any) => {
-        console.log(`error.networkError: ${JSON.stringify(error.networkError)}`)
+        console.log(`${fnName}: error.networkError: ` +
+                    JSON.stringify(error.networkError))
       })
 
     // For now, if the userId isn't found in the DB, return null.
@@ -166,7 +186,8 @@ export class UsersService {
 
     if (session) {
 
-      console.log(`${fnName}: hasSession: ${!!session} email: ${session.user.email}`)
+      // Debug
+      // console.log(`${fnName}: hasSession: ${!!session} email: ${session.user.email}`)
 
       // GraphQL call to get or create user
       var results: any = null
@@ -183,8 +204,10 @@ export class UsersService {
           console.log(`${fnName}: error.networkError: ${JSON.stringify(error.networkError)}`)
         })
 
-      console.log(`${fnName}: results: ${JSON.stringify(results)}`)
+      // Debug
+      // console.log(`${fnName}: results: ` + JSON.stringify(results))
 
+      // Get results
       const newSignedInUserProfile = results.data['getOrCreateUserByEmail']
 
       // Update with newly created userProfile record
@@ -227,8 +250,10 @@ export class UsersService {
         console.log(`${fnName}: error.networkError: ${JSON.stringify(error.networkError)}`)
       })
 
-    console.log(`${fnName}: results: ${JSON.stringify(results)}`)
+    // Debug
+    // console.log(`${fnName}: results: ` + JSON.stringify(results))
 
+    // Get results
     var signedOutUserProfile: any
 
     const signedOutUser = results.data['getOrCreateSignedOutUser']
@@ -242,7 +267,7 @@ export class UsersService {
     this.setSignedOutUserCookie({req, res}, signedOutId)
 
     // Return
-    console.log(`${fnName}: returning signed-out user id: ${signedOutId}`)
+    // console.log(`${fnName}: returning signed-out user id: ${signedOutId}`)
 
     return signedOutUserProfile
   }
