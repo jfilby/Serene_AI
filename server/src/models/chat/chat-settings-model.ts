@@ -11,7 +11,6 @@ export class ChatSettingsModel {
                isJsonMode: boolean,
                isPinned: boolean,
                name: string | null,
-               llmTechId: string,
                agentUserId: string,
                prompt: string | null,
                createdById: string) {
@@ -31,7 +30,6 @@ export class ChatSettingsModel {
           isJsonMode: isJsonMode,
           isPinned: isPinned,
           name: name,
-          llmTechId: llmTechId,
           agentUserId: agentUserId,
           prompt: prompt,
           createdById: createdById
@@ -171,7 +169,6 @@ export class ChatSettingsModel {
                isJsonMode: boolean | undefined,
                isPinned: boolean | undefined,
                name: string | null | undefined,
-               llmTechId: string | undefined,
                agentUserId: string | undefined,
                prompt: string | null | undefined,
                createdById: string | undefined) {
@@ -193,11 +190,6 @@ export class ChatSettingsModel {
           isJsonMode: isJsonMode,
           isPinned: isPinned,
           name: name,
-          llmTech: llmTechId != null ? {
-            connect: {
-              id: llmTechId
-            }
-          } : undefined,
           agentUser: agentUserId != null ? {
             connect: {
               id: agentUserId
@@ -228,7 +220,6 @@ export class ChatSettingsModel {
                isJsonMode: boolean | undefined,
                isPinned: boolean | undefined,
                name: string | null | undefined,
-               llmTechId: string | undefined,
                agentUserId: string | undefined,
                prompt: string | null | undefined,
                createdById: string | undefined) {
@@ -286,11 +277,6 @@ export class ChatSettingsModel {
         throw 'Prisma error'
       }
 
-      if (llmTechId == null) {
-        console.error(`${fnName}: id is null and llmTechId is null`)
-        throw 'Prisma error'
-      }
-
       if (agentUserId == null) {
         console.error(`${fnName}: id is null and agentUserId is null`)
         throw 'Prisma error'
@@ -314,7 +300,6 @@ export class ChatSettingsModel {
                      isJsonMode,
                      isPinned,
                      name,
-                     llmTechId,
                      agentUserId,
                      prompt,
                      createdById)
@@ -329,7 +314,6 @@ export class ChatSettingsModel {
                      isJsonMode,
                      isPinned,
                      name,
-                     llmTechId,
                      agentUserId,
                      prompt,
                      createdById)

@@ -30,12 +30,6 @@ export class ExampleChatSessionSetupService {
               10,                            // maxPrevMessages
               'Talk about AI')
 
-    // Get the default Tech
-    const tech = await
-            this.techModel.getDefaultProvider(
-              prisma,
-              AiTechDefs.llms)
-
     // Upsert ChatSetting record
     const chatSetting = await
             this.chatSettingsModel.upsert(
@@ -47,7 +41,6 @@ export class ExampleChatSessionSetupService {
               false,                // isJsonMode
               false,                // isPinned
               'Test chat setting',  // name
-              tech.id,
               agentUser.id,
               'Talk about anything tech related',
               userProfileId)

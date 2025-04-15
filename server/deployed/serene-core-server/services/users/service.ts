@@ -55,24 +55,18 @@ export class UsersService {
           prisma: any,
           email: string) {
 
-    var user: any
-    var userProfile: any
+    const user = await
+            this.userModel.create(
+              prisma,
+              email,
+              undefined)  // name
 
-    await prisma.$transaction(async (transactionPrisma: any) => {
-
-      user = await
-        this.userModel.create(
-          transactionPrisma,
-          email,
-          undefined)  // name
-
-      userProfile = await
-        this.userProfileModel.create(
-          transactionPrisma,
-          user.id,
-          false,  // isAdmin
-          null)   // deletePending
-    })
+    const userProfile = await
+            this.userProfileModel.create(
+              prisma,
+              user.id,
+              false,  // isAdmin
+              null)   // deletePending
 
     return userProfile.id
   }

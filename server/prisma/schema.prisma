@@ -241,8 +241,6 @@ model ChatSettings {
   isJsonMode                   Boolean              @map("is_json_mode")
   isPinned                     Boolean              @map("is_pinned")
   name                         String?              @unique  // Only unique for baseChatSettingsId == null
-  llmTechId                    String?              @map("llm_tech_id")
-  llmTech                      Tech?                @relation(fields: [llmTechId], references: [id])
   agentUserId                  String               @map("agent_user_id")
   agentUser                    AgentUser            @relation(fields: [agentUserId], references: [id])
   prompt                       String?
