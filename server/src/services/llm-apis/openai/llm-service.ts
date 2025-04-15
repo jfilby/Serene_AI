@@ -18,10 +18,7 @@ export class OpenAiLlmService {
   gpt4Turbo = 'gpt-4-1106-preview'
 
   // Vars
-  openAi = new OpenAI({
-    apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
-    baseURL: process.env.NEXT_PUBLIC_OPENAI_BASE_URL
-  })
+  openAi: any
 
   // Models
   techModel = new TechModel()
@@ -32,17 +29,24 @@ export class OpenAiLlmService {
   // Code
   constructor() {
 
-    /* Debug
+    // Debug
     const fnName = `${this.clName}.constructor()`
 
-    console.log(`${fnName}: ` +
+    /* console.log(`${fnName}: ` +
                 `apiKey: ` + JSON.stringify(process.env.NEXT_PUBLIC_OPENAI_API_KEY) +
                 ` baseURL: ` + JSON.stringify(process.env.NEXT_PUBLIC_OPENAI_BASE_URL)) */
 
     // Validate apiKey
     if (process.env.NEXT_PUBLIC_OPENAI_API_KEY == null) {
-      throw `apiKey isn't set`
+      console.warn(`${fnName}: apiKey isn't set`)
+      return
     }
+
+    // Init
+    this.openAi = new OpenAI({
+      apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+      baseURL: process.env.NEXT_PUBLIC_OPENAI_BASE_URL
+    })
   }
 
   async sendChatMessages(
@@ -106,7 +110,7 @@ export class OpenAiLlmService {
     var completion: any = null
 
     await this.openAi.chat.completions.create(completionsOptions)
-    .then((res) => {
+    .then((res: any) => {
       /* console.log(`${fnName}: got response:`)
       console.log(`${fnName}: ` + JSON.stringify(res))
       console.log(`${fnName}: got result choice 0 message content:`)
