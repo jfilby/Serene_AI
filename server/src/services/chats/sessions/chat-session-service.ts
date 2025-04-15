@@ -133,8 +133,7 @@ export class ChatSessionService {
 
     // Return
     return {
-      chatSession: chatSession,
-      tech: chatSettingsResults.tech
+      chatSession: chatSession
     }
   }
 
