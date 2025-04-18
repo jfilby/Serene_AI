@@ -38,36 +38,14 @@ export class GoogleGeminiLlmUtilsService {
       // Determine the role
       var role: string = ''
 
-      if (userChatParticipantIds.includes(chatMessage.fromChatParticipantId)) {
+      if (chatMessage.sentByAi === false) {
         role = ServerOnlyTypes.geminiUserMessageRole
-      } else if (agentChatParticipantIds.includes(chatMessage.fromChatParticipantId)) {
+      } else if (chatMessage.sentByAi === true) {
         role = ServerOnlyTypes.geminiModelMessageRole
       } else {
         throw new CustomError(
-          `${fnName}: unhandled chatMessage.fromChatParticipantId: ` +
-          chatMessage.fromChatParticipantId)
-      }
-
-      // Validate
-      if (chatMessage.sentByAi) {
-
-        if (chatMessage.sentByAi === true &&
-            role !== ServerOnlyTypes.geminiModelMessageRole) {
-
-          throw new CustomError(
-                      `${fnName}: chatMessage.sentByAi === true, but ` +
-                      `role !== ServerOnlyTypes.geminiModelMessageRole ` +
-                      `for chatMessage: ${JSON.stringify(chatMessage)}`)
-        }
-
-        if (chatMessage.sentByAi === false &&
-            role !== ServerOnlyTypes.geminiUserMessageRole) {
-
-          throw new CustomError(
-                      `${fnName}: chatMessage.sentByAi === false, but ` +
-                      `role !== ServerOnlyTypes.geminiUserMessageRole ` +
-                      `for chatMessage: ${JSON.stringify(chatMessage)}`)
-        }
+                    `${fnName}: unhandled chatMessage.sentByAi: ` +
+                    JSON.stringify(chatMessage.sentByAi))
       }
 
       // Add chat message

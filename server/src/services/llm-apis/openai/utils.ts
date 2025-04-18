@@ -38,36 +38,14 @@ export class OpenAiLlmUtilsService {
       // Determine the role
       var role: string = ''
 
-      if (userChatParticipantIds.includes(chatMessage.fromChatParticipantId)) {
+      if (chatMessage.sentByAi === false) {
         role = ServerOnlyTypes.chatGptUserMessageRole
-      } else if (agentChatParticipantIds.includes(chatMessage.fromChatParticipantId)) {
+      } else if (chatMessage.sentByAi === true) {
         role = ServerOnlyTypes.chatGptModelMessageRole
       } else {
         throw new CustomError(
-          `${fnName}: unhandled chatMessage.fromChatParticipantId: ` +
-          chatMessage.fromChatParticipantId)
-      }
-
-      // Validate
-      if (chatMessage.sentByAi) {
-
-        if (chatMessage.sentByAi === true &&
-            role !== ServerOnlyTypes.chatGptModelMessageRole) {
-
-          throw new CustomError(
-                      `${fnName}: chatMessage.sentByAi === true, but ` +
-                      `role !== ServerOnlyTypes.chatGptModelMessageRole ` +
-                      `for chatMessage: ${JSON.stringify(chatMessage)}`)
-        }
-
-        if (chatMessage.sentByAi === false &&
-            role !== ServerOnlyTypes.chatGptUserMessageRole) {
-
-          throw new CustomError(
-                      `${fnName}: chatMessage.sentByAi === false, but ` +
-                      `role !== ServerOnlyTypes.chatGptUserMessageRole ` +
-                      `for chatMessage: ${JSON.stringify(chatMessage)}`)
-        }
+          `${fnName}: unhandled chatMessage.sentByAi: ` +
+          JSON.stringify(chatMessage.sentByAi))
       }
 
       // Add chat message
