@@ -46,6 +46,7 @@ export class AgentLlmService {
     // Build the messages
     const inputMessagesWithRoles = await
             this.llmUtilsService.buildMessagesWithRolesForSinglePrompt(
+              prisma,
               undefined,  // tech
               prompt)
 

@@ -1,3 +1,4 @@
+import { PrismaClient } from '@prisma/client'
 import { CustomError } from '@/serene-core-server/types/errors'
 import { AiTechDefs } from '../../types/tech-defs'
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
@@ -68,6 +69,7 @@ export class LlmUtilsService {
   }
 
   async buildMessagesWithRolesForSinglePrompt(
+          prisma: PrismaClient,
           tech: any,
           prompt: string) {
 
