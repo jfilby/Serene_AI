@@ -1,4 +1,5 @@
 import { CustomError } from '@/serene-core-server/types/errors'
+import { TechModel } from '@/serene-core-server/models/tech/tech-model'
 import { ChatSettingsModel } from '../../models/chat/chat-settings-model'
 import { AgentsService } from '../agents/agents-service'
 import { ChatService } from './chat-service'
@@ -11,6 +12,7 @@ export class AgentLlmService {
 
   // Models
   chatSettingsModel = new ChatSettingsModel()
+  techModel = new TechModel()
 
   // Services
   agentsService = new AgentsService()
@@ -33,6 +35,15 @@ export class AgentLlmService {
 
     // Debug
     const fnName = `${this.clName}.agentSingleShotLlmRequest()`
+
+    // Get default/override tech if not specified
+    if (tech == null) {
+
+      tech = await
+        this.techModel.getByVariantName(
+          prisma,
+          process.env.NEXT_PUBLIC_DEFAULT_LLM_VARIANT as string)
+    }
 
     // Get or create agent
     const agentUser = await
