@@ -144,7 +144,6 @@ model Tech {
   variantName                  String               @map("variant_name") @unique
   provides                     String
 
-  ofChatSettings               ChatSettings[]
   ofLlmCaches                  LlmCache[]
   ofRateLimitedApis            RateLimitedApi[]
 

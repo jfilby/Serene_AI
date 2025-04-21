@@ -561,6 +561,18 @@ export class ChatSessionService {
               prisma,
               chatSessionId)
 
+    // Validate
+    if (agentInfo.agentUser == null) {
+
+      throw new CustomError(`${fnName}: agentInfo.agentUser == null`)
+    }
+
+    if (agentInfo.agentUser.maxPrevMessages == null) {
+
+      throw new CustomError(`${fnName}: agentInfo.agentUser.maxPrevMessages ` +
+                            `== null`)
+    }
+
     // Get chat messages
     const chatMessages = await
             this.chatMessageModel.getByChatSessionId(
