@@ -232,18 +232,9 @@ export class GoogleGeminiLlmService {
       // Test
       // console.log(`${fnName}: message: ${JSON.stringify(message)}`)
 
-      // Determine role
-      var role: string = ''
-
-      if (message.isModel === true) {
-        role = ServerOnlyTypes.geminiModelMessageRole
-      } else {
-        role = ServerOnlyTypes.geminiUserMessageRole
-      }
-
       // Fill in a model response if none found
       if (previousRole === ServerOnlyTypes.geminiUserMessageRole &&
-          role === ServerOnlyTypes.geminiUserMessageRole) {
+          message.role === ServerOnlyTypes.geminiUserMessageRole) {
 
         messagesWithRoles.push({
           role: ServerOnlyTypes.geminiModelMessageRole,
@@ -253,12 +244,12 @@ export class GoogleGeminiLlmService {
 
       // Add message
       messagesWithRoles.push({
-        role: role,
+        role: message.role,
         parts: message.parts
       })
 
       // Set previousRole
-      previousRole = role
+      previousRole = message.role
     }
 
     // console.log(`${fnName}: messagesWithRoles: ` +
