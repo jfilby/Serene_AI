@@ -99,6 +99,7 @@ model UserProfile {
   roles                       String[]
 
   ofAgentUsers                AgentUser[]
+  ofChatMessageCreated        ChatMessageCreated[]
   ofChatParticipants          ChatParticipant[]
   ofChatSessions              ChatSession[]
   ofChatSettings              ChatSettings[]
@@ -189,6 +190,20 @@ model ChatMessage {
   @@index([created])
   @@unique([chatSessionId, externalId])
   @@map("chat_message")
+  @@schema("public")
+}
+
+model ChatMessageCreated {
+  // Used for quotas and rate-limiting, as ChatMessage can be deleted from as
+  // needed.
+  id                           String            @id @default(cuid())
+  userProfileId                String            @map("user_profile_id")
+  userProfile                  UserProfile       @relation(fields: [userProfileId], references: [id])
+  sentByAi                     Boolean           @map("sent_by_ai")
+  created                      DateTime          @default(now())
+
+  @@unique([userProfileId, created])
+  @@map("chat_message_created")
   @@schema("public")
 }
 

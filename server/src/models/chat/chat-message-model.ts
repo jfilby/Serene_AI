@@ -1,5 +1,6 @@
 import { Encrypter } from '@/serene-core-server/services/access/encrypt-service'
 import { CustomError } from '@/serene-core-server/types/errors'
+import { ChatMessageCreatedModel } from './chat-message-created'
 
 export class ChatMessageModel {
 
@@ -7,6 +8,9 @@ export class ChatMessageModel {
   clName = 'ChatMessageModel'
 
   msPerMinute = 60000
+
+  // Models
+  chatMessageCreatedModel = new ChatMessageCreatedModel()
 
   // Services
   encrypter
@@ -47,6 +51,7 @@ export class ChatMessageModel {
                id: string | undefined,
                chatSession: any,
                replyToId: string | null,
+               fromUserProfileId: string,
                fromChatParticipantId: string,
                toChatParticipantId: string,
                externalId: string | null,
@@ -69,8 +74,10 @@ export class ChatMessageModel {
     }
 
     // Create record
+    var chatMessage: any = undefined
+
     try {
-      return await prisma.chatMessage.create({
+      chatMessage =  await prisma.chatMessage.create({
         data: {
           id: id,
           chatSessionId: chatSession.id,
@@ -86,6 +93,15 @@ export class ChatMessageModel {
       console.error(`${fnName}: error: ${error}`)
       throw 'Prisma error'
     }
+
+    // Create ChatMessageCreated record
+    await this.chatMessageCreatedModel.create(
+            prisma,
+            fromUserProfileId,
+            sentByAi)
+
+    // Return
+    return chatMessage
   }
 
   async deleteByChatSessionId(
@@ -579,6 +595,7 @@ export class ChatMessageModel {
                id: string,
                chatSession: any,
                replyToId: string | null | undefined,
+               fromUserProfileId: string | undefined,
                fromChatParticipantId: string | undefined,
                toChatParticipantId: string | undefined,
                externalId: string | null | undefined,
@@ -608,6 +625,11 @@ export class ChatMessageModel {
       // Validate for create (mainly for type validation of the create call)
       if (replyToId === undefined) {
         console.error(`${fnName}: id is null and replyToId is undefined`)
+        throw 'Prisma error'
+      }
+
+      if (fromUserProfileId == null) {
+        console.error(`${fnName}: id is null and fromUserProfileId is null`)
         throw 'Prisma error'
       }
 
@@ -642,6 +664,7 @@ export class ChatMessageModel {
                      id,
                      chatSession,
                      replyToId,
+                     fromUserProfileId,
                      fromChatParticipantId,
                      toChatParticipantId,
                      externalId,

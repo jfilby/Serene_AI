@@ -628,6 +628,7 @@ export class ChatSessionService {
       waitSeconds: 0,
       chatSession: chatSession,
       fromChatParticipantId: fromChatParticipantId,
+      fromUserProfileId: fromUserProfileId,
       fromContents: fromContents,
       toChatParticipantId: agentInfo.toChatParticipant.id,
       toUserProfileId: agentInfo.toUserProfile.id,
@@ -671,6 +672,7 @@ export class ChatSessionService {
               undefined,  // id
               chatSession,
               null,       // replyToId
+              sessionTurnData.fromUserProfileId,
               sessionTurnData.fromChatParticipantId,
               sessionTurnData.toChatParticipantId,
               null,       // externalId
@@ -684,6 +686,7 @@ export class ChatSessionService {
               undefined,           // id
               chatSession,
               userChatMessage.id,  // replyToId
+              sessionTurnData.toUserProfileId,
               sessionTurnData.toChatParticipantId,
               sessionTurnData.fromChatParticipantId,
               null,                // externalId
