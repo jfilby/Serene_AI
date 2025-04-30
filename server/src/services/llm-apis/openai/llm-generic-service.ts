@@ -1,5 +1,6 @@
 import { CustomError } from '@/serene-core-server/types/errors'
 import { ServerOnlyTypes } from '../../../types/server-only-types'
+import { EstimateTokensService } from '../estimate-tokens-service'
 
 export class OpenAIGenericLlmService {
 
@@ -11,6 +12,9 @@ export class OpenAIGenericLlmService {
   lengthReason = 'length'
   contentFilterReason = 'content_filter'
   nullReason = 'null'
+
+  // Services
+  estimateTokensService = new EstimateTokensService()
 
   // Code
   convertOpenAiChatCompletionResults(openAiResults: any) {
@@ -30,6 +34,7 @@ export class OpenAIGenericLlmService {
       model: undefined,
       message: '',     // Error message (if any)
       messages: [],    // Reply messages,
+      pricingTier: 'paid',
       inputTokens: 0,
       outputTokens: 0,
       actualTech: undefined,
@@ -112,69 +117,6 @@ export class OpenAIGenericLlmService {
 
     // Return
     return results
-  }
-
-  estimateInputTokens(messages: any[]) {
-
-    // Debug
-    const fnName = `${this.clName}.estimateInputTokens()`
-
-    // console.log(`${fnName}: starting..`)
-
-    // Calculate total length of words
-    var words = 0
-
-    for (const message of messages) {
-
-      // console.log(`${fnName}: message: ${JSON.stringify(message)}`)
-
-      // Validate
-      if (message.role == null) {
-        throw new CustomError(`${fnName}: message.role == null`)
-      }
-
-      if (message.parts == null) {
-        throw new CustomError(`${fnName}: message.parts == null`)
-      }
-
-      // Add role (1: 'role: ')
-      words += 1 + message.role.split(' ').length
-
-      // Add messages
-      for (const part of message.parts) {
-
-        if (part.text == null) {
-          throw new CustomError(`${fnName}: part.text == null`)
-        }
-
-        words += part.text.split(' ').length
-      }
-    }
-
-    // Calculate input tokens
-    const tokens = words / 4 * 3
-
-    // Debug
-    // console.log(`${fnName}: tokens: ${tokens}`)
-
-    // Return
-    return tokens
-  }
-
-  estimateOutputTokens(
-    prisma: any,
-    messages: any[]) {
-
-    /* Try to get a similar cached result
-    const llmCachedResult = await prisma.llmCache.findFirst({
-      where: {
-        activityMessages: activityMessages
-      }
-    }) */
-
-    // If not estimate found, return the max of the OpenAI ChatCompletion price
-    // window.
-    return 1000
   }
 
   prepareMessages(
@@ -266,12 +208,7 @@ export class OpenAIGenericLlmService {
 
     // Estimate the input and output tokens
     const estimatedInputTokens =
-            this.estimateInputTokens(messages)
-
-    const estimatedOutputTokens =
-           this.estimateOutputTokens(
-              prisma,
-              messages)
+            this.estimateTokensService.estimateInputTokens(messages)
 
     // Variant name: may have to determine this based on input tokens and the
     // estimated output tokens.
@@ -285,8 +222,7 @@ export class OpenAIGenericLlmService {
     return {
       messages: messagesWithRoles,
       variantName: variantName,
-      estimatedInputTokens: estimatedInputTokens,
-      estimatedOutputTokens: estimatedOutputTokens
+      estimatedInputTokens: estimatedInputTokens
     }
   }
 }

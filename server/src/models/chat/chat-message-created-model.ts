@@ -9,6 +9,7 @@ export class ChatMessageCreatedModel {
   async countMessages(
           prisma: any,
           userProfileId: string,
+          techId: string | undefined,
           startDate: Date,
           sentByAi: boolean) {
 
@@ -19,6 +20,7 @@ export class ChatMessageCreatedModel {
     const count = await prisma.chatMessageCreated.count({
       where: {
         userProfileId: userProfileId,
+        techId: techId,
         sentByAi: sentByAi,
         created: {
           gte: startDate,
@@ -32,7 +34,11 @@ export class ChatMessageCreatedModel {
 
   async create(prisma: any,
                userProfileId: string,
-               sentByAi: boolean) {
+               techId: string,
+               sentByAi: boolean,
+               inputTokens: number,
+               outputTokens: number,
+               costInCents: number) {
 
     // Debug
     const fnName = `${this.clName}.create()`
@@ -42,12 +48,36 @@ export class ChatMessageCreatedModel {
       throw new CustomError(`${fnName}: userProfileId == null`)
     }
 
+    if (techId == null) {
+      throw new CustomError(`${fnName}: techId == null`)
+    }
+
+    if (sentByAi == null) {
+      throw new CustomError(`${fnName}: sentByAi == null`)
+    }
+
+    if (inputTokens == null) {
+      throw new CustomError(`${fnName}: inputTokens == null`)
+    }
+
+    if (outputTokens == null) {
+      throw new CustomError(`${fnName}: outputTokens == null`)
+    }
+
+    if (costInCents == null) {
+      throw new CustomError(`${fnName}: costInCents == null`)
+    }
+
     // Create record
     try {
       return await prisma.chatMessageCreated.create({
         data: {
           userProfileId: userProfileId,
-          sentByAi: sentByAi
+          techId: techId,
+          sentByAi: sentByAi,
+          inputTokens: inputTokens,
+          outputTokens: outputTokens,
+          costInCents: costInCents
         }
       })
     } catch(error) {

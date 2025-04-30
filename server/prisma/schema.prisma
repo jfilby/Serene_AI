@@ -145,6 +145,7 @@ model Tech {
   variantName                  String               @map("variant_name") @unique
   provides                     String
 
+  ofChatMessageCreated         ChatMessageCreated[]
   ofLlmCaches                  LlmCache[]
   ofRateLimitedApis            RateLimitedApi[]
 
@@ -196,11 +197,16 @@ model ChatMessage {
 model ChatMessageCreated {
   // Used for quotas and rate-limiting, as ChatMessage can be deleted from as
   // needed.
-  id                           String            @id @default(cuid())
-  userProfileId                String            @map("user_profile_id")
-  userProfile                  UserProfile       @relation(fields: [userProfileId], references: [id])
-  sentByAi                     Boolean           @map("sent_by_ai")
-  created                      DateTime          @default(now())
+  id                           String               @id @default(cuid())
+  userProfileId                String               @map("user_profile_id")
+  userProfile                  UserProfile          @relation(fields: [userProfileId], references: [id])
+  techId                       String               @map("tech_id")
+  tech                         Tech                 @relation(fields: [techId], references: [id])
+  sentByAi                     Boolean              @map("sent_by_ai")
+  inputTokens                  Int                  @map("input_tokens")
+  outputTokens                 Int                  @map("output_tokens")
+  costInCents                  Int                  @map("cost_in_cents")
+  created                      DateTime             @default(now())
 
   @@unique([userProfileId, created])
   @@map("chat_message_created")

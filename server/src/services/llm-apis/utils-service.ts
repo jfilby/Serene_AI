@@ -108,7 +108,6 @@ export class LlmUtilsService {
     }
   }
 
-
   async getOrCreateChatSettings(
           prisma: any,
           baseChatSettingsId: string | null,

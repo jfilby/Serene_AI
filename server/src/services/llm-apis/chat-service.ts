@@ -252,7 +252,10 @@ export class ChatService {
           cacheKey: cacheKey,
           message: llmCache.stringValue,
           messages: llmCache.stringValues,
-          json: llmCache.jsonValue
+          json: llmCache.jsonValue,
+          pricingTier: 'cached',
+          inputTokens: 0,
+          outputTokens: 0
         }
       }
     }
@@ -359,6 +362,7 @@ export class ChatService {
       json: jsonEmpty,  // Set by caller, llmRequest()
       model: results.model,
       actualTech: results.actualTech,
+      pricingTier: results.pricingTier,
       inputTokens: results.inputTokens,
       outputTokens: results.outputTokens,
       fromCache: false,

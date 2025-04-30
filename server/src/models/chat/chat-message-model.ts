@@ -1,6 +1,5 @@
 import { Encrypter } from '@/serene-core-server/services/access/encrypt-service'
 import { CustomError } from '@/serene-core-server/types/errors'
-import { ChatMessageCreatedModel } from './chat-message-created'
 
 export class ChatMessageModel {
 
@@ -8,9 +7,6 @@ export class ChatMessageModel {
   clName = 'ChatMessageModel'
 
   msPerMinute = 60000
-
-  // Models
-  chatMessageCreatedModel = new ChatMessageCreatedModel()
 
   // Services
   encrypter
@@ -93,12 +89,6 @@ export class ChatMessageModel {
       console.error(`${fnName}: error: ${error}`)
       throw 'Prisma error'
     }
-
-    // Create ChatMessageCreated record
-    await this.chatMessageCreatedModel.create(
-            prisma,
-            fromUserProfileId,
-            sentByAi)
 
     // Return
     return chatMessage

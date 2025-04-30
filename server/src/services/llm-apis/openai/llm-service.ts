@@ -59,6 +59,15 @@ export class OpenAiLlmService {
 
     // console.log(`${fnName}: starting with variant: ${tech.variantName}`)
 
+    // Validate
+    if (this.openAi == null) {
+
+      const message = `${fnName}: this.openAi == null`
+
+      console.error(message)
+      throw new CustomError(message)
+    }
+
     // Verify that the variant has a model name
     if (!AiTechDefs.variantToModelNames.hasOwnProperty(tech.variantName)) {
 

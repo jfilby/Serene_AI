@@ -1,12 +1,15 @@
+const { GoogleGenerativeAI } = require('@google/generative-ai')
 import { CustomError } from '@/serene-core-server/types/errors'
 import { FeatureFlags } from '../../../types/feature-flags'
 import { AiTechDefs } from '../../../types/tech-defs'
 import { ServerOnlyTypes } from '../../../types/server-only-types'
-const { GoogleGenerativeAI } = require('@google/generative-ai')
+import { EstimateTokensService } from '../estimate-tokens-service'
 
 // Interfaces
 interface ChatCompletion {
   messages: any[]
+  inputTokens: number
+  outputTokens: number
 }
 
 export class GoogleGeminiLlmService {
@@ -15,6 +18,8 @@ export class GoogleGeminiLlmService {
   clName = 'GoogleGeminiLlmService'
 
   genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY)
+  apiPricingTier = process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_PRICING_TIER
+
   okMsg = 'ok'
 
   /* apiVersionByModelName = {
@@ -22,7 +27,21 @@ export class GoogleGeminiLlmService {
     [AiTechDefs.googleGeminiV1pt5ProModelName]: 'v1beta'
   } */
 
+  // Services
+  estimateTokensService = new EstimateTokensService()
+
   // Code
+  constructor() {
+
+    // Debug
+    const fnName = `${this.clName}.constructor()`
+
+    // Validate
+    if (this.apiPricingTier == null) {
+      throw new CustomError(`${fnName}: this.apiPricingTier == null`)
+    }
+  }
+
   convertGeminiChatCompletionResults(
     completion: ChatCompletion,
     model: string,
@@ -38,8 +57,9 @@ export class GoogleGeminiLlmService {
       messages: completion.messages,
       model: model,
       actualTech: tech,
-      inputTokens: 0,
-      outputTokens: 0,
+      pricingTier: this.apiPricingTier,
+      inputTokens: completion.inputTokens,
+      outputTokens: completion.outputTokens,
       // createdPgCacheEdge: undefined
     }
   }
@@ -173,9 +193,28 @@ export class GoogleGeminiLlmService {
     // Debug
     // console.log(`${fnName} response.text(): ${text}`)
 
+    // Determine token usage
+    var inputTokens: number = 0
+    var outputTokens: number = 0
+
+    if (result.usageMetadata != null) {
+
+      inputTokens = result.usageMetadata.promptTokenCount,
+      outputTokens = result.usageMetadata.candidatesTokenCount
+
+    } else {
+
+      inputTokens =
+        this.estimateTokensService.estimateInputTokens(messagesWithRoles)
+
+      outputTokens = this.estimateTokensService.estimateOutputTokens([text])
+    }
+
     // Return
     return {
-      messages: [text]
+      messages: [text],
+      inputTokens: inputTokens,
+      outputTokens: outputTokens
     }
   }
 

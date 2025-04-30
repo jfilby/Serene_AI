@@ -9,6 +9,7 @@ import { ChatParticipantModel } from '../../../models/chat/chat-participant-mode
 import { ChatSessionModel } from '../../../models/chat/chat-session-model'
 import { ChatSettingsModel } from '../../../models/chat/chat-settings-model'
 import { AgentsService } from '../../agents/agents-service'
+import { ChatMessageService } from '../messages/service'
 import { ChatService } from '../../llm-apis/chat-service'
 import { LlmUtilsService } from '../../llm-apis/utils-service'
 
@@ -22,14 +23,15 @@ export class ChatSessionService {
 
   // Models
   agentUserModel = new AgentUserModel()
-  chatMessageModel
   chatParticipantModel = new ChatParticipantModel()
+  chatMessageModel
   chatSessionModel = new ChatSessionModel()
   chatSettingsModel = new ChatSettingsModel()
   techModel = new TechModel()
 
   // Services
   agentsService = new AgentsService()
+  chatMessageService
   chatService = new ChatService()
   llmUtilsService = new LlmUtilsService()
   usersService = new UsersService()
@@ -38,6 +40,7 @@ export class ChatSessionService {
   constructor(encryptionKey: string | undefined) {
 
     this.chatMessageModel = new ChatMessageModel(encryptionKey)
+    this.chatMessageService = new ChatMessageService(encryptionKey)
   }
 
   async createChatSession(
@@ -210,10 +213,9 @@ export class ChatSessionService {
 
     // Get messages
     var chatMessages = await
-          this.chatMessageModel.getByChatSessionId(
+          this.chatMessageService.getAllByChatSessionId(
             prisma,
-            chatSession,
-            null)  // maxPrevMessages
+            chatSession)
 
     // Enrich with names
     var chatParticipantCache = new Map<string, any>()
@@ -634,7 +636,11 @@ export class ChatSessionService {
       toUserProfileId: agentInfo.toUserProfile.id,
       toName: agentInfo.agentUser.name,
       toContents: chatCompletionResults.messages,
-      toJson: chatCompletionResults.json
+      toJson: chatCompletionResults.json,
+      tech: llmTech,
+      pricingTier: chatCompletionResults.pricingTier,
+      inputTokens: chatCompletionResults.inputTokens,
+      outputTokens: chatCompletionResults.outputTokens
     }
   }
 
@@ -667,9 +673,8 @@ export class ChatSessionService {
 
     // Save from message
     const userChatMessage = await
-            this.chatMessageModel.create(
+            this.chatMessageService.saveChatMessage(
               prisma,
-              undefined,  // id
               chatSession,
               null,       // replyToId
               sessionTurnData.fromUserProfileId,
@@ -677,13 +682,16 @@ export class ChatSessionService {
               sessionTurnData.toChatParticipantId,
               null,       // externalId
               false,      // sentByAi
-              JSON.stringify(sessionTurnData.fromContents))
+              JSON.stringify(sessionTurnData.fromContents),
+              undefined,  // tech
+              undefined,  // pricingTier
+              undefined,  // inputTokens
+              undefined)  // outputTokens
 
     // Save to message
     const aiReplyChatMessage = await
-            this.chatMessageModel.create(
+            this.chatMessageService.saveChatMessage(
               prisma,
-              undefined,           // id
               chatSession,
               userChatMessage.id,  // replyToId
               sessionTurnData.toUserProfileId,
@@ -691,7 +699,11 @@ export class ChatSessionService {
               sessionTurnData.fromChatParticipantId,
               null,                // externalId
               true,                // sentByAi
-              JSON.stringify(sessionTurnData.toContents))
+              JSON.stringify(sessionTurnData.toContents),
+              sessionTurnData.tech,
+              sessionTurnData.pricingTier,
+              sessionTurnData.inputTokens,
+              sessionTurnData.outputTokens)
 
     // Return
     return {
