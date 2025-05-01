@@ -133,7 +133,8 @@ export async function getChatSessions(
       chatSessionService.getChatSessions(
         prisma,
         args.status,
-        args.userProfileId)
+        args.userProfileId,
+        args.instanceId)
   } catch (error) {
     if (error instanceof CustomError) {
       return {

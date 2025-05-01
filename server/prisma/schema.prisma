@@ -135,6 +135,8 @@ model Instance {
   envVersionBranchId           String?              @map("env_version_branch_id")
   // envVersionBranch             VersionBranch?       @relation("env_version_branch", fields: [envVersionBranchId], references: [id])
 
+  ofChatMessageCreated         ChatMessageCreated[]
+  ofChatSessions               ChatSession[]
   ofInstances                  Instance[]           @relation("parent")
 
   @@map("instance")
@@ -232,6 +234,7 @@ model ChatMessageCreated {
   userProfileId                String               @map("user_profile_id")
   userProfile                  UserProfile          @relation(fields: [userProfileId], references: [id])
   instanceId                   String?              @map("instance_id")
+  instance                     Instance?            @relation(fields: [instanceId], references: [id])
   techId                       String               @map("tech_id")
   tech                         Tech                 @relation(fields: [techId], references: [id])
   sentByAi                     Boolean              @map("sent_by_ai")
@@ -265,6 +268,8 @@ model ChatSession {
   id                           String               @id @default(cuid())
   chatSettingsId               String               @map("chat_settings_id")
   chatSettings                 ChatSettings         @relation(fields: [chatSettingsId], references: [id])
+  instanceId                   String?              @map("instance_id")
+  instance                     Instance?            @relation(fields: [instanceId], references: [id])
   status                       String               @db.Char(1)
   isEncryptedAtRest            Boolean              @map("is_encrypted_at_rest")
   token                        String

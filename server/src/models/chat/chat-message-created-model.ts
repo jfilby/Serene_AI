@@ -9,6 +9,7 @@ export class ChatMessageCreatedModel {
   async countMessages(
           prisma: any,
           userProfileId: string,
+          instanceId: string | null | undefined,
           techId: string | undefined,
           startDate: Date,
           sentByAi: boolean) {
@@ -20,6 +21,7 @@ export class ChatMessageCreatedModel {
     const count = await prisma.chatMessageCreated.count({
       where: {
         userProfileId: userProfileId,
+        instanceId: instanceId,
         techId: techId,
         sentByAi: sentByAi,
         created: {
@@ -34,6 +36,7 @@ export class ChatMessageCreatedModel {
 
   async create(prisma: any,
                userProfileId: string,
+               instanceId: string | null,
                techId: string,
                sentByAi: boolean,
                inputTokens: number,
@@ -46,6 +49,10 @@ export class ChatMessageCreatedModel {
     // Validate
     if (userProfileId == null) {
       throw new CustomError(`${fnName}: userProfileId == null`)
+    }
+
+    if (instanceId === undefined) {
+      throw new CustomError(`${fnName}: instanceId === undefined`)
     }
 
     if (techId == null) {
@@ -73,6 +80,7 @@ export class ChatMessageCreatedModel {
       return await prisma.chatMessageCreated.create({
         data: {
           userProfileId: userProfileId,
+          instanceId: instanceId,
           techId: techId,
           sentByAi: sentByAi,
           inputTokens: inputTokens,

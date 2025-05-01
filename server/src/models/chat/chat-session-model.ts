@@ -16,6 +16,7 @@ export class ChatSessionModel {
   async create(prisma: any,
                id: string | undefined,
                chatSettingsId: string,
+               instanceId: string | null,
                status: string,
                isEncryptedAtRest: boolean,
                name: string | null,
@@ -35,6 +36,7 @@ export class ChatSessionModel {
         data: {
           id: id,
           chatSettingsId: chatSettingsId,
+          instanceId: instanceId,
           status: status,
           isEncryptedAtRest: isEncryptedAtRest,
           token: token,
@@ -101,8 +103,35 @@ export class ChatSessionModel {
             id)
   }
 
+  async deleteByInstanceId(
+          prisma: any,
+          instanceId: string) {
+
+    // Debug
+    const fnName = `${this.clName}.deleteByInstanceId()`
+
+    // Get records for the instanceId
+    const chatSessions = await
+            this.filter(
+              prisma,
+              instanceId,
+              undefined,
+              undefined,
+              undefined,
+              undefined)
+
+    // Delete cascade each chat session
+    for (const chatSession of chatSessions) {
+
+      await this.deleteByIdCascade(
+              prisma,
+              chatSession.id)
+    }
+  }
+
   async filter(
           prisma: any,
+          instanceId: string | null | undefined,
           status: string | undefined,
           isEncryptedAtRest: boolean | undefined,
           externalIntegration: string | null | undefined,
@@ -115,6 +144,7 @@ export class ChatSessionModel {
     try {
       return await prisma.chatSession.findMany({
         where: {
+          instanceId: instanceId,
           status: status,
           isEncryptedAtRest: isEncryptedAtRest,
           externalIntegration: externalIntegration,
@@ -228,6 +258,7 @@ export class ChatSessionModel {
   async update(prisma: any,
                id: string,
                chatSettingsId: string | undefined,
+               instanceId: string | null | undefined,
                status: string | undefined,
                isEncryptedAtRest: boolean | undefined,
                name: string | null | undefined,
@@ -243,6 +274,7 @@ export class ChatSessionModel {
       return await prisma.chatSession.update({
         data: {
           chatSettingsId: chatSettingsId,
+          instanceId: instanceId,
           status: status,
           isEncryptedAtRest: isEncryptedAtRest,
           name: name,
@@ -263,6 +295,7 @@ export class ChatSessionModel {
   async upsert(prisma: any,
                id: string,
                chatSettingsId: string | undefined,
+               instanceId: string | null | undefined,
                status: string | undefined,
                isEncryptedAtRest: boolean | undefined,
                name: string | null | undefined,
@@ -292,6 +325,11 @@ export class ChatSessionModel {
       // Validate for create (mainly for type validation of the create call)
       if (chatSettingsId == null) {
         console.error(`${fnName}: id is null and chatSettingsId is null`)
+        throw 'Prisma error'
+      }
+
+      if (instanceId === undefined) {
+        console.error(`${fnName}: id is null and instanceId is undefined`)
         throw 'Prisma error'
       }
 
@@ -325,6 +363,7 @@ export class ChatSessionModel {
                      prisma,
                      undefined,  // id
                      chatSettingsId,
+                     instanceId,
                      status,
                      isEncryptedAtRest,
                      name,
@@ -338,6 +377,7 @@ export class ChatSessionModel {
                      prisma,
                      id,
                      chatSettingsId,
+                     instanceId,
                      status,
                      isEncryptedAtRest,
                      name,

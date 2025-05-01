@@ -29,6 +29,7 @@ export async function getOrCreateChatSession(
           args.chatSessionId,
           null,       // baseChatSettingsId
           args.userProfileId,
+          args.instanceId,
           true,       // encryptedAtRest
           false,      // jsonMode
           args.prompt,

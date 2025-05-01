@@ -47,6 +47,7 @@ export class ChatSessionService {
           prisma: any,
           baseChatSettingsId: string | null,
           userProfileId: string,
+          instanceId: string | null,
           encryptedAtRest: boolean,
           jsonMode: boolean | null,
           prompt: string | null,
@@ -82,6 +83,7 @@ export class ChatSessionService {
             prisma,
             undefined,  // id,
             chatSettings.id,
+            instanceId,
             CommonTypes.newStatus,
             encryptedAtRest,
             name,
@@ -356,7 +358,8 @@ export class ChatSessionService {
   async getChatSessions(
           prisma: any,
           status: string,
-          userProfileId: string) {
+          userProfileId: string,
+          instanceId: string) {
 
     // Debug
     const fnName = `${this.clName}.getChatSessions()`
@@ -370,6 +373,7 @@ export class ChatSessionService {
     var chatSessions = await
           this.chatSessionModel.filter(
             prisma,
+            instanceId,
             status,
             undefined,  // isEncryptedAtRest
             undefined,  // externalIntegration
@@ -390,6 +394,7 @@ export class ChatSessionService {
           chatSessionId: string,
           baseChatSettingsId: string | null,
           userProfileId: string,
+          instanceId: string | null,
           encryptedAtRest: boolean,
           jsonMode: boolean | null,
           prompt: string | null,
@@ -420,6 +425,7 @@ export class ChatSessionService {
           prisma,
           baseChatSettingsId,
           userProfileId,
+          instanceId,
           encryptedAtRest,
           jsonMode,
           prompt,
@@ -517,6 +523,7 @@ export class ChatSessionService {
             prisma,
             chatSession.id,
             undefined,  // chatSettingsId
+            undefined,  // instanceId
             undefined,  // status
             undefined,  // isEncryptedAtRest
             firstMessageText,
@@ -663,6 +670,7 @@ export class ChatSessionService {
           prisma,
           chatSession.id,
           undefined,  // chatSettingsId
+          undefined,  // instanceId
           CommonTypes.activeStatus,
           undefined,  // isEncryptedAtRest
           undefined,  // name
