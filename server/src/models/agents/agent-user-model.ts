@@ -27,7 +27,7 @@ export class AgentUserModel {
         data: {
           isAdmin: false,
           ownerType: UserTypes.botRoleOwnerType,
-          roles: [role]
+          roles: role ? [role] : undefined
         }
       })
     } catch(error) {
@@ -40,7 +40,11 @@ export class AgentUserModel {
     try {
       return await prisma.agentUser.create({
         data: {
-          userProfileId: userProfile.id,
+          userProfile: {
+            connect: {
+              id: userProfile.id,
+            }
+          },
           uniqueRefId: uniqueRefId,
           name: name,
           role: role,
