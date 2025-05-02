@@ -142,6 +142,7 @@ export class ChatMessageService {
     await this.chatMessageCreatedModel.create(
             prisma,
             fromUserProfileId,
+            chatSession.instanceId,
             tech.id,
             sentByAi,
             inputTokens,
