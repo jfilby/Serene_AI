@@ -84,14 +84,14 @@ export class InstanceModel {
 
   async filter(
           prisma: any,
-          parentId: string | null | undefined,
-          userProfileId: string | undefined,
-          instanceType: string | undefined,
-          projectType: string | null | undefined,
-          isDemo: boolean | undefined,
-          isDefault: boolean | undefined,
-          status: string,
-          publicAccess: string | null | undefined,
+          parentId: string | null | undefined = undefined,
+          userProfileId: string | undefined = undefined,
+          instanceType: string | undefined = undefined,
+          projectType: string | null | undefined = undefined,
+          isDemo: boolean | undefined = undefined,
+          isDefault: boolean | undefined = undefined,
+          status: string | undefined = undefined,
+          publicAccess: string | null | undefined = undefined,
           includeUserProfile: boolean = false,
           includeUser: boolean = false) {
 

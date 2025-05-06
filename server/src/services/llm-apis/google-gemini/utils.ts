@@ -1,5 +1,5 @@
 import { CustomError } from '@/serene-core-server/types/errors'
-import { ServerOnlyTypes } from '../../../types/server-only-types'
+import { ChatMessage, ServerOnlyTypes } from '../../../types/server-only-types'
 
 export class GoogleGeminiLlmUtilsService {
 
@@ -9,7 +9,7 @@ export class GoogleGeminiLlmUtilsService {
   // Code
   buildMessagesWithRoles(
     chatMessages: any[],
-    fromContents: any,
+    fromContents: ChatMessage[],
     userChatParticipantIds: string[],
     agentChatParticipantIds: string[]) {
 

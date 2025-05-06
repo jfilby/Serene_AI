@@ -297,11 +297,12 @@ model ChatSettings {
   isEncryptedAtRest            Boolean              @map("is_encrypted_at_rest")
   isJsonMode                   Boolean              @map("is_json_mode")
   isPinned                     Boolean              @map("is_pinned")
-  name                         String?              @unique  // Only unique for baseChatSettingsId == null
+  name                         String?              @unique                // Only unique for baseChatSettingsId == null
   agentUserId                  String               @map("agent_user_id")
   agentUser                    AgentUser            @relation(fields: [agentUserId], references: [id])
   prompt                       String?
   agentRole                    String?              @map("agent_role")
+  appCustom                    Json?                @map("app_customer")   // For additional fields/values (app specific)
   createdById                  String               @map("created_by_id")
   createdByUserProfile         UserProfile          @relation(fields: [createdById], references: [id])
   created                      DateTime             @default(now())

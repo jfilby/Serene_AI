@@ -43,6 +43,7 @@ export class ExampleChatSessionSetupService {
               'Test chat setting',  // name
               agentUser.id,
               'Talk about anything tech related',
+              null,                 // appCustom
               userProfileId)
   }
 }

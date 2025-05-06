@@ -13,6 +13,7 @@ export class ChatSettingsModel {
                name: string | null,
                agentUserId: string,
                prompt: string | null,
+               appCustom: any | null,
                createdById: string) {
 
     // Debug
@@ -32,6 +33,7 @@ export class ChatSettingsModel {
           name: name,
           agentUserId: agentUserId,
           prompt: prompt,
+          appCustom: appCustom,
           createdById: createdById
         }
       })
@@ -171,6 +173,7 @@ export class ChatSettingsModel {
                name: string | null | undefined,
                agentUserId: string | undefined,
                prompt: string | null | undefined,
+               appCustom: any | null | undefined,
                createdById: string | undefined) {
 
     // Debug
@@ -196,6 +199,7 @@ export class ChatSettingsModel {
             }
           } : undefined,
           prompt: prompt,
+          appCustom: appCustom,
           createdByUserProfile: createdById != null ? {
             connect: {
               id: createdById
@@ -222,6 +226,7 @@ export class ChatSettingsModel {
                name: string | null | undefined,
                agentUserId: string | undefined,
                prompt: string | null | undefined,
+               appCustom: any | null | undefined,
                createdById: string | undefined) {
 
     // Debug
@@ -287,6 +292,11 @@ export class ChatSettingsModel {
         throw 'Prisma error'
       }
 
+      if (appCustom === undefined) {
+        console.error(`${fnName}: id is null and appCustom is undefined`)
+        throw 'Prisma error'
+      }
+
       if (createdById == null) {
         console.error(`${fnName}: id is null and createdById is null`)
         throw 'Prisma error'
@@ -302,6 +312,7 @@ export class ChatSettingsModel {
                      name,
                      agentUserId,
                      prompt,
+                     appCustom,
                      createdById)
     } else {
 
@@ -316,6 +327,7 @@ export class ChatSettingsModel {
                      name,
                      agentUserId,
                      prompt,
+                     appCustom,
                      createdById)
     }
   }

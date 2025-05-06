@@ -1,3 +1,8 @@
+export class ChatMessage {
+  static type: string
+  static text: string
+}
+
 export class ServerOnlyTypes {
 
   // Google Gemini message roles

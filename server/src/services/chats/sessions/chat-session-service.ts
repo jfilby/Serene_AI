@@ -2,6 +2,7 @@ import { CustomError } from '@/serene-core-server/types/errors'
 import { UserTypes } from '@/serene-core-server/types/user-types'
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
 import { UsersService } from '@/serene-core-server/services/users/service'
+import { ChatMessage } from '../../../types/server-only-types'
 import { CommonTypes } from '../../../types/types'
 import { AgentUserModel } from '../../../models/agents/agent-user-model'
 import { ChatMessageModel } from '../../../models/chat/chat-message-model'
@@ -51,6 +52,7 @@ export class ChatSessionService {
           encryptedAtRest: boolean,
           jsonMode: boolean | null,
           prompt: string | null,
+          appCustom: any | null,
           name: string | null,
           externalIntegration: string | null = null,
           externalId: string | null = null) {
@@ -67,7 +69,8 @@ export class ChatSessionService {
               userProfileId,
               encryptedAtRest,
               jsonMode,
-              prompt)
+              prompt,
+              appCustom)
 
     // Verify that chatSettingsId is set
     if (chatSettingsResults.chatSettings == null) {
@@ -398,6 +401,7 @@ export class ChatSessionService {
           encryptedAtRest: boolean,
           jsonMode: boolean | null,
           prompt: string | null,
+          appCustom: any | null,
           name: string | null,
           createIfNotExists: boolean = true) {
 
@@ -429,7 +433,8 @@ export class ChatSessionService {
           encryptedAtRest,
           jsonMode,
           prompt,
-          name)
+          name,
+          appCustom)
 
       tech = chatSession.tech
     } else {
@@ -547,7 +552,7 @@ export class ChatSessionService {
           fromChatParticipantId: string,
           fromUserProfileId: string,
           fromName: string,
-          fromContents: any) {
+          fromContents: ChatMessage[]) {
 
     // Debug
     const fnName = `${this.clName}.runSessionTurn()`

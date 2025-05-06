@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import { CustomError } from '@/serene-core-server/types/errors'
 import { AiTechDefs } from '../../types/tech-defs'
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
+import { ChatMessage } from '../../types/server-only-types'
 import { CommonTypes } from '../../types/types'
 import { ChatSettingsModel } from '../../models/chat/chat-settings-model'
 import { AgentsService } from '../agents/agents-service'
@@ -32,7 +33,7 @@ export class LlmUtilsService {
   buildMessagesWithRoles(
     tech: any,
     chatMessages: any[],
-    fromContents: any,
+    fromContents: ChatMessage[],
     userChatParticipantIds: string[],
     agentChatParticipantIds: string[]) {
 
@@ -114,7 +115,8 @@ export class LlmUtilsService {
           userProfileId: string,
           isEncryptedAtRest: boolean | null,
           isJsonMode: boolean | null,
-          prompt: string | null) {
+          prompt: string | null,
+          appCustom: any | null) {
 
     // Debug
     const fnName = `${this.clName}.getOrCreateChatSettings()`
@@ -210,6 +212,7 @@ export class LlmUtilsService {
           null,       // name
           baseChatSettings.agentUserId,
           prompt,
+          appCustom,
           userProfileId)
     }
 
