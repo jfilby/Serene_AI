@@ -250,6 +250,15 @@ export class UsersService {
         console.log(`${fnName}: error.networkError: ${JSON.stringify(error.networkError)}`)
       })
 
+    // Handle null result
+    if (results == null) {
+
+      const message = `${fnName}: null returned from GraphQL request`
+
+      console.error(message)
+      return null
+    }
+
     // Debug
     // console.log(`${fnName}: results: ` + JSON.stringify(results))
 
