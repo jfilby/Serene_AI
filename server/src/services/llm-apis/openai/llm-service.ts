@@ -5,6 +5,12 @@ import { AiTechDefs } from '../../../types/tech-defs'
 import { FeatureFlags } from '../../../types/feature-flags'
 import { OpenAIGenericLlmService } from './llm-generic-service'
 
+const openAi = process.env.NEXT_PUBLIC_OPENAI_API_KEY != null ?
+        new OpenAI({
+          apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+          baseURL: process.env.NEXT_PUBLIC_OPENAI_BASE_URL
+        }) : undefined
+
 export class OpenAiLlmService {
 
   // Consts
@@ -16,9 +22,6 @@ export class OpenAiLlmService {
   gpt3pt5Turbo = 'gpt-3.5-turbo'
   gpt4 = 'gpt-4'
   gpt4Turbo = 'gpt-4-1106-preview'
-
-  // Vars
-  openAi: any
 
   // Models
   techModel = new TechModel()
@@ -41,12 +44,6 @@ export class OpenAiLlmService {
       console.warn(`${fnName}: apiKey isn't set`)
       return
     }
-
-    // Init
-    this.openAi = new OpenAI({
-      apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
-      baseURL: process.env.NEXT_PUBLIC_OPENAI_BASE_URL
-    })
   }
 
   async sendChatMessages(
@@ -60,7 +57,7 @@ export class OpenAiLlmService {
     // console.log(`${fnName}: starting with variant: ${tech.variantName}`)
 
     // Validate
-    if (this.openAi == null) {
+    if (openAi == null) {
 
       const message = `${fnName}: this.openAi == null`
 
@@ -118,7 +115,7 @@ export class OpenAiLlmService {
     //       the version of the NPM for this API.
     var completion: any = null
 
-    await this.openAi.chat.completions.create(completionsOptions)
+    await openAi.chat.completions.create(completionsOptions)
     .then((res: any) => {
       /* console.log(`${fnName}: got response:`)
       console.log(`${fnName}: ` + JSON.stringify(res))

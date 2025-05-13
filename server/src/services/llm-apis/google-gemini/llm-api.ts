@@ -12,12 +12,15 @@ interface ChatCompletion {
   outputTokens: number
 }
 
+const genAI = process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY != null ?
+        new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY) :
+        undefined
+
 export class GoogleGeminiLlmService {
 
   // Consts
   clName = 'GoogleGeminiLlmService'
 
-  genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY)
   apiPricingTier = process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_PRICING_TIER
 
   okMsg = 'ok'
@@ -142,7 +145,7 @@ export class GoogleGeminiLlmService {
 
     // Get the model
     const generativeModel =
-            this.genAI.getGenerativeModel(
+            genAI.getGenerativeModel(
               { model: model },
               { apiVersion: 'v1beta' })
 
