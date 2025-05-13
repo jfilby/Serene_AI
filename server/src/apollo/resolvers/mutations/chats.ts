@@ -33,6 +33,7 @@ export async function getOrCreateChatSession(
           true,       // encryptedAtRest
           false,      // jsonMode
           args.prompt,
+          null,       // appCustom
           null)       // name
     } catch (error) {
       if (error instanceof CustomError) {

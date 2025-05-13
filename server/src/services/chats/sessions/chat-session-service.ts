@@ -433,8 +433,8 @@ export class ChatSessionService {
           encryptedAtRest,
           jsonMode,
           prompt,
-          name,
-          appCustom)
+          appCustom,
+          name)
 
       tech = chatSession.tech
     } else {
