@@ -7,17 +7,24 @@ import CheckIcon from '@mui/icons-material/Check'
 export interface Props {
   label: string
   values: string[]
-  setValues: any
+  setValues?: any
+  onChange?: any
 }
 
 export default function EditableStringList({
                           label,
                           values,
-                          setValues
+                          setValues,
+                          onChange
                         }: Props) {
 
   const [input, setInput] = useState('')
   const [editIndex, setEditIndex] = useState<number | null>(null)
+
+  const updateItems = (newItems: string[]) => {
+    setValues?.(newItems)
+    onChange?.(newItems)
+  }
 
   const handleAddOrUpdate = () => {
 
@@ -26,10 +33,10 @@ export default function EditableStringList({
     if (editIndex !== null) {
       const updated = [...values]
       updated[editIndex] = input.trim()
-      setValues(updated.sort())
+      updateItems(updated.sort())
       setEditIndex(null)
     } else {
-      setValues([...values, input.trim()].sort())
+      updateItems([...values, input.trim()].sort())
     }
 
     setInput('')
