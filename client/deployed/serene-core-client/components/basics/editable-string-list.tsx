@@ -1,8 +1,6 @@
-import React, { useState } from 'react'
-import { TextField, Button, List, ListItem, ListItemText, IconButton, Stack } from '@mui/material'
-import DeleteIcon from '@mui/icons-material/Delete'
-import EditIcon from '@mui/icons-material/Edit'
-import CheckIcon from '@mui/icons-material/Check'
+import { useState } from 'react'
+import { TextField, List, ListItem, ListItemText, IconButton, Stack } from '@mui/material'
+import { Add, Check, Delete, Edit } from '@mui/icons-material'
 
 export interface Props {
   label: string
@@ -61,14 +59,18 @@ export default function EditableStringList({
     <Stack spacing={2}>
       <Stack direction='row' spacing={1}>
         <TextField
+          autoComplete='off'
           label={label}
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          fullWidth
-        />
-        <Button variant='contained' onClick={handleAddOrUpdate}>
-          {editIndex !== null ? 'Update' : 'Add'}
-        </Button>
+          fullWidth />
+        <IconButton edge='end' onClick={() => handleAddOrUpdate()}>
+          {editIndex !== null ?
+            <Check />
+          :
+            <Add />
+          }
+        </IconButton>
       </Stack>
 
       <List>
@@ -78,10 +80,10 @@ export default function EditableStringList({
             secondaryAction={
               <>
                 <IconButton edge='end' onClick={() => handleEdit(index)}>
-                  <EditIcon />
+                  <Edit />
                 </IconButton>
                 <IconButton edge='end' onClick={() => handleDelete(index)}>
-                  <DeleteIcon />
+                  <Delete />
                 </IconButton>
               </>
             }
