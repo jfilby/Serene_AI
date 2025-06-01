@@ -39,11 +39,11 @@ export class OpenAiLlmService {
                 `apiKey: ` + JSON.stringify(process.env.NEXT_PUBLIC_OPENAI_API_KEY) +
                 ` baseURL: ` + JSON.stringify(process.env.NEXT_PUBLIC_OPENAI_BASE_URL)) */
 
-    // Validate apiKey
+    /* Validate apiKey
     if (process.env.NEXT_PUBLIC_OPENAI_API_KEY == null) {
       console.warn(`${fnName}: apiKey isn't set`)
       return
-    }
+    } */
   }
 
   async sendChatMessages(
