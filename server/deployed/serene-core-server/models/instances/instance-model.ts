@@ -1,3 +1,5 @@
+import { PrismaClient } from '@prisma/client'
+
 export class InstanceModel {
 
   // Consts
@@ -5,7 +7,7 @@ export class InstanceModel {
 
   // Code
   async create(
-          prisma: any,
+          prisma: PrismaClient,
           parentId: string | null,
           userProfileId: string,
           instanceType: string,
@@ -61,7 +63,7 @@ export class InstanceModel {
   }
 
   async deleteById(
-          prisma: any,
+          prisma: PrismaClient,
           id: string) {
 
     // Debug
@@ -83,7 +85,7 @@ export class InstanceModel {
   }
 
   async filter(
-          prisma: any,
+          prisma: PrismaClient,
           parentId: string | null | undefined = undefined,
           userProfileId: string | undefined = undefined,
           instanceType: string | undefined = undefined,
@@ -131,7 +133,7 @@ export class InstanceModel {
   }
 
   async getById(
-          prisma: any,
+          prisma: PrismaClient,
           id: string,
           includeParent: boolean = false,
           includeUserProfile: boolean = false,
@@ -169,7 +171,7 @@ export class InstanceModel {
   }
 
   async getByNameAndIsAdminUserProfile(
-          prisma: any,
+          prisma: PrismaClient,
           name: string) {
 
     // Debug
@@ -196,35 +198,8 @@ export class InstanceModel {
     return instance
   }
 
-  async getByUserProfileIdAndName(
-          prisma: any,
-          userProfileId: string,
-          name: string) {
-
-    // Debug
-    const fnName = `${this.clName}.getByName()`
-
-    // Query
-    var instance: any
-
-    try {
-      instance = await prisma.instance.findFirst({
-        where: {
-          userProfileId: userProfileId,
-          name: name
-        }
-      })
-    } catch(error: any) {
-      console.error(`${fnName}: error: ${error}`)
-      throw 'Prisma error'
-    }
-
-    // Return
-    return instance
-  }
-
   async getByParentIdAndUserProfileIdAndIsDefault(
-          prisma: any,
+          prisma: PrismaClient,
           parentId: string | null,
           userProfileId: string) {
 
@@ -252,7 +227,7 @@ export class InstanceModel {
   }
 
   async getByParentIdAndNameAndUserProfileId(
-          prisma: any,
+          prisma: PrismaClient,
           parentId: string | null,
           name: string,
           userProfileId: string) {
@@ -294,8 +269,84 @@ export class InstanceModel {
     return instance
   }
 
+  async getByUserProfileIdAndName(
+          prisma: PrismaClient,
+          userProfileId: string,
+          name: string) {
+
+    // Debug
+    const fnName = `${this.clName}.getByUserProfileIdAndName()`
+
+    // Query
+    var instance: any
+
+    try {
+      instance = await prisma.instance.findFirst({
+        where: {
+          userProfileId: userProfileId,
+          name: name
+        }
+      })
+    } catch(error: any) {
+      console.error(`${fnName}: error: ${error}`)
+      throw 'Prisma error'
+    }
+
+    // Return
+    return instance
+  }
+
+  async getByUserProfileIdAndParentNameAndName(
+          prisma: PrismaClient,
+          userProfileId: string,
+          parentName: string,
+          name: string) {
+
+    // Debug
+    const fnName = `${this.clName}.getByUserProfileIdAndParentNameAndName()`
+
+    // Validate
+    if (userProfileId == null) {
+      console.error(`${fnName}: userProfileId == null`)
+      throw 'Validation error'
+    }
+
+    if (parentName == null) {
+      console.error(`${fnName}: parentName == null`)
+      throw 'Validation error'
+    }
+
+    if (name == null) {
+      console.error(`${fnName}: name == null`)
+      throw 'Validation error'
+    }
+
+    // Query
+    var instance: any
+
+    try {
+      instance = await prisma.instance.findFirst({
+        where: {
+          parent: {
+            userProfileId: userProfileId,
+            parentId: null,
+            name: parentName
+          },
+          userProfileId: userProfileId,
+          name: name          
+        }
+      })
+    } catch(error: any) {
+      console.error(`${fnName}: error: ${error}`)
+      throw 'Prisma error'
+    }
+
+    // Return
+    return instance
+  }
+
   async setBasePathDocNodeId(
-          prisma: any,
+          prisma: PrismaClient,
           id: string,
           basePathDocNodeId: string) {
 
@@ -319,7 +370,7 @@ export class InstanceModel {
   }
 
   async update(
-          prisma: any,
+          prisma: PrismaClient,
           id: string,
           parentId: string | null | undefined,
           userProfileId: string | undefined,
