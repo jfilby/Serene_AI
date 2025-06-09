@@ -1,9 +1,14 @@
 import { PrismaClient } from '@prisma/client'
 import { CustomError } from '@/serene-core-server/types/errors'
+import { ResourceQuotasMutateService } from '@/serene-core-server/services/quotas/mutate-service'
 import { AiTechPricing } from '../../../types/tech-pricing'
 import { ChatMessageCreatedModel } from '../../../models/chat/chat-message-created-model'
 import { ChatMessageModel } from '../../../models/chat/chat-message-model'
 
+// Services
+const resourceQuotasMutateService = new ResourceQuotasMutateService()
+
+// Class
 export class ChatMessageService {
 
   // Consts
@@ -147,6 +152,13 @@ export class ChatMessageService {
             sentByAi,
             inputTokens,
             outputTokens,
+            costInCents)
+
+    // Inc used quota
+    await resourceQuotasMutateService.incQuotaUsage(
+            prisma,
+            chatSession.createdById,
+            'LLMs',
             costInCents)
 
     // Return

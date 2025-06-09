@@ -106,6 +106,8 @@ model UserProfile {
   ofInstances                 Instance[]
   ofUserPreferences           UserPreference[]
   ofRateLimitedApiEvents      RateLimitedApiEvent[]
+  ofResourceQuotaTotals       ResourceQuotaTotal[]
+  ofResourceQuotaUsages       ResourceQuotaUsage[]
 
   @@map("user_profile")
   @@schema("public")
@@ -169,6 +171,37 @@ model RateLimitedApiEvent {
 
   @@index([created])
   @@map("rate_limited_api_event")
+  @@schema("public")
+}
+
+model ResourceQuotaTotal {
+  // TODO: set the total quota monthly by looking at the Serene Store payment
+  // records for the past 31 days. Used quota is kept at a daily level.
+  id                         String         @id @default(cuid())
+  userProfileId              String         @map("user_profile_id")
+  userProfile                UserProfile    @relation(fields: [userProfileId], references: [id])
+  resource                   String         // E.g. LLMs
+  fromDay                    DateTime       @map("from_day") @db.Date
+  toDay                      DateTime       @map("to_day") @db.Date
+  quota                      Float          // In cents
+
+  @@unique([userProfileId, resource, fromDay, toDay])
+  @@map("resource_quota_total")
+  @@schema("public")
+}
+
+model ResourceQuotaUsage {
+  id                         String         @id @default(cuid())
+  userProfileId              String         @map("user_profile_id")
+  userProfile                UserProfile    @relation(fields: [userProfileId], references: [id])
+  resource                   String         // E.g. LLMs
+  day                        DateTime       @db.Date
+  usage                      Float          // In cents
+  created                    DateTime       @default(now())
+  updated                    DateTime       @updatedAt
+
+  @@unique([userProfileId, resource, day])
+  @@map("resource_quota_usage")
   @@schema("public")
 }
 

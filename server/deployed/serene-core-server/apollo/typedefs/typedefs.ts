@@ -1,15 +1,23 @@
 export const typeDefs = `#graphql
 
-  type UserPreference {
-    category: String!
-    key: String!
-    value: String
-    values: [String]
+  type ResourceQuotaUsage {
+    userProfileId: String!
+    resource: String!
+    day: String!
+    quota: Float!
+    usage: Float!
   }
 
   type StatusAndMessage {
     status: Boolean!
     message: String
+  }
+
+  type UserPreference {
+    category: String!
+    key: String!
+    value: String
+    values: [String]
   }
 
   type UserProfile {
@@ -30,7 +38,15 @@ export const typeDefs = `#graphql
       forAction: String!,
       userProfileId: String!): StatusAndMessage!
 
-    # Users
+    # Quotas
+    getCurrentResourceQuotaUsage(userId: String!): Float
+    getResourceQuotaUsageByAdmin(
+      userProfileId: String!,
+      resource: String!,
+      day: String,
+      viewUserProfileId: String): [ResourceQuotaUsage]
+
+      # Users
     isAdminUser(userProfileId: String!): StatusAndMessage!
     userById(userProfileId: String!): UserProfile
     verifySignedInUserProfileId(userProfileId: String!): Boolean

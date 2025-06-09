@@ -5,11 +5,16 @@ import { isAdminUser } from './queries/access'
 import { validateProfileCompleted } from './queries/profile'
 import { getUserPreferences } from './queries/user-preferences'
 import { userById, verifySignedInUserProfileId } from './queries/users'
+import { getCurrentResourceQuotaUsage, getResourceQuotaUsageByAdmin } from './queries/quotas'
 
 // Code
 const Query = {
   // Profile
   validateProfileCompleted,
+
+  // Quotas
+  getCurrentResourceQuotaUsage,
+  getResourceQuotaUsageByAdmin,
 
   // Users
   userById,
