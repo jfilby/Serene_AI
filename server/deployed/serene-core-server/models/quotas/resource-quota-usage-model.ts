@@ -32,7 +32,8 @@ export class ResourceQuotaUsageModel {
   async filter(prisma: any,
                userProfileId: string,
                resource: string,
-               day: Date) {
+               fromDay: Date,
+               toDay: Date) {
 
     // Debug
     const fnName = `${this.clName}.filter()`
@@ -43,7 +44,12 @@ export class ResourceQuotaUsageModel {
         where: {
           userProfileId: userProfileId,
           resource: resource,
-          day: day
+          fromDay: {
+            gte: fromDay
+          },
+          toDay: {
+            lte: toDay
+          }
         }
       })
     } catch(error) {
