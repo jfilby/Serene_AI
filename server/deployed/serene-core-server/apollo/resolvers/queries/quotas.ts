@@ -1,4 +1,5 @@
 import { prisma } from '@/db'
+import { ResourceQuotasQueryService } from '../../../services/quotas/query-service'
 import { ResourceQuotaUsageModel } from '../../../models/quotas/resource-quota-usage-model'
 import { UsersService } from '../../../services/users/service'
 
@@ -10,23 +11,33 @@ const resourceQuotasService = new ResourceQuotasQueryService()
 const usersService = new UsersService()
 
 // Code
-export async function getCurrentResourceQuotaUsage(parent, args, context, info) {
+export async function getCurrentResourceQuotaUsage(
+                        parent: any,
+                        args: any,
+                        context: any,
+                        info: any) {
 
   const fnName = 'getCurrentResourceQuotaUsage()'
 
   // console.log(`${fnName}: args: ${JSON.stringify(args)}`)
 
   try {
-    return await quotasService.getQuotaUsage(
+    return await resourceQuotasService.getQuotaUsage(
                    prisma,
                    args.userProfileId,
-                   args.resource)
+                   args.resource,
+                   new Date(),  // fromDay
+                   new Date)    // toDay
   } catch(error) {
     console.error(`getSubscriptions(): error: ${error}`)
   }
 }
 
-export async function getResourceQuotaUsageByAdmin(parent, args, context, info) {
+export async function getResourceQuotaUsageByAdmin(
+                        parent: any,
+                        args: any,
+                        context: any,
+                        info: any) {
 
   const fnName = 'getResourceQuotaUsageByAdmin()'
 
@@ -51,7 +62,8 @@ export async function getResourceQuotaUsageByAdmin(parent, args, context, info) 
   return await
     resourceQuotaUsageModel.filter(
       prisma,
+      args.viewUserProfileId,
       args.resource,
-      args.day,
-      args.viewUserProfileId)
+      args.day,       // fromDay
+      args.day)       // toDay
 }

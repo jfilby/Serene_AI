@@ -1,3 +1,4 @@
+import { PrismaClient } from '@prisma/client'
 import { ResourceQuotaTotalModel } from '../../models/quotas/resource-quota-total-model'
 import { ResourceQuotaUsageModel } from '../../models/quotas/resource-quota-usage-model'
 
@@ -13,7 +14,7 @@ export class ResourceQuotasQueryService {
 
   // Functions
   async getCurrentTotalQuota(
-          prisma: any,
+          prisma: PrismaClient,
           userProfileId: string,
           resource: string,
           day: Date) {
@@ -42,7 +43,7 @@ export class ResourceQuotasQueryService {
   }
 
   async getQuotaUsage(
-          prisma,
+          prisma: PrismaClient,
           userProfileId: string,
           resource: string,
           fromDay: Date,
@@ -74,7 +75,7 @@ export class ResourceQuotasQueryService {
   }
 
   async isQuotaAvailable(
-          prisma: any,
+          prisma: PrismaClient,
           userProfileId: string,
           resource: string,
           amount: number) {
