@@ -1,6 +1,6 @@
-export class ChatMessage {
-  static type: string
-  static text: string
+export interface ChatMessage {
+  type: string
+  text: string
 }
 
 export class ServerOnlyTypes {
