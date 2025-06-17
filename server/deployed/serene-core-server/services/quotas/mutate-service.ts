@@ -50,7 +50,7 @@ export class ResourceQuotasMutateService {
     }
 
     // Upsert the new record
-    await resourceQuotaUsage.upsert(
+    await resourceQuotaUsageModel.upsert(
             prisma,
             undefined,  // id
             userProfileId,

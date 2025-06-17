@@ -112,7 +112,7 @@ export class ResourceQuotaUsageModel {
   }
 
   async upsert(prisma: any,
-               id: string,
+               id: string | undefined,
                userProfileId: string,
                resource: string,
                day: Date,

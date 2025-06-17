@@ -16,8 +16,6 @@ export class InstanceModel {
           isDefault: boolean,
           status: string,
           publicAccess: string | null,
-          basePathDocNodeId: string | null,
-          envVersionBranchId: string | null,
           name: string) {
 
     // Debug
@@ -43,16 +41,6 @@ export class InstanceModel {
           isDefault: isDefault,
           status: status,
           publicAccess: publicAccess,
-          basePathDocNode: basePathDocNodeId != null ? {
-            connect: {
-              id: basePathDocNodeId
-            }
-          } : undefined,
-          envVersionBranch: envVersionBranchId != null ? {
-            connect: {
-              id: envVersionBranchId
-            }
-          } : undefined,
           name: name
         }
       })
@@ -345,30 +333,6 @@ export class InstanceModel {
     return instance
   }
 
-  async setBasePathDocNodeId(
-          prisma: PrismaClient,
-          id: string,
-          basePathDocNodeId: string) {
-
-    // Debug
-    const fnName = `${this.clName}.setBasePathDocNodeId()`
-
-    // Update record
-    try {
-      return await prisma.instance.update({
-        data: {
-          basePathDocNodeId: basePathDocNodeId
-        },
-        where: {
-          id: id
-        }
-      })
-    } catch(error) {
-      console.error(`${fnName}: error: ${error}`)
-      throw 'Prisma error'
-    }
-  }
-
   async update(
           prisma: PrismaClient,
           id: string,
@@ -380,8 +344,6 @@ export class InstanceModel {
           isDefault: boolean | undefined,
           status: string | undefined,
           publicAccess: string | null | undefined,
-          basePathDocNodeId: string | null | undefined,
-          envVersionBranchId: string | null | undefined,
           name: string | undefined) {
 
     // Debug
@@ -399,8 +361,6 @@ export class InstanceModel {
           isDefault: isDefault,
           status: status,
           publicAccess: publicAccess,
-          basePathDocNodeId: basePathDocNodeId,
-          envVersionBranchId: envVersionBranchId,
           name: name
         },
         where: {
@@ -423,8 +383,6 @@ export class InstanceModel {
           isDefault: boolean | undefined,
           status: string | undefined,
           publicAccess: string | null | undefined,
-          basePathDocNodeId: string | null | undefined,
-          envVersionBranchId: string | null | undefined,
           name: string | undefined) {
 
     // Debug
@@ -441,8 +399,6 @@ export class InstanceModel {
           isDefault: isDefault,
           status: status,
           publicAccess: publicAccess,
-          basePathDocNodeId: basePathDocNodeId,
-          envVersionBranchId: envVersionBranchId,
           name: name
         },
         where: {
@@ -465,8 +421,6 @@ export class InstanceModel {
                isDefault: boolean | undefined,
                status: string | undefined,
                publicAccess: string | null | undefined,
-               basePathDocNodeId: string | null | undefined,
-               envVersionBranchId: string | null | undefined,
                name: string | undefined) {
 
     // Debug
@@ -539,16 +493,6 @@ export class InstanceModel {
         throw 'Prisma error'
       }
 
-      if (basePathDocNodeId === undefined) {
-        console.error(`${fnName}: id is null and basePathDocNodeId is undefined`)
-        throw 'Prisma error'
-      }
-
-      if (envVersionBranchId === undefined) {
-        console.error(`${fnName}: id is null and envVersionBranchId is undefined`)
-        throw 'Prisma error'
-      }
-
       // Create
       return await
                this.create(
@@ -561,8 +505,6 @@ export class InstanceModel {
                  isDefault,
                  status,
                  publicAccess,
-                 basePathDocNodeId,
-                 envVersionBranchId,
                  name)
     } else {
 
@@ -579,8 +521,6 @@ export class InstanceModel {
                  isDefault,
                  status,
                  publicAccess,
-                 basePathDocNodeId,
-                 envVersionBranchId,
                  name)
     }
   }
