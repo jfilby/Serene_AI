@@ -5,7 +5,7 @@ interface Props {
   from: string
 }
 
-export default function Message({ from }: Props) {
+export default function MessageAvatar({ from }: Props) {
 
   // Functions
   const renderSwitch = () => {

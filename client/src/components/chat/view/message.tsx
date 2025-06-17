@@ -1,7 +1,7 @@
 const { v4: uuidv4 } = require('uuid')
 import { ListItem, Typography } from '@mui/material'
 import Markdown from 'react-markdown'
-import Avatar from './avatar'
+import MessageAvatar from './avatar'
 
 interface Props {
   message: any
@@ -26,27 +26,14 @@ export default function Message({ message }: Props) {
     switch (content.type) {
 
       case '':
-        return  <ListItem
-                  alignItems='flex-start'>
-                  <Avatar from={message.name} />
-                  <Typography
-                    key={uuidv4()}
-                    style={{ marginLeft: '1em' }}
-                    variant='body1'>
-                    {content.text}
-                  </Typography>
-                </ListItem>
-
       case 'md':
-        return <div style={{ marginLeft: '1em', marginTop: '0.5em' }}>
-                <Avatar from={message.name} />
-                <span style={{ marginLeft: '1em' }}>
+        return <div style={{ marginLeft: '1em' }}>
+                <MessageAvatar from={message.name} />
                   <Markdown
                     // renderers={{ heading: customHeadingRenderer }}
                     >
                     {content.text}
                   </Markdown>
-                </span>
               </div>
 
       default:
