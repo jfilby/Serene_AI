@@ -29,7 +29,7 @@ export class UsersService {
   async createDefaultUserPreferences(
           prisma: any,
           userProfileId: string,
-          defaultUserPreferences: string) {
+          defaultUserPreferences: string | undefined) {
 
     // console.log('createDefaultUserPreferences()')
 
@@ -155,7 +155,7 @@ export class UsersService {
   async getOrCreateUserByEmail(
           prisma: any,
           email: string,
-          defaultUserPreferences: string) {
+          defaultUserPreferences: string | undefined) {
 
     // Debug
     const fnName = `${this.clName}.getOrCreateUserByEmail()`
