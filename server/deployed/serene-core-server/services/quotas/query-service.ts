@@ -28,7 +28,6 @@ export class ResourceQuotasQueryService {
               prisma,
               userProfileId,
               resource,
-              day,
               day)
 
     var totalQuota = 0.0

@@ -34,8 +34,7 @@ export class ResourceQuotaTotalModel {
   async filter(prisma: any,
                userProfileId: string,
                resource: string,
-               fromDay: Date,
-               toDay: Date) {
+               day: Date) {
 
     // Debug
     const fnName = `${this.clName}.filter()`
@@ -46,12 +45,18 @@ export class ResourceQuotaTotalModel {
         where: {
           userProfileId: userProfileId,
           resource: resource,
-          fromDay: {
-            gte: fromDay
-          },
-          toDay: {
-            lte: toDay
-          }
+          AND: day != null ? [
+            {
+              fromDay: {
+                lte: day
+              }
+            },
+            {
+              toDay: {
+                gte: day
+              }
+            }
+          ] : undefined
         }
       })
     } catch(error) {
@@ -89,8 +94,7 @@ export class ResourceQuotaTotalModel {
   async sum(prisma: any,
                userProfileId: string,
                resource: string,
-               fromDay: Date,
-               toDay: Date) {
+               day: Date) {
 
     // Debug
     const fnName = `${this.clName}.sum()`
@@ -106,12 +110,18 @@ export class ResourceQuotaTotalModel {
         where: {
           userProfileId: userProfileId,
           resource: resource,
-          fromDay: {
-            gte: fromDay
-          },
-          toDay: {
-            lte: toDay
-          }
+          AND: [
+            {
+              fromDay: {
+                lte: day
+              }
+            },
+            {
+              toDay: {
+                gte: day
+              }
+            }
+          ]
         }
       })
     } catch(error) {

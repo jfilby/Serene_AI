@@ -71,28 +71,59 @@ export async function getResourceQuotaUsageByAdmin(
   }
 
   // Queries
-  const quota = await
-          resourceQuotaTotalModel.sum(
+  const activeQuotas = await
+          resourceQuotaTotalModel.filter(
             prisma,
             args.userProfileId,
             args.resouce,
-            day,       // fromDay
-            day)       // toDay
+            day)
 
-  const usage = await
-          resourceQuotaUsageModel.sum(
+  // Create a list of ranges
+  const activeRanges = activeQuotas.map((q: any) => ({
+    from: new Date(q.fromDay),
+    to: new Date(q.toDay)
+  }))
+
+  // Get total quota
+  var totalQuota = activeQuotas.reduce(
+    (sum: number, q: any) => sum + (q.quota ?? 0), 0)
+
+  // Get where ranges start and end
+  const rangeStart = new Date(
+          Math.min(...activeRanges.map((r: any) => r.from.getTime())))
+
+  const rangeEnd = new Date(
+          Math.max(...activeRanges.map((r: any) => r.to.getTime())))
+
+  // Get usage records
+  const usages = await
+          resourceQuotaUsageModel.filter(
             prisma,
             args.userProfileId,
             args.resource,
-            day,       // fromDay
-            day)       // toDay
+            rangeStart,     // fromDay
+            rangeEnd)       // toDay
+
+  // Filter usages
+  var totalUsage = usages.reduce((sum: number, usage: any) => {
+
+    const usedOn = new Date(usage.usageDay)
+    const inAnyRange = activeRanges.some((r: any) =>
+      usedOn >= r.from && usedOn <= r.to
+    )
+    return inAnyRange ? sum + usage.amount : sum
+  }, 0)
+
+  // Adjust credit quota and usage from cents
+  totalQuota = totalQuota / 100
+  totalUsage = totalUsage / 100
 
   // Return
   return {
     userProfileId: args.userProfileId,
     resource: args.resource,
-    day: day,
-    quota: quota,
-    usage: usage
+    day: day.toISOString(),
+    quota: totalQuota,
+    usage: totalUsage
   }
 }
