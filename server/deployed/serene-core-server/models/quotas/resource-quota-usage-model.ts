@@ -80,6 +80,41 @@ export class ResourceQuotaUsageModel {
     }
   }
 
+  async sum(prisma: any,
+               userProfileId: string,
+               resource: string,
+               fromDay: Date,
+               toDay: Date) {
+
+    // Debug
+    const fnName = `${this.clName}.sum()`
+
+    // Query
+    var aggregations: any = undefined
+
+    try {
+      aggregations = await prisma.resourceQuotaUsage.aggregate({
+        _sum: {
+          usage: true
+        },
+        where: {
+          userProfileId: userProfileId,
+          resource: resource,
+          day: {
+            gte: fromDay,
+            lte: toDay
+          }
+        }
+      })
+    } catch(error) {
+      console.error(`${fnName}: error: ${error}`)
+      throw `Prisma error`
+    }
+
+    // Return
+    return aggregations._sum.usage ?? 0
+  }
+
   async update(prisma: any,
                id: string,
                userProfileId: string,

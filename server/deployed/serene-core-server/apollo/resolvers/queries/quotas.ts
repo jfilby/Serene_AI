@@ -1,9 +1,11 @@
 import { prisma } from '@/db'
 import { ResourceQuotasQueryService } from '../../../services/quotas/query-service'
 import { ResourceQuotaUsageModel } from '../../../models/quotas/resource-quota-usage-model'
+import { ResourceQuotaTotalModel } from '../../../models/quotas/resource-quota-total-model'
 import { UsersService } from '../../../services/users/service'
 
 // Models
+const resourceQuotaTotalModel = new ResourceQuotaTotalModel()
 const resourceQuotaUsageModel = new ResourceQuotaUsageModel()
 
 // Services
@@ -39,9 +41,10 @@ export async function getResourceQuotaUsageByAdmin(
                         context: any,
                         info: any) {
 
+  // Debug
   const fnName = 'getResourceQuotaUsageByAdmin()'
 
-  // console.log(`${fnName}: args: ${JSON.stringify(args)}`)
+  console.log(`${fnName}: args: ` + JSON.stringify(args))
 
   // Get userProfile
   const userProfile = await
@@ -58,12 +61,38 @@ export async function getResourceQuotaUsageByAdmin(
     }
   }
 
-  // Query
-  return await
-    resourceQuotaUsageModel.filter(
-      prisma,
-      args.viewUserProfileId,
-      args.resource,
-      args.day,       // fromDay
-      args.day)       // toDay
+  // Day (default to today)
+  var day: Date
+
+  if (args.day != null) {
+    day = new Date(args.day)
+  } else {
+    day = new Date()
+  }
+
+  // Queries
+  const quota = await
+          resourceQuotaTotalModel.sum(
+            prisma,
+            args.userProfileId,
+            args.resouce,
+            day,       // fromDay
+            day)       // toDay
+
+  const usage = await
+          resourceQuotaUsageModel.sum(
+            prisma,
+            args.userProfileId,
+            args.resource,
+            day,       // fromDay
+            day)       // toDay
+
+  // Return
+  return {
+    userProfileId: args.userProfileId,
+    resource: args.resource,
+    day: day,
+    quota: quota,
+    usage: usage
+  }
 }

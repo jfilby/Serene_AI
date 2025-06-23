@@ -86,6 +86,43 @@ export class ResourceQuotaTotalModel {
     }
   }
 
+  async sum(prisma: any,
+               userProfileId: string,
+               resource: string,
+               fromDay: Date,
+               toDay: Date) {
+
+    // Debug
+    const fnName = `${this.clName}.sum()`
+
+    // Query
+    var aggregations: any = undefined
+
+    try {
+      aggregations = await prisma.resourceQuotaTotal.aggregate({
+        _sum: {
+          quota: true
+        },
+        where: {
+          userProfileId: userProfileId,
+          resource: resource,
+          fromDay: {
+            gte: fromDay
+          },
+          toDay: {
+            lte: toDay
+          }
+        }
+      })
+    } catch(error) {
+      console.error(`${fnName}: error: ${error}`)
+      throw `Prisma error`
+    }
+
+    // Return
+    return aggregations._sum.quota ?? 0
+  }
+
   async update(prisma: any,
                id: string,
                userProfileId: string | undefined,

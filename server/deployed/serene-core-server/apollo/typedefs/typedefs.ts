@@ -44,7 +44,7 @@ export const typeDefs = `#graphql
       userProfileId: String!,
       resource: String!,
       day: String,
-      viewUserProfileId: String): [ResourceQuotaUsage]
+      viewUserProfileId: String): ResourceQuotaUsage!
 
       # Users
     isAdminUser(userProfileId: String!): StatusAndMessage!
