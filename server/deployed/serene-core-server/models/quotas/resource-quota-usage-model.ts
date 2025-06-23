@@ -44,10 +44,8 @@ export class ResourceQuotaUsageModel {
         where: {
           userProfileId: userProfileId,
           resource: resource,
-          fromDay: {
-            gte: fromDay
-          },
-          toDay: {
+          day: {
+            gte: fromDay,
             lte: toDay
           }
         }
