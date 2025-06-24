@@ -5,7 +5,7 @@ import { isAdminUser } from './queries/access'
 import { validateProfileCompleted } from './queries/profile'
 import { getUserPreferences } from './queries/user-preferences'
 import { userById, verifySignedInUserProfileId } from './queries/users'
-import { getCurrentResourceQuotaUsage, getResourceQuotaUsageByAdmin } from './queries/quotas'
+import { getResourceQuotaUsage } from './queries/quotas'
 
 // Code
 const Query = {
@@ -13,8 +13,7 @@ const Query = {
   validateProfileCompleted,
 
   // Quotas
-  getCurrentResourceQuotaUsage,
-  getResourceQuotaUsageByAdmin,
+  getResourceQuotaUsage,
 
   // Users
   userById,

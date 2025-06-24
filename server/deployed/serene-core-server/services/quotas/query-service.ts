@@ -13,99 +13,94 @@ export class ResourceQuotasQueryService {
   clName = 'ResourceQuotasQueryService'
 
   // Functions
-  async getCurrentTotalQuota(
+  async getQuotaAndUsage(
           prisma: PrismaClient,
           userProfileId: string,
           resource: string,
-          day: Date) {
+          day: Date,
+          inCents: boolean = true) {
 
     // Debug
-    const fnName = `${this.clName}.getCurrentTotalQuota()`
+    const fnName = `${this.clName}.getQuotaAndUsage()`
 
-    // Get from ResourceQuotaTotal
-    const resourceQuotaTotals = await
+    // Get active quotas
+    const activeQuotas = await
             resourceQuotaTotalModel.filter(
               prisma,
               userProfileId,
               resource,
               day)
 
-    var totalQuota = 0.0
+    // Create a list of ranges
+    const activeRanges = activeQuotas.map((q: any) => ({
+      from: new Date(q.fromDay),
+      to: new Date(q.toDay)
+    }))
 
-    for (const resourceQuotaTotal of resourceQuotaTotals) {
+    // Get total quota
+    var totalQuota = activeQuotas.reduce(
+      (sum: number, q: any) => sum + (q.quota ?? 0), 0)
 
-      totalQuota += resourceQuotaTotal.quota
-    }
+    // Get where ranges start and end
+    const rangeStart = new Date(
+            Math.min(...activeRanges.map((r: any) => r.from.getTime())))
 
-    // Return
-    return totalQuota
-  }
+    const rangeEnd = new Date(
+            Math.max(...activeRanges.map((r: any) => r.to.getTime())))
 
-  async getQuotaUsage(
-          prisma: PrismaClient,
-          userProfileId: string,
-          resource: string,
-          fromDay: Date,
-          toDay: Date) {
-
-    // Debug
-    const fnName = `${this.clName}.getQuotaUsage()`
-
-    console.log(`${fnName}: for userProfileId: ${userProfileId}`)
-
-    // Get from ResourceQuotaUsage
-    const resourceQuotaUsages = await
+    // Get usage records
+    const usages = await
             resourceQuotaUsageModel.filter(
               prisma,
               userProfileId,
               resource,
-              fromDay,
-              toDay)
+              rangeStart,     // fromDay
+              rangeEnd)       // toDay
 
-    var usage = 0.0
+    // Filter usages
+    var totalUsage = usages.reduce((sum: number, usage: any) => {
 
-    for (const resourceQuotaUsage of resourceQuotaUsages) {
-      
-      usage += resourceQuotaUsage.usage
+      const usedOn = new Date(usage.usageDay)
+      const inAnyRange = activeRanges.some((r: any) =>
+        usedOn >= r.from && usedOn <= r.to
+      )
+      return inAnyRange ? sum + usage.amount : sum
+    }, 0)
+
+    // Adjust credit quota and usage from cents
+    if (inCents === false) {
+
+      totalQuota = totalQuota / 100
+      totalUsage = totalUsage / 100
     }
 
     // Return
-    return usage
+    return {
+      quota: totalQuota,
+      usage: totalUsage
+    }
   }
 
   async isQuotaAvailable(
           prisma: PrismaClient,
           userProfileId: string,
           resource: string,
-          amount: number) {
+          amountInCents: number) {
 
     // Get today's date
     const today = new Date()
 
     // Get total quota
-    const totalQuota = await
-            this.getCurrentTotalQuota(
-              prisma,
-              userProfileId,
-              resource,
-              today)
-
-    // If totalQuota is null, then there was no subscription to work with
-    if (totalQuota === null) {
-      return false
-    }
-
-    // Get current quota usage
-    const usedQuota = await
-            this.getQuotaUsage(
+    const results = await
+            this.getQuotaAndUsage(
               prisma,
               userProfileId,
               resource,
               today,
-              today)
+              true)  // inCents
 
     // Is there enough quota?
-    if (usedQuota + amount > totalQuota) {
+    if (results.usage + amountInCents > results.quota) {
       return false
     }
 

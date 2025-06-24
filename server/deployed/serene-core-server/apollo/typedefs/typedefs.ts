@@ -39,8 +39,7 @@ export const typeDefs = `#graphql
       userProfileId: String!): StatusAndMessage!
 
     # Quotas
-    getCurrentResourceQuotaUsage(userId: String!): Float
-    getResourceQuotaUsageByAdmin(
+    getResourceQuotaUsage(
       userProfileId: String!,
       resource: String!,
       day: String,
