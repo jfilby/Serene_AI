@@ -26,8 +26,6 @@ export class GoogleGeminiLlmService {
   // Consts
   clName = 'GoogleGeminiLlmService'
 
-  apiPricingTier = process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_PRICING_TIER
-
   okMsg = 'ok'
 
   /* apiVersionByModelName = {
@@ -36,17 +34,6 @@ export class GoogleGeminiLlmService {
   } */
 
   // Code
-  constructor() {
-
-    // Debug
-    const fnName = `${this.clName}.constructor()`
-
-    // Validate
-    if (this.apiPricingTier == null) {
-      throw new CustomError(`${fnName}: this.apiPricingTier == null`)
-    }
-  }
-
   convertGeminiChatCompletionResults(
     completion: ChatCompletion,
     model: string,
@@ -62,7 +49,6 @@ export class GoogleGeminiLlmService {
       messages: completion.messages,
       model: model,
       actualTech: tech,
-      pricingTier: this.apiPricingTier,
       inputTokens: completion.inputTokens,
       outputTokens: completion.outputTokens,
       // createdPgCacheEdge: undefined

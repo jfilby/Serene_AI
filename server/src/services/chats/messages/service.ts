@@ -29,7 +29,6 @@ export class ChatMessageService {
 
   calcCost(
     tech: any,
-    pricingTier: string,
     resource: string,
     inputTokens: number,
     outputTokens: number) {
@@ -37,8 +36,13 @@ export class ChatMessageService {
     // Debug
     const fnName = `${this.clName}.calcCost()`
 
+    // No cost if a free tier
+    if (tech.pricingTier === AiTechPricing.free) {
+      return 0.0
+    }
+
     // Define pricing key
-    const pricingKey = `${tech.variantName}/${pricingTier}/${resource}`
+    const pricingKey = `${tech.variantName}/${tech.pricingTier}/${resource}`
 
     // Validate
     if (!AiTechPricing.pricing.hasOwnProperty(pricingKey)) {
@@ -85,7 +89,6 @@ export class ChatMessageService {
           sentByAi: boolean,
           message: string,
           tech: any,
-          pricingTier: string | undefined,
           inputTokens: number | undefined,
           outputTokens: number | undefined) {
 
@@ -131,14 +134,13 @@ export class ChatMessageService {
     // is paid.
     var costInCents = 0.0
 
-    if (pricingTier === 'paid' &&
+    if (tech.pricingTier === AiTechPricing.paid &&
         (inputTokens > 0 ||
          outputTokens > 0)) {
 
       costInCents =
         this.calcCost(
           tech,
-          pricingTier,
           'text',
           inputTokens,
           outputTokens)

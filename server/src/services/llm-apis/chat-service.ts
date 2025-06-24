@@ -20,7 +20,7 @@ const techModel = new TechModel()
 
 // Services
 const chatApiUsageService = new ChatApiUsageService()
-const chatMessageService = new ChatMessageService(undefined)  // Not going to use encryption services
+const chatMessageService = new ChatMessageService(process.env.NEXT_PUBLIC_DB_ENCRYPT_SECRET)
 const detectContentTypeService = new DetectContentTypeService()
 const llmUtilsService = new LlmUtilsService()
 const resourceQuotasService = new ResourceQuotasQueryService()
@@ -328,7 +328,6 @@ export class ChatService {
     const costInCents =
             chatMessageService.calcCost(
               tech,
-              userProfile.isAdmin === true ? 'free' : 'paid',
               'text',
               messagesResults.estimatedInputTokens,
               messagesResults.estimatedOutputTokens)
@@ -399,7 +398,6 @@ export class ChatService {
       json: jsonEmpty,  // Set by caller, llmRequest()
       model: results.model,
       actualTech: results.actualTech,
-      pricingTier: results.pricingTier,
       inputTokens: results.inputTokens,
       outputTokens: results.outputTokens,
       fromCache: false,

@@ -10,7 +10,8 @@ export class TechModel {
           prisma: any,
           isDefaultProvider: boolean,
           variantName: string,
-          provides: string) {
+          provides: string,
+          pricingTier: string) {
 
     // Debug
     const fnName = `${this.clName}.create()`
@@ -21,7 +22,8 @@ export class TechModel {
         data: {
           isDefaultProvider: isDefaultProvider,
           variantName: variantName,
-          provides: provides
+          provides: provides,
+          pricingTier: pricingTier
         }
       })
     } catch(error) {
@@ -131,9 +133,10 @@ export class TechModel {
   async update(
           prisma: any,
           id: string,
-          isDefaultProvider: boolean,
-          variantName: string,
-          provides: string) {
+          isDefaultProvider: boolean | undefined,
+          variantName: string | undefined,
+          provides: string | undefined,
+          pricingTier: string | undefined) {
 
     // Debug
     const fnName = `${this.clName}.update()`
@@ -144,7 +147,8 @@ export class TechModel {
         data: {
           isDefaultProvider: isDefaultProvider,
           variantName: variantName,
-          provides: provides
+          provides: provides,
+          pricingTier: pricingTier
         },
         where: {
           id: id
@@ -158,15 +162,17 @@ export class TechModel {
 
   async upsert(prisma: any,
                id: string | undefined,
-               isDefaultProvider: boolean,
-               variantName: string,
-               provides: string) {
+               isDefaultProvider: boolean | undefined,
+               variantName: string | undefined,
+               provides: string | undefined,
+               pricingTier: string | undefined) {
 
     // Debug
     const fnName = `${this.clName}.upsert()`
 
     // If id isn't specified, try to get by variantName
-    if (id == null) {
+    if (id == null &&
+        variantName != null) {
 
       const tech = await
               this.getByVariantName(
@@ -181,6 +187,27 @@ export class TechModel {
     // Upsert
     if (id == null) {
 
+      // Validate for create (mainly for type validation of the create call)
+      if (isDefaultProvider == null) {
+        console.error(`${fnName}: id is null and isDefaultProvider is null`)
+        throw 'Prisma error'
+      }
+
+      if (variantName == null) {
+        console.error(`${fnName}: id is null and variantName is null`)
+        throw 'Prisma error'
+      }
+
+      if (provides == null) {
+        console.error(`${fnName}: id is null and provides is null`)
+        throw 'Prisma error'
+      }
+
+      if (pricingTier == null) {
+        console.error(`${fnName}: id is null and pricingTier is null`)
+        throw 'Prisma error'
+      }
+
       // Create
       // console.log(`${fnName}: create..`)
 
@@ -189,7 +216,8 @@ export class TechModel {
                  prisma,
                  isDefaultProvider,
                  variantName,
-                 provides)
+                 provides,
+                 pricingTier)
     } else {
 
       // Update
@@ -201,7 +229,8 @@ export class TechModel {
                  id,
                  isDefaultProvider,
                  variantName,
-                 provides)
+                 provides,
+                 pricingTier)
     }
   }
 }

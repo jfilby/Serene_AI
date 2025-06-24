@@ -171,31 +171,4 @@ export class OpenAiLlmService {
     // Return results
     return chatCompletionResults
   }
-
-  async upsertLlmChatTech(
-          prisma: any,
-          requestTech: any,
-          modelName: string) {
-
-    // The requestTech is what the request was made with. If the actual model
-    // used by the API call differs, then upsert a new Tech entry.
-
-    // Debug
-    const fnName = `${this.clName}.upsertLlmChatTech()`
-
-    // Formulate variantName
-    const variantName = `${AiTechDefs.chatGptProvider}: ${modelName}`
-
-    // Upsert
-    const actualTech = await
-            this.techModel.upsert(
-              prisma,
-              undefined,  // id
-              false,      // isDefaultProvider
-              variantName,
-              AiTechDefs.llms)
-
-    // Return
-    return actualTech
-  }
 }

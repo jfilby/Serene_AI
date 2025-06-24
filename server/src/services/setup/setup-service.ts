@@ -1,6 +1,7 @@
 import { RateLimitedApiModel } from '@/serene-core-server/models/tech/rate-limited-api-model'
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
 import { AiTechDefs } from '../../types/tech-defs'
+import { AiTechPricing } from '../../types/tech-pricing'
 import { ServerOnlyTypes } from '../../types/server-only-types'
 
 export class SereneAiSetup {
@@ -23,7 +24,8 @@ export class SereneAiSetup {
               undefined,  // id
               true,       // isDefaultProvider
               ServerOnlyTypes.apolloIoApi,
-              ServerOnlyTypes.restApi)
+              ServerOnlyTypes.restApi,
+              AiTechPricing.free)
 
     await this.rateLimitedApiModel.upsert(
             prisma,
@@ -38,7 +40,8 @@ export class SereneAiSetup {
               undefined,  // id
               false,      // isDefaultProvider
               AiTechDefs.googleGeminiV1pt5Pro,
-              AiTechDefs.llms)
+              AiTechDefs.llms,
+              AiTechPricing.paid)
 
     await this.rateLimitedApiModel.upsert(
             prisma,
@@ -53,7 +56,8 @@ export class SereneAiSetup {
               undefined,  // id
               false,      // isDefaultProvider
               AiTechDefs.googleGeminiV1pt5Flash,
-              AiTechDefs.llms)
+              AiTechDefs.llms,
+              AiTechPricing.paid)
 
     await this.rateLimitedApiModel.upsert(
             prisma,
@@ -68,7 +72,8 @@ export class SereneAiSetup {
               undefined,  // id
               true,       // isDefaultProvider
               AiTechDefs.googleGeminiV2Flash,
-              AiTechDefs.llms)
+              AiTechDefs.llms,
+              AiTechPricing.paid)
 
     await this.rateLimitedApiModel.upsert(
             prisma,
@@ -83,7 +88,8 @@ export class SereneAiSetup {
               undefined,  // id
               false,      // isDefaultProvider
               AiTechDefs.googleGeminiLatestExp,
-              AiTechDefs.llms)
+              AiTechDefs.llms,
+              AiTechPricing.paid)
 
     await this.rateLimitedApiModel.upsert(
             prisma,
@@ -98,7 +104,8 @@ export class SereneAiSetup {
               undefined,  // id
               false,      // isDefaultProvider
               AiTechDefs.chatGpt4o,
-              AiTechDefs.llms)
+              AiTechDefs.llms,
+              AiTechPricing.paid)
 
     // Llama3 8B
     const llama3_8bTech = await
@@ -107,7 +114,8 @@ export class SereneAiSetup {
               undefined,  // id
               false,      // isDefaultProvider
               AiTechDefs.llama3_8b,
-              AiTechDefs.llms)
+              AiTechDefs.llms,
+              AiTechPricing.paid)
 
     await this.rateLimitedApiModel.upsert(
             prisma,

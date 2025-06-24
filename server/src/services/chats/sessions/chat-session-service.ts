@@ -650,7 +650,6 @@ export class ChatSessionService {
       toContents: chatCompletionResults.messages,
       toJson: chatCompletionResults.json,
       tech: llmTech,
-      pricingTier: chatCompletionResults.pricingTier,
       inputTokens: chatCompletionResults.inputTokens,
       outputTokens: chatCompletionResults.outputTokens
     }
@@ -697,7 +696,6 @@ export class ChatSessionService {
               false,      // sentByAi
               JSON.stringify(sessionTurnData.fromContents),
               undefined,  // tech
-              undefined,  // pricingTier
               undefined,  // inputTokens
               undefined)  // outputTokens
 
@@ -714,7 +712,6 @@ export class ChatSessionService {
               true,                // sentByAi
               JSON.stringify(sessionTurnData.toContents),
               sessionTurnData.tech,
-              sessionTurnData.pricingTier,
               sessionTurnData.inputTokens,
               sessionTurnData.outputTokens)
 

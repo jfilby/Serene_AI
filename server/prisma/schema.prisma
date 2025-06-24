@@ -210,6 +210,7 @@ model Tech {
   isDefaultProvider            Boolean              @map("is_default_provider")
   variantName                  String               @map("variant_name") @unique
   provides                     String
+  pricingTier                  String               @map("pricing_tier")
 
   ofChatMessageCreated         ChatMessageCreated[]
   ofLlmCaches                  LlmCache[]
