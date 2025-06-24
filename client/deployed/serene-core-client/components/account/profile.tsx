@@ -33,18 +33,6 @@ export default function Profile({
   const [fullName, setFullName] = useState('')
   const [firstName, setFirstName] = useState('')
   const [country, setCountry] = useState('United States')
-  /* const [billingNameAsMyName, setBillingNameAsMyName] = useState(true)
-  const [billingCountryAsMyCountry, setBillingCountryAsMyCountry] = useState(true)
-  const [billingFirstName, setBillingFirstName] = useState('')
-  const [billingLastName, setBillingLastName] = useState('')
-  const [billingCountry, setBillingCountry] = useState('United States')
-  const [billingAddressLine1, setBillingAddressLine1] = useState('')
-  const [billingAddressLine2, setBillingAddressLine2] = useState('')
-  const [billingCity, setBillingCity] = useState('')
-  const [billingState, setBillingState] = useState('')
-  const [billingZip, setBillingZip] = useState('') */
-
-  const [zipLabel, setZipLabel] = useState('Zip')
 
   const [notificationSuccessText, setNotificationSuccessText] = useState('')
   const [notificationSuccessOpened, setNotificationSuccessOpened] = useState(false)
@@ -111,16 +99,6 @@ export default function Profile({
         fullName: fullName,
         firstName: firstName,
         country: country,
-        /* billingNameAsMyName: billingNameAsMyName.toString(),
-        billingCountryAsMyCountry: billingCountryAsMyCountry.toString(),
-        billingFirstName: billingFirstName,
-        billingLastName: billingLastName,
-        billingCountry: billingCountry,
-        billingAddressLine1: billingAddressLine1,
-        billingAddressLine2: billingAddressLine2,
-        billingCity: billingCity,
-        billingState: billingState,
-        billingZip: billingZip */
       },
       callbackOnSuccess: undefined,
       routeOnSuccess: undefined,
@@ -147,19 +125,11 @@ export default function Profile({
             variables: {
               userProfileId: userProfile.id,
               category: personalDetails,
-              keys: [ profileService.fullName,
-                      profileService.firstName,
-                      profileService.countryCode,
-                      /* profileService.billingNameAsMyName,
-                      profileService.billingCountryAsMyCountry,
-                      profileService.billingFirstName,
-                      profileService.billingLastName,
-                      profileService.billingCountryCode,
-                      profileService.billingAddressLine1,
-                      profileService.billingAddressLine2,
-                      profileService.billingCity,
-                      profileService.billingState,
-                      profileService.billingZip */ ]
+              keys: [
+                profileService.fullName,
+                profileService.firstName,
+                profileService.countryCode,
+              ]
             }
           })
 
@@ -183,56 +153,6 @@ export default function Profile({
             setCountry(profileService.getCountryByCode(keyValue.value))
             break
           }
-
-          /* case profileService.billingNameAsMyName: {
-            setBillingNameAsMyName(JSON.parse(keyValue.value))
-            break
-          }
-
-          case profileService.billingCountryAsMyCountry: {
-            setBillingCountryAsMyCountry(JSON.parse(keyValue.value))
-            break
-          }
-
-          case profileService.billingFirstName: {
-            setBillingFirstName(keyValue.value)
-            break
-          }
-
-          case profileService.billingLastName: {
-            setBillingLastName(keyValue.value)
-            break
-          }
-
-          case profileService.billingCountryCode: {
-            setBillingCountry(profileService.getCountryByCode(keyValue.value))
-            break
-          }
-
-          case profileService.billingAddressLine1: {
-            setBillingAddressLine1(keyValue.value)
-            break
-          }
-
-          case profileService.billingAddressLine2: {
-            setBillingAddressLine2(keyValue.value)
-            break
-          }
-
-          case profileService.billingCity: {
-            setBillingCity(keyValue.value)
-            break
-          }
-
-          case profileService.billingState: {
-            setBillingState(keyValue.value)
-            break
-          }
-
-          case profileService.billingZip: {
-            setBillingZip(keyValue.value)
-            break
-          } */
         }
       }
     }
@@ -243,17 +163,6 @@ export default function Profile({
     }
 
   }, [userProfile.id])
-
-  /* Zip/postal code label
-  useEffect(() => {
-
-    setZipLabel(
-      userPreferencesService.getZipOrPostalCodeLabel(
-        country,
-        billingCountryAsMyCountry,
-        billingCountry))
-
-  }, [country, billingCountryAsMyCountry, billingCountry]) */
 
   // Render
   return (
@@ -343,108 +252,6 @@ export default function Profile({
               </Select>
             </FormControl>
             <br/><br/>
-            {/* <p><b>Billing address</b></p>
-            <Checkbox
-              checked={billingNameAsMyName}
-              onChange={(e) => { setBillingNameAsMyName(e.target.checked) }} />
-              Billing name is the same as in personal details
-            <br/>
-            <Checkbox
-              checked={billingCountryAsMyCountry}
-              onChange={(e) => { setBillingCountryAsMyCountry(e.target.checked) }} />
-              Billing country is the same as in personal details
-            {billingNameAsMyName === false ?
-              <>
-                <TextField
-                  autoFocus
-                  fullWidth
-                  variant='outlined'
-                  label='First name'
-                  value={billingFirstName}
-                  onChange={(e) => setBillingFirstName(e.target.value)}
-                  required />
-                <br/><br/>
-                <TextField
-                  fullWidth
-                  variant='outlined'
-                  label='Last name'
-                  value={billingLastName}
-                  onChange={(e) => setBillingLastName(e.target.value)}
-                  required />
-                <br/><br/>
-              </>
-              :
-              <></>
-            }
-            {billingCountryAsMyCountry === false ?
-              <>
-                <FormControl fullWidth>
-                  <InputLabel
-                    htmlFor='select-country'
-                    required
-                    shrink>
-                    Country
-                  </InputLabel>
-                  <Select
-                    inputProps={{
-                      id: 'select-country',
-                    }}
-                    label='Country'
-                    native
-                    onChange={(e) => setBillingCountry(e.target.value)}
-                    variant='outlined'
-                    value={billingCountry}>
-                    <option key='blankBillingCountry' value=''></option>
-                    {countries.map((country) => (
-                      <option key={country.name} value={country.name}>
-                        {country.name}
-                      </option>
-                    ))}
-                  </Select>
-                </FormControl>
-                <br/><br/>
-              </>
-              :
-              <></>
-            }
-            <TextField
-              fullWidth
-              variant='outlined'
-              label='Line 1'
-              value={billingAddressLine1}
-              onChange={(e) => setBillingAddressLine1(e.target.value)}
-              required />
-            <br/><br/>
-            <TextField
-              fullWidth
-              variant='outlined'
-              label='Line 2'
-              value={billingAddressLine2}
-              onChange={(e) => setBillingAddressLine2(e.target.value)} />
-            <br/><br/>
-            <TextField
-              fullWidth
-              variant='outlined'
-              label='City'
-              value={billingCity}
-              onChange={(e) => setBillingCity(e.target.value)}
-              required />
-            <br/><br/>
-            <TextField
-              fullWidth
-              variant='outlined'
-              label='State'
-              value={billingState}
-              onChange={(e) => setBillingState(e.target.value)} />
-            <br/><br/>
-            <TextField
-              fullWidth
-              variant='outlined'
-              label={zipLabel}
-              value={billingZip}
-              onChange={(e) => setBillingZip(e.target.value)}
-              required />
-            <br/><br/> */}
 
             <Button
               type='submit'
@@ -466,7 +273,10 @@ export default function Profile({
        </>
        :
        <>
-         <p>You aren't signed in. All canvases you create will be temporary.</p>
+         <Typography variant='body1'>
+          You aren't signed in.
+         </Typography>
+
          <a href='#' onClick={handleSignin} className='btn-signin'>Sign in</a>
        </>
       }
