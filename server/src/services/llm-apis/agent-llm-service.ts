@@ -66,7 +66,7 @@ export class AgentLlmService {
             this.chatService.llmRequest(
               prisma,
               tech.id,    // llmTechId
-              undefined,  // userProfileId
+              undefined,  // userProfile
               agentUser,
               inputMessagesWithRoles,
               undefined,  // systemPrompt

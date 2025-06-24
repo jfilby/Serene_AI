@@ -12,10 +12,15 @@ interface ChatCompletion {
   outputTokens: number
 }
 
+// Consts
 const genAI = process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY != null ?
         new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY) :
         undefined
 
+// Services
+const estimateTokensService = new EstimateTokensService()
+
+// Class
 export class GoogleGeminiLlmService {
 
   // Consts
@@ -29,9 +34,6 @@ export class GoogleGeminiLlmService {
     [AiTechDefs.googleGeminiV1ProModelName]: 'v1',
     [AiTechDefs.googleGeminiV1pt5ProModelName]: 'v1beta'
   } */
-
-  // Services
-  estimateTokensService = new EstimateTokensService()
 
   // Code
   constructor() {
@@ -208,9 +210,9 @@ export class GoogleGeminiLlmService {
     } else {
 
       inputTokens =
-        this.estimateTokensService.estimateInputTokens(messagesWithRoles)
+        estimateTokensService.estimateInputTokens(messagesWithRoles)
 
-      outputTokens = this.estimateTokensService.estimateOutputTokens([text])
+      outputTokens = estimateTokensService.estimateOutputTokens([text])
     }
 
     // Return
@@ -297,14 +299,11 @@ export class GoogleGeminiLlmService {
     // console.log(`${fnName}: messagesWithRoles: ` +
     //             JSON.stringify(messagesWithRoles))
 
-    /* Estimate the input and output tokens
+    // Estimate the input and output tokens
     const estimatedInputTokens =
-            this.openAIGenericLlmService.estimateInputTokens(messages)
+        estimateTokensService.estimateInputTokens(messagesWithRoles)
 
-    const estimatedOutputTokens =
-           this.openAIGenericLlmService.estimateOutputTokens(
-              prisma,
-              messages) */
+    const estimatedOutputTokens = estimateTokensService.estimatedOutputTokens
 
     // Variant name: may have to determine this based on input tokens and the
     // estimated output tokens.
@@ -314,8 +313,8 @@ export class GoogleGeminiLlmService {
     return {
       messages: messagesWithRoles,
       variantName: variantName,
-      // estimatedInputTokens: estimatedInputTokens,
-      // estimatedOutputTokens: estimatedOutputTokens
+      estimatedInputTokens: estimatedInputTokens,
+      estimatedOutputTokens: estimatedOutputTokens
     }
   }
 

@@ -2,6 +2,10 @@ import { CustomError } from '@/serene-core-server/types/errors'
 import { ServerOnlyTypes } from '../../../types/server-only-types'
 import { EstimateTokensService } from '../estimate-tokens-service'
 
+// Services
+const estimateTokensService = new EstimateTokensService()
+
+// Class
 export class OpenAIGenericLlmService {
 
   // Consts
@@ -12,9 +16,6 @@ export class OpenAIGenericLlmService {
   lengthReason = 'length'
   contentFilterReason = 'content_filter'
   nullReason = 'null'
-
-  // Services
-  estimateTokensService = new EstimateTokensService()
 
   // Code
   convertOpenAiChatCompletionResults(openAiResults: any) {
@@ -208,7 +209,9 @@ export class OpenAIGenericLlmService {
 
     // Estimate the input and output tokens
     const estimatedInputTokens =
-            this.estimateTokensService.estimateInputTokens(messages)
+            estimateTokensService.estimateInputTokens(messages)
+
+    const estimatedOutputTokens = estimateTokensService.estimatedOutputTokens
 
     // Variant name: may have to determine this based on input tokens and the
     // estimated output tokens.
@@ -222,7 +225,8 @@ export class OpenAIGenericLlmService {
     return {
       messages: messagesWithRoles,
       variantName: variantName,
-      estimatedInputTokens: estimatedInputTokens
+      estimatedInputTokens: estimatedInputTokens,
+      estimatedOutputTokens: estimatedOutputTokens
     }
   }
 }

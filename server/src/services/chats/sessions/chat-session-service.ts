@@ -550,7 +550,7 @@ export class ChatSessionService {
           llmTechId: string | undefined,
           chatSessionId: string,
           fromChatParticipantId: string,
-          fromUserProfileId: string,
+          fromUserProfile: any,
           fromName: string,
           fromContents: ChatMessage[]) {
 
@@ -626,7 +626,7 @@ export class ChatSessionService {
             this.chatService.llmRequest(
               prisma,
               chatSession.chatSettings.llmTechId,
-              fromUserProfileId,
+              fromUserProfile,
               agentInfo.agentUser,
               messagesWithRoles,
               chatSession.chatSettings.prompt,
@@ -642,7 +642,7 @@ export class ChatSessionService {
       waitSeconds: 0,
       chatSession: chatSession,
       fromChatParticipantId: fromChatParticipantId,
-      fromUserProfileId: fromUserProfileId,
+      fromUserProfileId: fromUserProfile.id,
       fromContents: fromContents,
       toChatParticipantId: agentInfo.toChatParticipant.id,
       toUserProfileId: agentInfo.toUserProfile.id,

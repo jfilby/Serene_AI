@@ -222,16 +222,64 @@ export class LlmUtilsService {
     }
   }
 
-  async prepareAndSendChatMessages(
+  async prepareChatMessages(
           prisma: any,
           tech: any,
           agentUser: any,
           systemPrompt: string | undefined,
-          messagesWithRoles: any[],
+          messagesWithRoles: any[]) {
+
+    // Debug
+    const fnName = `${this.clName}.prepareChatMessages()`
+
+    // Get tech provider
+    const provider = AiTechDefs.variantToProviders[tech.variantName]
+
+    // Route to appropriate LLM utils
+    switch (provider) {
+
+      case AiTechDefs.chatGptProvider: {
+
+        // Prepare messages
+        return await this.openAIGenericLlmService.prepareMessages(
+                       prisma,
+                       tech,
+                       agentUser.name,
+                       agentUser.role,
+                       systemPrompt,
+                       messagesWithRoles,
+                       false)  // anonymize
+      }
+
+      case AiTechDefs.googleGeminiProvider: {
+
+        // Prepare messages
+        return await this.googleGeminiLlmService.prepareMessages(
+                       tech,
+                       agentUser.name,
+                       agentUser.role,
+                       systemPrompt,
+                       messagesWithRoles,
+                       false)  // anonymize
+      }
+
+      default: {
+        throw new CustomError(`${fnName}: unhandled provider: ${provider} ` +
+                              `for variant: ${tech.variantName}`)
+      }
+    }
+  }
+
+  async sendChatMessages(
+          prisma: any,
+          tech: any,
+          agentUser: any,
+          systemPrompt: string | undefined,
+          messages: any[],
           jsonMode: boolean) {
 
     // Debug
-    const fnName = `${this.clName}.prepareAndSendChatMessages()`
+    const fnName = `${this.clName}.sendChatMessages()`
 
     // Get tech provider
     const provider = AiTechDefs.variantToProviders[tech.variantName]
@@ -249,7 +297,7 @@ export class LlmUtilsService {
                   agentUser.name,
                   agentUser.role,
                   systemPrompt,
-                  messagesWithRoles,
+                  messages,
                   false)  // anonymize
 
         // Gemini LLM request
@@ -268,7 +316,7 @@ export class LlmUtilsService {
                   agentUser.name,
                   agentUser.role,
                   systemPrompt,
-                  messagesWithRoles,
+                  messages,
                   false)  // anonymize
 
         // Gemini LLM request

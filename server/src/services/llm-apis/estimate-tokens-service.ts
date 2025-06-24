@@ -5,6 +5,8 @@ export class EstimateTokensService {
   // Consts
   clName = 'EstimateTokensService'
 
+  estimatedOutputTokens = 50
+
   // Code
   estimateInputTokens(messages: any[]) {
 

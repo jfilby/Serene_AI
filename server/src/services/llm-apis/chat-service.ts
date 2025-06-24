@@ -1,33 +1,36 @@
 const blake2b = require('blake2b')
 import { jsonrepair } from 'jsonrepair'
 import { CustomError } from '@/serene-core-server/types/errors'
+import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
 import { sleepSeconds } from '@/serene-core-server/services/process/sleep'
 import { RateLimitedApiEventModel } from '@/serene-core-server/models/tech/rate-limited-api-event-model'
-import { RateLimitedApiModel } from '@/serene-core-server/models/tech/rate-limited-api-model'
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
-import { AiTechDefs } from '../../types/tech-defs'
+import { ResourceQuotasQueryService } from '@/serene-core-server/services/quotas/query-service'
 import { LlmCacheModel } from '../../models/cache/llm-cache-model'
 import { ChatApiUsageService } from '../api-usage/chat-api-usage-service'
+import { ChatMessageService } from '../chats/messages/service'
 import { DetectContentTypeService } from '../content/detect-content-type-service'
 import { LlmUtilsService } from './utils-service'
 import { TextParsingService } from '../content/text-parsing-service'
 
+// Models
+const llmCacheModel = new LlmCacheModel()
+const rateLimitedApiEventModel = new RateLimitedApiEventModel()
+const techModel = new TechModel()
+
+// Services
+const chatApiUsageService = new ChatApiUsageService()
+const chatMessageService = new ChatMessageService(undefined)  // Not going to use encryption services
+const detectContentTypeService = new DetectContentTypeService()
+const llmUtilsService = new LlmUtilsService()
+const resourceQuotasService = new ResourceQuotasQueryService()
+const textParsingService = new TextParsingService()
+
+// Class
 export class ChatService {
 
   // Consts
   clName = 'ChatService'
-
-  // Models
-  llmCacheModel = new LlmCacheModel()
-  rateLimitedApiEventModel = new RateLimitedApiEventModel()
-  rateLimitedApiModel = new RateLimitedApiModel()
-  techModel = new TechModel()
-
-  // Services
-  chatApiUsageService = new ChatApiUsageService()
-  detectContentTypeService = new DetectContentTypeService()
-  llmUtilsService = new LlmUtilsService()
-  textParsingService = new TextParsingService()
 
   // Code
   cleanMultiLineFormatting(messages: string[]) {
@@ -66,7 +69,7 @@ export class ChatService {
     for (const message of messages) {
 
       // Try to determine the message type
-      const type = this.detectContentTypeService.detect(message)
+      const type = detectContentTypeService.detect(message)
 
       // Add new message
       newMessages.push({
@@ -96,7 +99,7 @@ export class ChatService {
   async llmRequest(
           prisma: any,
           llmTechId: string | undefined,
-          userProfileId: string | undefined,
+          userProfile: any | undefined,
           agentUser: any,
           messagesWithRoles: any[],
           systemPrompt: string | undefined = undefined,
@@ -121,7 +124,7 @@ export class ChatService {
         this.prepAndSendLlmRequest(
           prisma,
           llmTechId,
-          userProfileId,
+          userProfile,
           agentUser,
           messagesWithRoles,
           systemPrompt,
@@ -152,7 +155,7 @@ export class ChatService {
           if (jsonText !== '[' && jsonText !== '{') {
 
             const jsonExtracts =
-                    this.textParsingService.getJsonExtractExcludingQuotesWithBraces(
+                    textParsingService.getJsonExtractExcludingQuotesWithBraces(
                       jsonText)
 
             try {
@@ -190,7 +193,7 @@ export class ChatService {
   private async prepAndSendLlmRequest(
                   prisma: any,
                   llmTechId: string | undefined,
-                  userProfileId: string | undefined,
+                  userProfile: any,
                   agentUser: any,
                   messagesWithRoles: any[],
                   systemPrompt: string | undefined = undefined,
@@ -208,7 +211,7 @@ export class ChatService {
     if (llmTechId == null) {
 
       tech = await
-        this.techModel.getByVariantName(
+        techModel.getByVariantName(
           prisma,
           process.env.NEXT_PUBLIC_DEFAULT_LLM_VARIANT as string)
 
@@ -237,7 +240,7 @@ export class ChatService {
         cacheKey != null) {
 
       const llmCache = await
-              this.llmCacheModel.getByTechIdAndKey(
+              llmCacheModel.getByTechIdAndKey(
                 prisma,
                 llmTechId,
                 cacheKey)
@@ -261,20 +264,20 @@ export class ChatService {
     }
 
     // Get userProfileId if agent specified
-    if (userProfileId == null &&
+    if (userProfile == null &&
         agentUser != null) {
 
-      userProfileId = agentUser.userProfileId
+      userProfile = agentUser
     }
 
-    if (userProfileId == null) {
+    if (userProfile == null) {
       throw new CustomError(
                   `${fnName}: no userProfileId given and agent not available`)
     }
 
     // Check to see if rate limited
     const rateLimitedData = await
-            this.chatApiUsageService.isRateLimited(
+            chatApiUsageService.isRateLimited(
               prisma,
               llmTechId)
 
@@ -296,30 +299,64 @@ export class ChatService {
       }
 
       // Create rate-limited API event
-      await this.rateLimitedApiEventModel.create(
+      await rateLimitedApiEventModel.create(
               prisma,
               undefined,  // id
               rateLimitedData.rateLimitedApiId,
-              userProfileId)
+              userProfile.id)
     }
 
     // Get Tech if not yet retrieved
     if (tech == null) {
 
       tech = await
-        this.techModel.getById(
+        techModel.getById(
           prisma,
           llmTechId)
     }
 
-    // Prepare messages and send request by provider
-    const results = await
-            this.llmUtilsService.prepareAndSendChatMessages(
+    // Prepare messages by provider
+    const messagesResults = await
+            llmUtilsService.prepareChatMessages(
               prisma,
               tech,
               agentUser,
               systemPrompt,
-              messagesWithRoles,
+              messagesWithRoles)
+
+    // Calc estimated cost
+    const costInCents =
+            chatMessageService.calcCost(
+              tech,
+              userProfile.isAdmin === true ? 'free' : 'paid',
+              'text',
+              messagesResults.estimatedInputTokens,
+              messagesResults.estimatedOutputTokens)
+
+    // Is there quota available for this user?
+    const isQuotaAvailable = await
+            resourceQuotasService.isQuotaAvailable(
+              prisma,
+              userProfile.id,
+              SereneCoreServerTypes.credits,
+              costInCents)
+
+    if (isQuotaAvailable === false) {
+
+      return {
+        status: false,
+        message: `Insufficient quota, please buy or upgrade your subscription`
+      }
+    }
+
+    // Send messages by provider
+    const results = await
+            llmUtilsService.sendChatMessages(
+              prisma,
+              tech,
+              agentUser,
+              systemPrompt,
+              messagesResults.messages,
               jsonMode)
 
     // Get result output as a string

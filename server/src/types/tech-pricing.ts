@@ -14,16 +14,19 @@ export class AiTechPricing {
   static pricing = {
 
     // OpenAI: https://platform.openai.com/docs/pricing
+    // ChatGPT4o (gpt-4o-2024-08-06) / paid / text
     [AiTechDefs.chatGpt4o + `/${this.paid}/${this.text}`]: {
-      inputTokens: 1.25,
-      outputTokens: 5.00
+      inputTokens: 2.50,
+      outputTokens: 10.00
     },
 
     // Gemini: https://ai.google.dev/gemini-api/docs/pricing
+    // Gemini 2.0 Flash / free / text
     [AiTechDefs.googleGeminiV2Flash + `/${this.free}/${this.text}`]: {
       inputTokens: 0.00,
       outputTokens: 0.00
     },
+    // Gemini 2.0 Flash / paid / text
     [AiTechDefs.googleGeminiV2Flash + `/${this.paid}/${this.text}`]: {
       inputTokens: 0.10,
       outputTokens: 0.40
