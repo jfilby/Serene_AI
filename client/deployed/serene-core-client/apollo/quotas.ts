@@ -1,12 +1,12 @@
 import { gql } from '@apollo/client'
 
-export const getResourceQuotaUsageByAdminQuery = gql`
-  query getResourceQuotaUsageByAdmin(
+export const getResourceQuotaUsageQuery = gql`
+  query getResourceQuotaUsage(
           $userProfileId: String!,
           $resource: String!
           $day: String,
           $viewUserProfileId: String) {
-    getResourceQuotaUsageByAdmin(
+    getResourceQuotaUsage(
       userProfileId: $userProfileId,
       resource: $resource,
       day: $day,

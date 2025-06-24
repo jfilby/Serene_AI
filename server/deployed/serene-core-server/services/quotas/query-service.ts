@@ -23,6 +23,8 @@ export class ResourceQuotasQueryService {
     // Debug
     const fnName = `${this.clName}.getQuotaAndUsage()`
 
+    console.log(`${fnName}: starting with day: ` + JSON.stringify(day))
+
     // Get active quotas
     const activeQuotas = await
             resourceQuotaTotalModel.filter(
@@ -30,6 +32,17 @@ export class ResourceQuotasQueryService {
               userProfileId,
               resource,
               day)
+
+    // If no quotas, then assume usage of zero. If quotas are zero then no
+    // usage should be permitted
+    if (activeQuotas.length === 0) {
+
+      return {
+        hasQuota: false,
+        quota: 0.0,
+        usage: 0.0
+      }
+    }
 
     // Create a list of ranges
     const activeRanges = activeQuotas.map((q: any) => ({
@@ -39,7 +52,7 @@ export class ResourceQuotasQueryService {
 
     // Get total quota
     var totalQuota = activeQuotas.reduce(
-      (sum: number, q: any) => sum + (q.quota ?? 0), 0)
+          (sum: number, q: any) => sum + (q.quota ?? 0), 0)
 
     // Get where ranges start and end
     const rangeStart = new Date(
@@ -76,6 +89,7 @@ export class ResourceQuotasQueryService {
 
     // Return
     return {
+      hasQuota: true,
       quota: totalQuota,
       usage: totalUsage
     }
