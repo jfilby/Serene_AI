@@ -315,6 +315,23 @@ export class ChatService {
           llmTechId)
     }
 
+    // Validate the Tech
+    if (tech == null) {
+
+      return {
+        status: false,
+        message: `Tech not found for id: ${llmTechId}`
+      }
+    }
+
+    if (tech.isEnabled === false) {
+
+      return {
+        status: false,
+        message: `Tech is disabled for id: ${llmTechId}`
+      }
+    }
+
     // Prepare messages by provider
     const messagesResults = await
             llmUtilsService.prepareChatMessages(
