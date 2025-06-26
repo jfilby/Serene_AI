@@ -12,16 +12,25 @@ export class TechQueryService {
   clName = 'TechQueryService'
 
   // Code
-  async getTech(
+  async getTechs(
           prisma: PrismaClient,
           userProfile: any,
           resource: string) {
+
+    // Determine isAdminOnly
+    var isAdminOnly: boolean | undefined = false
+
+    if (userProfile.isAdmin === true) {
+      isAdminOnly = undefined
+    }
 
     // Filter
     var techs = await
           techModel.filter(
             prisma,
-            resource)
+            resource,
+            true,      // isEnabled
+            isAdminOnly)
 
     // Remove free tech if not an admin
     if (userProfile.isAdmin === false) {

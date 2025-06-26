@@ -26,7 +26,7 @@ export async function getTechs(
 
   // Get quota and usage
   const results = await
-          techQueryService.getTech(
+          techQueryService.getTechs(
             prisma,
             userProfile,
             args.resource)

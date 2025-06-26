@@ -23,10 +23,12 @@ export class SereneAiSetup {
             this.techModel.upsert(
               prisma,
               undefined,  // id
-              true,       // isDefaultProvider
               ServerOnlyTypes.apolloIoApi,
               ServerOnlyTypes.restApi,
-              SereneCoreServerTypes.free)
+              SereneCoreServerTypes.free,
+              true,       // isDefaultProvider
+              true,       // isEnabled
+              false)      // isAdminOnly
 
     await this.rateLimitedApiModel.upsert(
             prisma,
@@ -39,10 +41,12 @@ export class SereneAiSetup {
             this.techModel.upsert(
               prisma,
               undefined,  // id
-              false,      // isDefaultProvider
               AiTechDefs.googleGeminiV1pt5Pro,
               AiTechDefs.llms,
-              SereneCoreServerTypes.paid)
+              SereneCoreServerTypes.paid,
+              false,      // isDefaultProvider
+              false,      // isEnabled
+              false)      // isAdminOnly
 
     await this.rateLimitedApiModel.upsert(
             prisma,
@@ -55,10 +59,12 @@ export class SereneAiSetup {
             this.techModel.upsert(
               prisma,
               undefined,  // id
-              false,      // isDefaultProvider
               AiTechDefs.googleGeminiV1pt5Flash,
               AiTechDefs.llms,
-              SereneCoreServerTypes.paid)
+              SereneCoreServerTypes.paid,
+              false,      // isDefaultProvider
+              false,      // isEnabled
+              false)      // isAdminOnly
 
     await this.rateLimitedApiModel.upsert(
             prisma,
@@ -66,31 +72,47 @@ export class SereneAiSetup {
             geminiV1pt5FlashTech.id,
             15 - 1)       // -1 for a buffer (found to be needed in actual runs)
 
-    // Gemini v2 Flash
-    const geminiV2FlashTech = await
+    // Gemini v2 Flash (free / admin only)
+    const geminiV2FlashFreeTech = await
             this.techModel.upsert(
               prisma,
               undefined,  // id
-              true,       // isDefaultProvider
-              AiTechDefs.googleGeminiV2Flash,
+              AiTechDefs.googleGeminiV2FlashFree,
               AiTechDefs.llms,
-              SereneCoreServerTypes.paid)
+              SereneCoreServerTypes.free,
+              true,       // isDefaultProvider
+              true,       // isEnabled
+              true)       // isAdminOnly
 
     await this.rateLimitedApiModel.upsert(
             prisma,
             undefined,    // id
-            geminiV2FlashTech.id,
+            geminiV2FlashFreeTech.id,
             10)
+
+    // Gemini v2 Flash (paid)
+    const geminiV2FlashPaidTech = await
+            this.techModel.upsert(
+              prisma,
+              undefined,  // id
+              AiTechDefs.googleGeminiV2Flash,
+              AiTechDefs.llms,
+              SereneCoreServerTypes.paid,
+              false,      // isDefaultProvider
+              true,       // isEnabled
+              false)      // isAdminOnly
 
     // Gemini latest experimental
     const geminiLatestExpTech = await
             this.techModel.upsert(
               prisma,
               undefined,  // id
-              false,      // isDefaultProvider
-              AiTechDefs.googleGeminiLatestExp,
+              AiTechDefs.googleGeminiLatestExpFree,
               AiTechDefs.llms,
-              SereneCoreServerTypes.paid)
+              SereneCoreServerTypes.paid,
+              false,      // isDefaultProvider
+              true,       // isEnabled
+              true)       // isAdminOnly
 
     await this.rateLimitedApiModel.upsert(
             prisma,
@@ -103,20 +125,24 @@ export class SereneAiSetup {
             this.techModel.upsert(
               prisma,
               undefined,  // id
-              false,      // isDefaultProvider
               AiTechDefs.chatGpt4o,
               AiTechDefs.llms,
-              SereneCoreServerTypes.paid)
+              SereneCoreServerTypes.paid,
+              false,      // isDefaultProvider
+              true,       // isEnabled
+              false)      // isAdminOnly
 
     // Llama3 8B
     const llama3_8bTech = await
             this.techModel.upsert(
               prisma,
               undefined,  // id
-              false,      // isDefaultProvider
               AiTechDefs.llama3_8b,
               AiTechDefs.llms,
-              SereneCoreServerTypes.paid)
+              SereneCoreServerTypes.paid,
+              false,      // isDefaultProvider
+              false,      // isEnabled
+              true)       // isAdminOnly
 
     await this.rateLimitedApiModel.upsert(
             prisma,

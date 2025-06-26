@@ -26,7 +26,8 @@ export class AiTechDefs {
   static googleGeminiV1pt5Pro = 'Google Gemini v1.5 Pro'
   static googleGeminiV1pt5Flash = 'Google Gemini v1.5 Flash'
   static googleGeminiV2Flash = 'Google Gemini v2 Flash'
-  static googleGeminiLatestExp = 'Google Gemini Latest Experimental'
+  static googleGeminiV2FlashFree = 'Google Gemini v2 Flash (free tier)'
+  static googleGeminiLatestExpFree = 'Google Gemini Latest Experimental (free tier)'
 
   static genericModel = 'Generic'
   static v1ProVersion = 'v1 Pro'
@@ -70,7 +71,12 @@ export class AiTechDefs {
     },
     {
       provider: this.googleGeminiProvider,
-      variantName: this.googleGeminiLatestExp,
+      variantName: this.googleGeminiV2FlashFree,
+      default: false
+    },
+    {
+      provider: this.googleGeminiProvider,
+      variantName: this.googleGeminiLatestExpFree,
       default: true
     },
 
@@ -100,7 +106,8 @@ export class AiTechDefs {
     [AiTechDefs.googleGeminiV1pt5Pro]: this.googleGeminiV1pt5ProModelName,
     [AiTechDefs.googleGeminiV1pt5Flash]: this.googleGeminiV1pt5FlashModelName,
     [AiTechDefs.googleGeminiV2Flash]: this.googleGeminiV2FlashModelName,
-    [AiTechDefs.googleGeminiLatestExp]: this.googleGeminiLatestExpModelName,
+    [AiTechDefs.googleGeminiV2FlashFree]: this.googleGeminiV2FlashModelName,
+    [AiTechDefs.googleGeminiLatestExpFree]: this.googleGeminiLatestExpModelName,
 
     // OpenAI
     [AiTechDefs.chatGpt4o]: this.chatGpt4oModelName,
@@ -115,7 +122,8 @@ export class AiTechDefs {
     [AiTechDefs.googleGeminiV1pt5Pro]: this.googleGeminiProvider,
     [AiTechDefs.googleGeminiV1pt5Flash]: this.googleGeminiProvider,
     [AiTechDefs.googleGeminiV2Flash]: this.googleGeminiProvider,
-    [AiTechDefs.googleGeminiLatestExp]: this.googleGeminiProvider,
+    [AiTechDefs.googleGeminiV2FlashFree]: this.googleGeminiProvider,
+    [AiTechDefs.googleGeminiLatestExpFree]: this.googleGeminiProvider,
 
     [AiTechDefs.chatGpt4o]: this.chatGptProvider,
     [AiTechDefs.llama3_8b]: this.chatGptProvider   // The Llama models use the OpenAI client
@@ -128,7 +136,8 @@ export class AiTechDefs {
     [AiTechDefs.googleGeminiV1pt5Pro]: 'Gemini v1.5 Pro',
     [AiTechDefs.googleGeminiV1pt5Flash]: 'Gemini v1.5 Flash',
     [AiTechDefs.googleGeminiV2Flash]: 'Gemini v2 Flash',
-    [AiTechDefs.googleGeminiLatestExp]: 'Gemini Latest Experimental',
+    [AiTechDefs.googleGeminiV2FlashFree]: 'Gemini v2 Flash (free)',
+    [AiTechDefs.googleGeminiLatestExpFree]: 'Gemini Latest Experimental (free)',
 
     // OpenAI
     [AiTechDefs.chatGpt4o]: 'GPT-4o',
@@ -148,7 +157,8 @@ export class AiTechDefs {
     [AiTechDefs.googleGeminiV1pt5Pro]: 2097152,
     [AiTechDefs.googleGeminiV1pt5Flash]: 1048576,
     [AiTechDefs.googleGeminiV2Flash]: 1048576,
-    [AiTechDefs.googleGeminiLatestExp]: 1048576,
+    [AiTechDefs.googleGeminiV2FlashFree]: 1048576,
+    [AiTechDefs.googleGeminiLatestExpFree]: 1048576,
 
     // OpenAI
     [AiTechDefs.chatGpt4o]: 128000,
@@ -165,7 +175,8 @@ export class AiTechDefs {
     [AiTechDefs.googleGeminiV1pt5Pro]: 8192,
     [AiTechDefs.googleGeminiV1pt5Flash]: 8192,
     [AiTechDefs.googleGeminiV2Flash]: 8192,
-    [AiTechDefs.googleGeminiLatestExp]: 8192,
+    [AiTechDefs.googleGeminiV2FlashFree]: 8192,
+    [AiTechDefs.googleGeminiLatestExpFree]: 8192,
 
     // OpenAI
     [AiTechDefs.chatGpt4o]: 16384,

@@ -8,10 +8,12 @@ export class TechModel {
   // Code
   async create(
           prisma: any,
-          isDefaultProvider: boolean,
           variantName: string,
           resource: string,
-          pricingTier: string) {
+          pricingTier: string,
+          isDefaultProvider: boolean,
+          isEnabled: boolean,
+          isAdminOnly: boolean) {
 
     // Debug
     const fnName = `${this.clName}.create()`
@@ -20,10 +22,12 @@ export class TechModel {
     try {
       return await prisma.tech.create({
         data: {
-          isDefaultProvider: isDefaultProvider,
           variantName: variantName,
           resource: resource,
-          pricingTier: pricingTier
+          pricingTier: pricingTier,
+          isDefaultProvider: isDefaultProvider,
+          isEnabled: isEnabled,
+          isAdminOnly: isAdminOnly
         }
       })
     } catch(error) {
@@ -34,7 +38,9 @@ export class TechModel {
 
   async filter(
           prisma: any,
-          resource: string) {
+          resource: string,
+          isEnabled: boolean | undefined,
+          isAdminOnly: boolean | undefined) {
 
     // Debug
     const fnName = `${this.clName}.filter()`
@@ -47,7 +53,9 @@ export class TechModel {
     try {
       tech = await prisma.tech.findMany({
         where: {
-          resource: resource
+          resource: resource,
+          isEnabled: isEnabled,
+          isAdminOnly: isAdminOnly
         },
         orderBy: [
           {
@@ -167,10 +175,12 @@ export class TechModel {
   async update(
           prisma: any,
           id: string,
-          isDefaultProvider: boolean | undefined,
           variantName: string | undefined,
           resource: string | undefined,
-          pricingTier: string | undefined) {
+          pricingTier: string | undefined,
+          isDefaultProvider: boolean | undefined,
+          isEnabled: boolean | undefined,
+          isAdminOnly: boolean | undefined) {
 
     // Debug
     const fnName = `${this.clName}.update()`
@@ -179,10 +189,12 @@ export class TechModel {
     try {
       return await prisma.tech.update({
         data: {
-          isDefaultProvider: isDefaultProvider,
           variantName: variantName,
           resource: resource,
-          pricingTier: pricingTier
+          pricingTier: pricingTier,
+          isDefaultProvider: isDefaultProvider,
+          isEnabled: isEnabled,
+          isAdminOnly: isAdminOnly
         },
         where: {
           id: id
@@ -196,10 +208,12 @@ export class TechModel {
 
   async upsert(prisma: any,
                id: string | undefined,
-               isDefaultProvider: boolean | undefined,
                variantName: string | undefined,
                resource: string | undefined,
-               pricingTier: string | undefined) {
+               pricingTier: string | undefined,
+               isDefaultProvider: boolean | undefined,
+               isEnabled: boolean | undefined,
+               isAdminOnly: boolean | undefined) {
 
     // Debug
     const fnName = `${this.clName}.upsert()`
@@ -222,11 +236,6 @@ export class TechModel {
     if (id == null) {
 
       // Validate for create (mainly for type validation of the create call)
-      if (isDefaultProvider == null) {
-        console.error(`${fnName}: id is null and isDefaultProvider is null`)
-        throw 'Prisma error'
-      }
-
       if (variantName == null) {
         console.error(`${fnName}: id is null and variantName is null`)
         throw 'Prisma error'
@@ -242,16 +251,33 @@ export class TechModel {
         throw 'Prisma error'
       }
 
+      if (isDefaultProvider == null) {
+        console.error(`${fnName}: id is null and isDefaultProvider is null`)
+        throw 'Prisma error'
+      }
+
+      if (isEnabled == null) {
+        console.error(`${fnName}: id is null and isEnabled is null`)
+        throw 'Prisma error'
+      }
+
+      if (isAdminOnly == null) {
+        console.error(`${fnName}: id is null and isAdminOnly is null`)
+        throw 'Prisma error'
+      }
+
       // Create
       // console.log(`${fnName}: create..`)
 
       return await
                this.create(
                  prisma,
-                 isDefaultProvider,
                  variantName,
                  resource,
-                 pricingTier)
+                 pricingTier,
+                 isDefaultProvider,
+                 isEnabled,
+                 isAdminOnly)
     } else {
 
       // Update
@@ -261,10 +287,12 @@ export class TechModel {
                this.update(
                  prisma,
                  id,
-                 isDefaultProvider,
                  variantName,
                  resource,
-                 pricingTier)
+                 pricingTier,
+                 isDefaultProvider,
+                 isEnabled,
+                 isAdminOnly)
     }
   }
 }

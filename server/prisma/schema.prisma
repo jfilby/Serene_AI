@@ -207,10 +207,12 @@ model ResourceQuotaUsage {
 
 model Tech {
   id                           String               @id @default(cuid())
-  isDefaultProvider            Boolean              @map("is_default_provider")
   variantName                  String               @map("variant_name") @unique
   resource                     String
   pricingTier                  String               @map("pricing_tier")
+  isDefaultProvider            Boolean              @map("is_default_provider")
+  isEnabled                    Boolean              @map("is_enabled")
+  isAdminOnly                  Boolean              @map("is_admin_only")
 
   ofChatMessageCreated         ChatMessageCreated[]
   ofLlmCaches                  LlmCache[]
