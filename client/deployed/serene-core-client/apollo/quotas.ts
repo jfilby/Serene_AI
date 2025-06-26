@@ -3,7 +3,7 @@ import { gql } from '@apollo/client'
 export const getResourceQuotaUsageQuery = gql`
   query getResourceQuotaUsage(
           $userProfileId: String!,
-          $resource: String!
+          $resource: String!,
           $day: String,
           $viewUserProfileId: String) {
     getResourceQuotaUsage(

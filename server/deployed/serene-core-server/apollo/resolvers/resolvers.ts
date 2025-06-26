@@ -6,6 +6,7 @@ import { validateProfileCompleted } from './queries/profile'
 import { getUserPreferences } from './queries/user-preferences'
 import { userById, verifySignedInUserProfileId } from './queries/users'
 import { getResourceQuotaUsage } from './queries/quotas'
+import { getTechs } from './queries/tech'
 
 // Code
 const Query = {
@@ -14,6 +15,9 @@ const Query = {
 
   // Quotas
   getResourceQuotaUsage,
+
+  // Tech
+  getTechs,
 
   // Users
   userById,

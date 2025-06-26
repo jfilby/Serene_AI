@@ -3,6 +3,7 @@ import { TechModel } from '@/serene-core-server/models/tech/tech-model'
 import { AiTechDefs } from '../../types/tech-defs'
 import { AiTechPricing } from '../../types/tech-pricing'
 import { ServerOnlyTypes } from '../../types/server-only-types'
+import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
 
 export class SereneAiSetup {
 
@@ -25,7 +26,7 @@ export class SereneAiSetup {
               true,       // isDefaultProvider
               ServerOnlyTypes.apolloIoApi,
               ServerOnlyTypes.restApi,
-              AiTechPricing.free)
+              SereneCoreServerTypes.free)
 
     await this.rateLimitedApiModel.upsert(
             prisma,
@@ -41,7 +42,7 @@ export class SereneAiSetup {
               false,      // isDefaultProvider
               AiTechDefs.googleGeminiV1pt5Pro,
               AiTechDefs.llms,
-              AiTechPricing.paid)
+              SereneCoreServerTypes.paid)
 
     await this.rateLimitedApiModel.upsert(
             prisma,
@@ -57,7 +58,7 @@ export class SereneAiSetup {
               false,      // isDefaultProvider
               AiTechDefs.googleGeminiV1pt5Flash,
               AiTechDefs.llms,
-              AiTechPricing.paid)
+              SereneCoreServerTypes.paid)
 
     await this.rateLimitedApiModel.upsert(
             prisma,
@@ -73,7 +74,7 @@ export class SereneAiSetup {
               true,       // isDefaultProvider
               AiTechDefs.googleGeminiV2Flash,
               AiTechDefs.llms,
-              AiTechPricing.paid)
+              SereneCoreServerTypes.paid)
 
     await this.rateLimitedApiModel.upsert(
             prisma,
@@ -89,7 +90,7 @@ export class SereneAiSetup {
               false,      // isDefaultProvider
               AiTechDefs.googleGeminiLatestExp,
               AiTechDefs.llms,
-              AiTechPricing.paid)
+              SereneCoreServerTypes.paid)
 
     await this.rateLimitedApiModel.upsert(
             prisma,
@@ -105,7 +106,7 @@ export class SereneAiSetup {
               false,      // isDefaultProvider
               AiTechDefs.chatGpt4o,
               AiTechDefs.llms,
-              AiTechPricing.paid)
+              SereneCoreServerTypes.paid)
 
     // Llama3 8B
     const llama3_8bTech = await
@@ -115,7 +116,7 @@ export class SereneAiSetup {
               false,      // isDefaultProvider
               AiTechDefs.llama3_8b,
               AiTechDefs.llms,
-              AiTechPricing.paid)
+              SereneCoreServerTypes.paid)
 
     await this.rateLimitedApiModel.upsert(
             prisma,

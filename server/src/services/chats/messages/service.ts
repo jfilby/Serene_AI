@@ -37,7 +37,7 @@ export class ChatMessageService {
     const fnName = `${this.clName}.calcCost()`
 
     // No cost if a free tier
-    if (tech.pricingTier === AiTechPricing.free) {
+    if (tech.pricingTier === SereneCoreServerTypes.free) {
       return 0.0
     }
 
@@ -134,7 +134,7 @@ export class ChatMessageService {
     // is paid.
     var costInCents = 0.0
 
-    if (tech.pricingTier === AiTechPricing.paid &&
+    if (tech.pricingTier === SereneCoreServerTypes.paid &&
         (inputTokens > 0 ||
          outputTokens > 0)) {
 

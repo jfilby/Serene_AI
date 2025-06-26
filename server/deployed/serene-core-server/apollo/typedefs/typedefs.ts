@@ -13,6 +13,12 @@ export const typeDefs = `#graphql
     message: String
   }
 
+  type Techs {
+    id: String!
+    resource: String!
+    variantName: String!
+  }
+
   type UserPreference {
     category: String!
     key: String!
@@ -45,7 +51,12 @@ export const typeDefs = `#graphql
       day: String,
       viewUserProfileId: String): ResourceQuotaUsage!
 
-      # Users
+    # Tech
+    getTechs(
+      userProfileId: String!,
+      resource: String!): [Tech]
+
+    # Users
     isAdminUser(userProfileId: String!): StatusAndMessage!
     userById(userProfileId: String!): UserProfile
     verifySignedInUserProfileId(userProfileId: String!): Boolean

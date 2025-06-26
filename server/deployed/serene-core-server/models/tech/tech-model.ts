@@ -10,7 +10,7 @@ export class TechModel {
           prisma: any,
           isDefaultProvider: boolean,
           variantName: string,
-          provides: string,
+          resource: string,
           pricingTier: string) {
 
     // Debug
@@ -22,7 +22,7 @@ export class TechModel {
         data: {
           isDefaultProvider: isDefaultProvider,
           variantName: variantName,
-          provides: provides,
+          resource: resource,
           pricingTier: pricingTier
         }
       })
@@ -30,6 +30,40 @@ export class TechModel {
       console.error(`${fnName}: error: ${error}`)
       throw 'Prisma error'
     }
+  }
+
+  async filter(
+          prisma: any,
+          resource: string) {
+
+    // Debug
+    const fnName = `${this.clName}.filter()`
+
+    // console.log(`${fnName}: starting..`)
+
+    // Query
+    var tech: any = null
+
+    try {
+      tech = await prisma.tech.findMany({
+        where: {
+          resource: resource
+        },
+        orderBy: [
+          {
+            variantName: 'asc'
+          }
+        ]
+      })
+    } catch(error: any) {
+      if (!(error instanceof error.NotFound)) {
+        console.error(`${fnName}: error: ${error}`)
+        throw 'Prisma error'
+      }
+    }
+
+    // Return
+    return tech
   }
 
   async getById(prisma: any,
@@ -65,7 +99,7 @@ export class TechModel {
 
   async getDefaultProvider(
           prisma: any,
-          provides: string) {
+          resource: string) {
 
     // Debug
     const fnName = `${this.clName}.getByKey()`
@@ -79,7 +113,7 @@ export class TechModel {
       tech = await prisma.tech.findFirst({
         where: {
           isDefaultProvider: true,
-          provides: provides
+          resource: resource
         }
       })
     } catch(error: any) {
@@ -135,7 +169,7 @@ export class TechModel {
           id: string,
           isDefaultProvider: boolean | undefined,
           variantName: string | undefined,
-          provides: string | undefined,
+          resource: string | undefined,
           pricingTier: string | undefined) {
 
     // Debug
@@ -147,7 +181,7 @@ export class TechModel {
         data: {
           isDefaultProvider: isDefaultProvider,
           variantName: variantName,
-          provides: provides,
+          resource: resource,
           pricingTier: pricingTier
         },
         where: {
@@ -164,7 +198,7 @@ export class TechModel {
                id: string | undefined,
                isDefaultProvider: boolean | undefined,
                variantName: string | undefined,
-               provides: string | undefined,
+               resource: string | undefined,
                pricingTier: string | undefined) {
 
     // Debug
@@ -198,8 +232,8 @@ export class TechModel {
         throw 'Prisma error'
       }
 
-      if (provides == null) {
-        console.error(`${fnName}: id is null and provides is null`)
+      if (resource == null) {
+        console.error(`${fnName}: id is null and resource is null`)
         throw 'Prisma error'
       }
 
@@ -216,7 +250,7 @@ export class TechModel {
                  prisma,
                  isDefaultProvider,
                  variantName,
-                 provides,
+                 resource,
                  pricingTier)
     } else {
 
@@ -229,7 +263,7 @@ export class TechModel {
                  id,
                  isDefaultProvider,
                  variantName,
-                 provides,
+                 resource,
                  pricingTier)
     }
   }

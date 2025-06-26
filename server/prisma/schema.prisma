@@ -209,7 +209,7 @@ model Tech {
   id                           String               @id @default(cuid())
   isDefaultProvider            Boolean              @map("is_default_provider")
   variantName                  String               @map("variant_name") @unique
-  provides                     String
+  resource                     String
   pricingTier                  String               @map("pricing_tier")
 
   ofChatMessageCreated         ChatMessageCreated[]
