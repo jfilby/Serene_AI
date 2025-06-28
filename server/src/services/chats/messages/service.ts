@@ -40,9 +40,9 @@ export class ChatMessageService {
     // Define pricing key
     const pricingKey = `${tech.variantName}/${tech.pricingTier}/${resource}`
 
-    // Debug
+    /* Debug
     console.log(`${fnName}: AiTechPricing.pricing: ` +
-                JSON.stringify(AiTechPricing.pricing))
+                JSON.stringify(AiTechPricing.pricing)) */
 
     // Validate
     if (!AiTechPricing.pricing.hasOwnProperty(pricingKey)) {
@@ -57,7 +57,7 @@ export class ChatMessageService {
     const pricing = AiTechPricing.pricing[pricingKey]
 
     // Debug
-    console.log(`${fnName}: pricing: ` + JSON.stringify(pricing))
+    // console.log(`${fnName}: pricing: ` + JSON.stringify(pricing))
 
     // Calc cost
     const costInCents =
@@ -65,7 +65,7 @@ export class ChatMessageService {
              (outputTokens * pricing.outputTokens)) / this.million1 * 100
 
     // Debug
-    console.log(`${fnName}: costInCents: ` + JSON.stringify(costInCents))
+    // console.log(`${fnName}: costInCents: ` + JSON.stringify(costInCents))
 
     // Return
     return costInCents

@@ -114,7 +114,7 @@ export class TestLlmService {
           this.resourceQuotaTotalModel.create(
             prisma,
             regularTestUserProfile,
-            AiTechDefs.llms,
+            SereneCoreServerTypes.credits,
             new Date(),
             tomorrow,
             10.0)  // qupta

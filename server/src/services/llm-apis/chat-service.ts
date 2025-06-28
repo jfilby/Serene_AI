@@ -375,11 +375,11 @@ export class ChatService {
               messagesResults.estimatedInputTokens,
               messagesResults.estimatedOutputTokens)
 
-    // Debug
+    /* Debug
     console.log(`${fnName}: estimated costInCents: ${estimatedCostInCents} ` +
                 `based on input tokens: ` +
                 `${messagesResults.estimatedInputTokens} and output tokens: ` +
-                `${messagesResults.estimatedOutputTokens}`)
+                `${messagesResults.estimatedOutputTokens}`) */
 
     // Is there quota available for this user?
     const isQuotaAvailable = await
@@ -419,11 +419,11 @@ export class ChatService {
                 results.inputTokens,
                 results.outputTokens)
 
-      // Debug
+      /* Debug
       console.log(
         `${fnName}: costInCents: ${estimatedCostInCents} based on input ` +
         `tokens: ${results.inputTokens} and output tokens: ` +
-        `${results.outputTokens}`)
+        `${results.outputTokens}`) */
 
       // Create ChatMessageCreated
       await chatMessageCreatedModel.create(

@@ -23,7 +23,7 @@ export class ResourceQuotasQueryService {
     // Debug
     const fnName = `${this.clName}.getQuotaAndUsage()`
 
-    console.log(`${fnName}: starting with day: ` + JSON.stringify(day))
+    // console.log(`${fnName}: starting with day: ` + JSON.stringify(day))
 
     // Get active quotas
     const activeQuotas = await
@@ -104,7 +104,7 @@ export class ResourceQuotasQueryService {
     // Debug
     const fnName = `${this.clName}.isQuotaAvailable()`
 
-    console.log(`${fnName}: starting with amountInCents: ${amountInCents}`)
+    // console.log(`${fnName}: starting with amountInCents: ${amountInCents}`)
 
     // Get today's date
     const today = new Date()
@@ -118,12 +118,12 @@ export class ResourceQuotasQueryService {
               today,
               true)  // inCents
 
-    // Debug
+    /* Debug
     console.log(`${fnName}: results: ` + JSON.stringify(results))
 
     console.log(`${fnName}: test: usage (${results.usage}) + ` +
                 `amountInCents: (${amountInCents}) > ` +
-                `results.quota (${results.quota})`)
+                `results.quota (${results.quota})`) */
 
     // Is there enough quota?
     if (results.usage + amountInCents > results.quota) {
