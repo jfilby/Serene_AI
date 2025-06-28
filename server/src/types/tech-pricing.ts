@@ -11,7 +11,7 @@ export class AiTechPricing {
   static pricing = {
 
     // Mocked
-    [AiTechDefs.mockedLlm + `/${SereneCoreServerTypes.paid}/${AiTechPricing.text}`]: {
+    [AiTechDefs.mockedLlmPaid + `/${SereneCoreServerTypes.paid}/${AiTechPricing.text}`]: {
       inputTokens: 1.00,
       outputTokens: 1.00
     },

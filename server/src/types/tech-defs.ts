@@ -21,7 +21,8 @@ export class AiTechDefs {
 
   // Variant names
   // Mock
-  static mockedLlm = 'Mocked LLM'
+  static mockedLlmPaid = 'Mocked LLM'
+  static mockedLlmFree = 'Mocked LLM (free tier)'
 
   // Last updated: 18th Feb 2024
   // Run the Setup in /admin/setup to install new variants and effect any
@@ -93,7 +94,12 @@ export class AiTechDefs {
     // Mock
     {
       provider: this.mockedProvider,
-      variantName: this.mockedLlm,
+      variantName: this.mockedLlmPaid,
+      default: false
+    },
+    {
+      provider: this.mockedProvider,
+      variantName: this.mockedLlmFree,
       default: false
     }
   ]
@@ -128,7 +134,8 @@ export class AiTechDefs {
 
   // Variant to providers
   static variantToProviders = {
-    [AiTechDefs.mockedLlm]: this.mockedProvider,
+    [AiTechDefs.mockedLlmPaid]: this.mockedProvider,
+    [AiTechDefs.mockedLlmFree]: this.mockedProvider,
 
     [AiTechDefs.googleGeminiV1Pro]: this.googleGeminiProvider,
     [AiTechDefs.googleGeminiV1pt5Pro]: this.googleGeminiProvider,
@@ -145,7 +152,8 @@ export class AiTechDefs {
   static variantNamesToDescriptions = {
 
     // Mocked
-    [AiTechDefs.mockedLlm]: 'Mocked LLM',
+    [AiTechDefs.mockedLlmPaid]: 'Mocked LLM',
+    [AiTechDefs.mockedLlmFree]: 'Mocked LLM (free iter)',
 
     // Google Gemini
     [AiTechDefs.googleGeminiV1Pro]: 'Gemini v1 Pro',
@@ -172,7 +180,8 @@ export class AiTechDefs {
   static variantToMaxInputTokens = {
 
     // Mocked
-    [AiTechDefs.mockedLlm]: AiTechDefs.mockedInputTokens,
+    [AiTechDefs.mockedLlmPaid]: AiTechDefs.mockedInputTokens,
+    [AiTechDefs.mockedLlmFree]: AiTechDefs.mockedInputTokens,
 
     // Google Gemini
     // Source: https://ai.google.dev/models/gemini
@@ -194,7 +203,8 @@ export class AiTechDefs {
   static variantToMaxOutputTokens = {
 
     // Mocked
-    [AiTechDefs.mockedLlm]: AiTechDefs.mockedOutputTokens,
+    [AiTechDefs.mockedLlmPaid]: AiTechDefs.mockedOutputTokens,
+    [AiTechDefs.mockedLlmFree]: AiTechDefs.mockedOutputTokens,
 
     // Google Gemini
     // Source: https://ai.google.dev/models/gemini

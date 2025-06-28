@@ -37,13 +37,25 @@ export class SereneAiSetup {
             1000000)
 
     // Mocked LLM (paid)
-    const mockedLlmTech = await
+    const mockedLlmPaidTech = await
             this.techModel.upsert(
               prisma,
               undefined,  // id
-              AiTechDefs.mockedLlm,
+              AiTechDefs.mockedLlmPaid,
               AiTechDefs.llms,
               SereneCoreServerTypes.paid,
+              false,      // isDefaultProvider
+              true,       // isEnabled
+              true)       // isAdminOnly
+
+    // Mocked LLM (free)
+    const mockedLlmFreeTech = await
+            this.techModel.upsert(
+              prisma,
+              undefined,  // id
+              AiTechDefs.mockedLlmFree,
+              AiTechDefs.llms,
+              SereneCoreServerTypes.free,
               false,      // isDefaultProvider
               true,       // isEnabled
               true)       // isAdminOnly

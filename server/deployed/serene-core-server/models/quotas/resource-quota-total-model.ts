@@ -1,10 +1,12 @@
+import { PrismaClient } from '@prisma/client'
+
 export class ResourceQuotaTotalModel {
 
   // Consts
   clName = 'ResourceQuotaTotalModel'
 
   // Code
-  async create(prisma: any,
+  async create(prisma: PrismaClient,
                userProfileId: string,
                resource: string,
                fromDay: Date,
@@ -31,7 +33,27 @@ export class ResourceQuotaTotalModel {
     }
   }
 
-  async filter(prisma: any,
+  async deleteByUserProfileId(
+          prisma: PrismaClient,
+          userProfileId: string) {
+
+    // Debug
+    const fnName = `${this.clName}.filter()`
+
+    // Query
+    try {
+      return await prisma.resourceQuotaTotal.deleteMany({
+        where: {
+          userProfileId: userProfileId
+        }
+      })
+    } catch(error) {
+      console.error(`${fnName}: error: ${error}`)
+      throw `Prisma error`
+    }
+  }
+
+  async filter(prisma: PrismaClient,
                userProfileId: string,
                resource: string,
                day: Date) {
@@ -66,7 +88,7 @@ export class ResourceQuotaTotalModel {
   }
 
   async getByUniqueKey(
-          prisma: any,
+          prisma: PrismaClient,
           userProfileId: string,
           resource: string,
           fromDay: Date,
@@ -91,10 +113,10 @@ export class ResourceQuotaTotalModel {
     }
   }
 
-  async sum(prisma: any,
-               userProfileId: string,
-               resource: string,
-               day: Date) {
+  async sum(prisma: PrismaClient,
+            userProfileId: string,
+            resource: string,
+            day: Date) {
 
     // Debug
     const fnName = `${this.clName}.sum()`
@@ -133,7 +155,7 @@ export class ResourceQuotaTotalModel {
     return aggregations._sum.quota ?? 0
   }
 
-  async update(prisma: any,
+  async update(prisma: PrismaClient,
                id: string,
                userProfileId: string | undefined,
                resource: string | undefined,
@@ -164,7 +186,7 @@ export class ResourceQuotaTotalModel {
     }
   }
 
-  async upsert(prisma: any,
+  async upsert(prisma: PrismaClient,
                id: string | undefined,
                userProfileId: string,
                resource: string,

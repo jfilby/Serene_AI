@@ -1,10 +1,12 @@
+import { PrismaClient } from '@prisma/client'
+
 export class ResourceQuotaUsageModel {
 
   // Consts
   clName = 'ResourceQuotaUsageModel'
 
   // Code
-  async create(prisma: any,
+  async create(prisma: PrismaClient,
                userProfileId: string,
                resource: string,
                day: Date,
@@ -29,7 +31,27 @@ export class ResourceQuotaUsageModel {
     }
   }
 
-  async filter(prisma: any,
+  async deleteByUserProfileId(
+          prisma: PrismaClient,
+          userProfileId: string) {
+
+    // Debug
+    const fnName = `${this.clName}.filter()`
+
+    // Query
+    try {
+      return await prisma.resourceQuotaUsage.deleteMany({
+        where: {
+          userProfileId: userProfileId
+        }
+      })
+    } catch(error) {
+      console.error(`${fnName}: error: ${error}`)
+      throw `Prisma error`
+    }
+  }
+
+  async filter(prisma: PrismaClient,
                userProfileId: string,
                resource: string,
                fromDay: Date,
@@ -57,7 +79,7 @@ export class ResourceQuotaUsageModel {
   }
 
   async getByUserProfileIdAndResourceAndDay(
-          prisma: any,
+          prisma: PrismaClient,
           userProfileId: string,
           resource: string,
           day: Date) {
@@ -80,11 +102,11 @@ export class ResourceQuotaUsageModel {
     }
   }
 
-  async sum(prisma: any,
-               userProfileId: string,
-               resource: string,
-               fromDay: Date,
-               toDay: Date) {
+  async sum(prisma: PrismaClient,
+            userProfileId: string,
+            resource: string,
+            fromDay: Date,
+            toDay: Date) {
 
     // Debug
     const fnName = `${this.clName}.sum()`
@@ -115,7 +137,7 @@ export class ResourceQuotaUsageModel {
     return aggregations._sum.usage ?? 0
   }
 
-  async update(prisma: any,
+  async update(prisma: PrismaClient,
                id: string,
                userProfileId: string,
                resource: string,
@@ -144,7 +166,7 @@ export class ResourceQuotaUsageModel {
     }
   }
 
-  async upsert(prisma: any,
+  async upsert(prisma: PrismaClient,
                id: string | undefined,
                userProfileId: string,
                resource: string,

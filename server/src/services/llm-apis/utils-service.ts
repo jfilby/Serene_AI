@@ -342,11 +342,25 @@ export class LlmUtilsService {
 
       case AiTechDefs.mockedProvider: {
 
+        // Prepare messages
+        const prepareMessagesResults =
+                this.openAIGenericLlmService.prepareMessages(
+                  prisma,
+                  tech,
+                  agentUser.name,
+                  agentUser.role,
+                  systemPrompt,
+                  messages,
+                  false)  // anonymize
+
+        // Return without sending to any LLM API
         return {
           status: true,
           message: undefined,
-          messages: messages,
-          model: AiTechDefs.mockedLlm,  // Assume the same name as the variant
+          messages: [
+            'This is a mock reply message.'
+          ],
+          model: tech.variantName,  // Assume the same name as the variant
           actualTech: tech,
           inputTokens: AiTechDefs.mockedInputTokens,
           outputTokens: AiTechDefs.mockedOutputTokens

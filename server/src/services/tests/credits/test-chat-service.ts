@@ -1,6 +1,8 @@
 import { PrismaClient } from '@prisma/client'
 import { CustomError } from '@/serene-core-server/types/errors'
 import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
+import { ResourceQuotaTotalModel } from '@/serene-core-server/models/quotas/resource-quota-total-model'
+import { ResourceQuotaUsageModel } from '@/serene-core-server/models/quotas/resource-quota-usage-model'
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
 import { ResourceQuotasQueryService } from '@/serene-core-server/services/quotas/query-service'
 import { AiTechDefs } from '../../../types/tech-defs'
@@ -27,6 +29,8 @@ export class TestLlmService {
   chatSessionModel = new ChatSessionModel()
   chatSettingsModel = new ChatSettingsModel()
   techModel = new TechModel()
+  resourceQuotaTotalModel = new ResourceQuotaTotalModel()
+  resourceQuotaUsageModel = new ResourceQuotaUsageModel()
 
   // Services
   agentsService = new AgentsService()
@@ -74,14 +78,63 @@ export class TestLlmService {
     return chatSession
   }
 
+  async prepCreditsAndUsageAtStart(
+          prisma: PrismaClient,
+          adminUserProfile: any,
+          regularTestUserProfile: any) {
+
+    // Delete credit and usage records for the admin user (shouldn't exist)
+    await this.resourceQuotaTotalModel.deleteByUserProfileId(
+            prisma,
+            adminUserProfile.id)
+
+    await this.resourceQuotaUsageModel.deleteByUserProfileId(
+            prisma,
+            adminUserProfile.id)
+
+    // Delete credit and usage records for the regular test user
+    await this.resourceQuotaTotalModel.deleteByUserProfileId(
+            prisma,
+            regularTestUserProfile.id)
+
+    await this.resourceQuotaUsageModel.deleteByUserProfileId(
+            prisma,
+            regularTestUserProfile.id)
+  }
+
+  async prepCreditsAndUsageForUse(
+          prisma: PrismaClient,
+          regularTestUserProfile: any) {
+
+    // Inc credits by 10.0 for the test user (until tomorrow)
+    const tomorrow = new Date()
+    tomorrow.setDate(tomorrow.getDate() + 1)
+
+    var resourceQuotaTotal = await
+          this.resourceQuotaTotalModel.create(
+            prisma,
+            regularTestUserProfile,
+            AiTechDefs.llms,
+            new Date(),
+            tomorrow,
+            10.0)  // qupta
+  }
+
   async test(
           prisma: PrismaClient,
           adminUserProfile: any,
           regularTestUserProfile: any) {
 
+    // Prep credits and usage at the start
+    await this.prepCreditsAndUsageAtStart(
+            prisma,
+            adminUserProfile,
+            regularTestUserProfile)
+
     // Define the test messages
     const messagesWithRoles: any[] = [
       {
+        role: 'user',
         parts: [
           {
             type: '',
@@ -95,6 +148,10 @@ export class TestLlmService {
     await this.testFree(
             prisma,
             adminUserProfile,
+            messagesWithRoles)
+
+    await this.testFree(
+            prisma,
             regularTestUserProfile,
             messagesWithRoles)
 
@@ -102,6 +159,10 @@ export class TestLlmService {
     await this.testPaid(
             prisma,
             adminUserProfile,
+            messagesWithRoles)
+
+    await this.testPaid(
+            prisma,
             regularTestUserProfile,
             messagesWithRoles)
 
@@ -113,15 +174,14 @@ export class TestLlmService {
 
   async testFree(
           prisma: PrismaClient,
-          adminUserProfile: any,
-          regularTestUserProfile: any,
+          userProfile: any,
           messagesWithRoles: any[]) {
 
     // Debug
     const fnName = `${this.clName}.testFree()`
 
     // Get a free LLM variant
-    const variantName = AiTechDefs.googleGeminiV2FlashFree
+    const variantName = AiTechDefs.mockedLlmFree
 
     // Load the tech record
     const llmTech = await
@@ -147,7 +207,7 @@ export class TestLlmService {
     const adminUserQuotaAndUsage1 = await
             this.resourceQuotasQueryService.getQuotaAndUsage(
               prisma,
-              adminUserProfile.id,
+              userProfile.id,
               SereneCoreServerTypes.credits,
               new Date())
 
@@ -155,15 +215,16 @@ export class TestLlmService {
     const adminUserChatSession = await
             this.createTestChatSession(
               prisma,
-              adminUserProfile.id,
+              userProfile.id,
               null)  // instanceId
 
+    // Try LLM request
     const llmRequestResults1 = await
             this.chatService.llmRequest(
               prisma,
               llmTech.id,
               adminUserChatSession,
-              adminUserProfile,
+              userProfile,
               agentUser,
               messagesWithRoles)
 
@@ -176,7 +237,7 @@ export class TestLlmService {
     const adminUserQuotaAndUsage2 = await
             this.resourceQuotasQueryService.getQuotaAndUsage(
               prisma,
-              adminUserProfile.id,
+              userProfile.id,
               SereneCoreServerTypes.credits,
               new Date())
 
@@ -190,26 +251,27 @@ export class TestLlmService {
     }
 
     // Get pre credits and usage
-    const regularTestUserQuotaAndUsage1 = await
+    const quotaAndUsage1 = await
             this.resourceQuotasQueryService.getQuotaAndUsage(
               prisma,
-              regularTestUserProfile.id,
+              userProfile.id,
               SereneCoreServerTypes.credits,
               new Date())
 
     // Call a free LLM variant in test mode with the test user
-    const regularTestUserChatSession = await
+    const chatSession = await
             this.createTestChatSession(
               prisma,
-              regularTestUserProfile.id,
+              userProfile.id,
               null)  // instanceId
 
+    // Try LLM request
     const llmRequestResults2 = await
             this.chatService.llmRequest(
               prisma,
               llmTech.id,
-              regularTestUserChatSession,
-              regularTestUserProfile,
+              chatSession,
+              userProfile,
               agentUser,
               messagesWithRoles)
 
@@ -219,35 +281,34 @@ export class TestLlmService {
     }
 
     // Get post credits and usage
-    const regularTestUserQuotaAndUsage2 = await
+    const quotaAndUsage2 = await
             this.resourceQuotasQueryService.getQuotaAndUsage(
               prisma,
-              adminUserProfile.id,
+              userProfile.id,
               SereneCoreServerTypes.credits,
               new Date())
 
     // Validate regular test user usage had no inc
-    if (regularTestUserQuotaAndUsage1.usage !==
-        regularTestUserQuotaAndUsage2.usage) {
+    if (quotaAndUsage1.usage !==
+        quotaAndUsage2.usage) {
 
       throw new CustomError(
                   `${fnName}: regular test user/free: pre usage: ` +
-                  `${regularTestUserQuotaAndUsage1.usage} ` +
-                  `!= post usage: ${regularTestUserQuotaAndUsage2.usage}`)
+                  `${quotaAndUsage1.usage} ` +
+                  `!= post usage: ${quotaAndUsage2.usage}`)
     }
   }
 
   async testPaid(
           prisma: PrismaClient,
-          adminUserProfile: any,
-          regularTestUserProfile: any,
+          userProfile: any,
           messagesWithRoles: any[]) {
 
     // Debug
     const fnName = `${this.clName}.testPaid()`
 
     // Get a paid LLM variant
-    const variantName = AiTechDefs.mockedLlm
+    const variantName = AiTechDefs.mockedLlmPaid
 
     // Load the tech record
     const llmTech = await
@@ -270,96 +331,73 @@ export class TestLlmService {
               null)
 
     // Get pre credits and usage
-    const adminUserQuotaAndUsage1 = await
+    const quotaAndUsage1 = await
             this.resourceQuotasQueryService.getQuotaAndUsage(
               prisma,
-              adminUserProfile.id,
+              userProfile.id,
               SereneCoreServerTypes.credits,
               new Date())
 
     // Call a paid LLM variant in test mode with the admin user
-    const adminUserChatSession = await
+    const chatSession = await
             this.createTestChatSession(
               prisma,
-              adminUserProfile.id,
+              userProfile.id,
               null)  // instanceId
 
-    const llmRequestResults1 = await
-            this.chatService.llmRequest(
-              prisma,
-              llmTech.id,
-              adminUserChatSession,
-              adminUserProfile,
-              agentUser,
-              messagesWithRoles)
+    // Try LLM request
+    var llmRequestResults = await
+          this.chatService.llmRequest(
+            prisma,
+            llmTech.id,
+            chatSession,
+            userProfile,
+            agentUser,
+            messagesWithRoles)
 
     // Validate
-    if (llmRequestResults1.status === false) {
-      throw new CustomError(`${fnName}: failed: ${llmRequestResults1.message}`)
+    if (llmRequestResults.status === true) {
+      throw new CustomError(`${fnName}: should have failed due to insufficient quota`)
+    }
+
+    // Add credits
+    await this.prepCreditsAndUsageForUse(
+            prisma,
+            userProfile.id)
+
+    // Try LLM request (again)
+    llmRequestResults = await
+      this.chatService.llmRequest(
+        prisma,
+        llmTech.id,
+        chatSession,
+        userProfile,
+        agentUser,
+        messagesWithRoles)
+
+    if (llmRequestResults.status === false) {
+
+      throw new CustomError(
+                  `${fnName}: for userProfileId: ${userProfile.id}: ` +
+                  `message: ${llmRequestResults.message}`)
     }
 
     // Get post credits and usage
-    const adminUserQuotaAndUsage2 = await
+    const quotaAndUsage2 = await
             this.resourceQuotasQueryService.getQuotaAndUsage(
               prisma,
-              adminUserProfile.id,
+              userProfile.id,
               SereneCoreServerTypes.credits,
               new Date())
 
-    // Validate admin user usage had no inc
-    if (adminUserQuotaAndUsage1.usage !== adminUserQuotaAndUsage2.usage) {
+    // Validate regular test user usage had no inc
+    if (quotaAndUsage1.usage !==
+        quotaAndUsage2.usage) {
 
       throw new CustomError(
-                  `${fnName}: admin user/paid: pre usage: ` +
-                  `${adminUserQuotaAndUsage1.usage} ` +
-                  `!= post usage: ${adminUserQuotaAndUsage2.usage}`)
-    }
-
-    // Call a paid LLM variant in test mode with the test user
-    const regularTestUserChatSession = await
-            this.createTestChatSession(
-              prisma,
-              adminUserProfile.id,
-              null)  // instanceId
-
-    // Get pre credits and usage
-    const regularTestUserQuotaAndUsage1 = await
-            this.resourceQuotasQueryService.getQuotaAndUsage(
-              prisma,
-              regularTestUserProfile.id,
-              SereneCoreServerTypes.credits,
-              new Date())
-
-    const llmRequestResults2 = await
-            this.chatService.llmRequest(
-              prisma,
-              llmTech.id,
-              regularTestUserChatSession,
-              regularTestUserProfile,
-              agentUser,
-              messagesWithRoles)
-
-    // Validate
-    if (llmRequestResults2.status === false) {
-      throw new CustomError(`${fnName}: failed: ${llmRequestResults2.message}`)
-    }
-
-    // Get post credits and usage
-    const regularTestUserQuotaAndUsage2 = await
-            this.resourceQuotasQueryService.getQuotaAndUsage(
-              prisma,
-              regularTestUserProfile.id,
-              SereneCoreServerTypes.credits,
-              new Date())
-
-    // Validate regular test user usage had an inc
-    if (regularTestUserQuotaAndUsage1.usage <=
-        regularTestUserQuotaAndUsage2.usage) {
-
-      throw new CustomError(
-                  `${fnName}: regular test user/paid: pre usage: ` +
-                  `${regularTestUserQuotaAndUsage1.usage} ` +
-                  `<= post usage: ${regularTestUserQuotaAndUsage2.usage}`)
+                  `${fnName}: regular test user/free: pre usage: ` +
+                  `${quotaAndUsage1.usage} ` +
+                  `!= post usage: ${quotaAndUsage2.usage}`)
     }
   }
 }
