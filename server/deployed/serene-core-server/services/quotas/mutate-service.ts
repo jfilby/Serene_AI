@@ -27,6 +27,11 @@ export class ResourceQuotasMutateService {
       throw `${fnName}: amount is ${JSON.stringify(amount)}`
     }
 
+    // Don't do anything if the amount is zero
+    if (amount === 0.0) {
+      return
+    }
+
     // Get today's date
     const day = new Date()
 

@@ -36,7 +36,8 @@ export class TechQueryService {
     if (userProfile.isAdmin === false) {
 
       techs =
-        techs.filter((tech: Tech) => tech.pricingTier !== SereneCoreServerTypes.free)
+        techs.filter((tech: Tech) =>
+          tech.pricingTier !== SereneCoreServerTypes.free)
     }
 
     // Return
