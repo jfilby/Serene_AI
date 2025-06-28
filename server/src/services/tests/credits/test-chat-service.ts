@@ -80,7 +80,16 @@ export class TestLlmService {
           regularTestUserProfile: any) {
 
     // Define the test messages
-    const messagesWithRoles: any[] = []
+    const messagesWithRoles: any[] = [
+      {
+        parts: [
+          {
+            type: '',
+            text: 'Testing..'
+          }
+        ]
+      }
+    ]
 
     // Free LLM test
     await this.testFree(
@@ -149,13 +158,19 @@ export class TestLlmService {
               adminUserProfile.id,
               null)  // instanceId
 
-    await this.chatService.llmRequest(
-            prisma,
-            llmTech.id,
-            adminUserChatSession,
-            adminUserProfile,
-            agentUser,
-            messagesWithRoles)
+    const llmRequestResults1 = await
+            this.chatService.llmRequest(
+              prisma,
+              llmTech.id,
+              adminUserChatSession,
+              adminUserProfile,
+              agentUser,
+              messagesWithRoles)
+
+    // Validate
+    if (llmRequestResults1.status === false) {
+      throw new CustomError(`${fnName}: failed: ${llmRequestResults1.message}`)
+    }
 
     // Get post credits and usage
     const adminUserQuotaAndUsage2 = await
@@ -189,13 +204,19 @@ export class TestLlmService {
               regularTestUserProfile.id,
               null)  // instanceId
 
-    await this.chatService.llmRequest(
-            prisma,
-            llmTech.id,
-            regularTestUserChatSession,
-            regularTestUserProfile,
-            agentUser,
-            messagesWithRoles)
+    const llmRequestResults2 = await
+            this.chatService.llmRequest(
+              prisma,
+              llmTech.id,
+              regularTestUserChatSession,
+              regularTestUserProfile,
+              agentUser,
+              messagesWithRoles)
+
+    // Validate
+    if (llmRequestResults2.status === false) {
+      throw new CustomError(`${fnName}: failed: ${llmRequestResults2.message}`)
+    }
 
     // Get post credits and usage
     const regularTestUserQuotaAndUsage2 = await
@@ -263,13 +284,19 @@ export class TestLlmService {
               adminUserProfile.id,
               null)  // instanceId
 
-    await this.chatService.llmRequest(
-            prisma,
-            llmTech.id,
-            adminUserChatSession,
-            adminUserProfile,
-            agentUser,
-            messagesWithRoles)
+    const llmRequestResults1 = await
+            this.chatService.llmRequest(
+              prisma,
+              llmTech.id,
+              adminUserChatSession,
+              adminUserProfile,
+              agentUser,
+              messagesWithRoles)
+
+    // Validate
+    if (llmRequestResults1.status === false) {
+      throw new CustomError(`${fnName}: failed: ${llmRequestResults1.message}`)
+    }
 
     // Get post credits and usage
     const adminUserQuotaAndUsage2 = await
@@ -303,13 +330,19 @@ export class TestLlmService {
               SereneCoreServerTypes.credits,
               new Date())
 
-    await this.chatService.llmRequest(
-            prisma,
-            llmTech.id,
-            regularTestUserChatSession,
-            regularTestUserProfile,
-            agentUser,
-            messagesWithRoles)
+    const llmRequestResults2 = await
+            this.chatService.llmRequest(
+              prisma,
+              llmTech.id,
+              regularTestUserChatSession,
+              regularTestUserProfile,
+              agentUser,
+              messagesWithRoles)
+
+    // Validate
+    if (llmRequestResults2.status === false) {
+      throw new CustomError(`${fnName}: failed: ${llmRequestResults2.message}`)
+    }
 
     // Get post credits and usage
     const regularTestUserQuotaAndUsage2 = await

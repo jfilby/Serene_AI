@@ -23,7 +23,7 @@ export class ChatMessageService {
     this.chatMessageModel = new ChatMessageModel(encryptionKey)
   }
 
-  calcCost(
+  calcCostInCents(
     tech: any,
     resource: string,
     inputTokens: number,
@@ -56,16 +56,19 @@ export class ChatMessageService {
     // Get pricing
     const pricing = AiTechPricing.pricing[pricingKey]
 
+    // Debug
+    console.log(`${fnName}: pricing: ` + JSON.stringify(pricing))
+
     // Calc cost
     const costInCents =
             ((inputTokens * pricing.inputTokens) +
              (outputTokens * pricing.outputTokens)) / this.million1 * 100
 
-    // Rounding (to cents)
-    const roundedCostInCents = Math.round(costInCents)
+    // Debug
+    console.log(`${fnName}: costInCents: ` + JSON.stringify(costInCents))
 
     // Return
-    return roundedCostInCents
+    return costInCents
   }
 
   async getAllByChatSessionId(

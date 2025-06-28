@@ -142,6 +142,13 @@ export class ChatService {
           jsonMode,
           tryGetFromCache)
 
+      // Validate
+      if (chatCompletionResults.isRateLimited == null) {
+
+        throw new CustomError(
+                    `${fnName}: chatCompletionResults.isRateLimited == null`)
+      }
+
       // If not rate-limited
       if (chatCompletionResults.isRateLimited === false) {
 
@@ -337,7 +344,8 @@ export class ChatService {
 
       return {
         status: false,
-        message: `Tech not found for id: ${llmTechId}`
+        message: `Tech not found for id: ${llmTechId}`,
+        isRateLimited: false
       }
     }
 
@@ -345,7 +353,8 @@ export class ChatService {
 
       return {
         status: false,
-        message: `Tech is disabled for id: ${llmTechId}`
+        message: `Tech is disabled for id: ${llmTechId}`,
+        isRateLimited: false
       }
     }
 
@@ -359,12 +368,18 @@ export class ChatService {
               messagesWithRoles)
 
     // Calc estimated cost
-    const costInCents =
-            chatMessageService.calcCost(
+    const estimatedCostInCents =
+            chatMessageService.calcCostInCents(
               tech,
               'text',
               messagesResults.estimatedInputTokens,
               messagesResults.estimatedOutputTokens)
+
+    // Debug
+    console.log(`${fnName}: estimated costInCents: ${estimatedCostInCents} ` +
+                `based on input tokens: ` +
+                `${messagesResults.estimatedInputTokens} and output tokens: ` +
+                `${messagesResults.estimatedOutputTokens}`)
 
     // Is there quota available for this user?
     const isQuotaAvailable = await
@@ -372,13 +387,14 @@ export class ChatService {
               prisma,
               userProfile.id,
               SereneCoreServerTypes.credits,
-              costInCents)
+              estimatedCostInCents)
 
     if (isQuotaAvailable === false) {
 
       return {
         status: false,
-        message: `Insufficient quota, please buy or upgrade your subscription`
+        message: `Insufficient quota, please buy or upgrade your subscription`,
+        isRateLimited: false
       }
     }
 
@@ -394,6 +410,20 @@ export class ChatService {
 
     // Post-proc for non-null results
     if (results != null) {
+
+      // Calc cost
+      const costInCents =
+              chatMessageService.calcCostInCents(
+                tech,
+                'text',
+                results.inputTokens,
+                results.outputTokens)
+
+      // Debug
+      console.log(
+        `${fnName}: costInCents: ${estimatedCostInCents} based on input ` +
+        `tokens: ${results.inputTokens} and output tokens: ` +
+        `${results.outputTokens}`)
 
       // Create ChatMessageCreated
       await chatMessageCreatedModel.create(
