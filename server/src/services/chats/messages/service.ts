@@ -1,13 +1,9 @@
 import { PrismaClient } from '@prisma/client'
 import { CustomError } from '@/serene-core-server/types/errors'
 import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
-import { ResourceQuotasMutateService } from '@/serene-core-server/services/quotas/mutate-service'
 import { AiTechPricing } from '../../../types/tech-pricing'
 import { ChatMessageCreatedModel } from '../../../models/chat/chat-message-created-model'
 import { ChatMessageModel } from '../../../models/chat/chat-message-model'
-
-// Services
-const resourceQuotasMutateService = new ResourceQuotasMutateService()
 
 // Class
 export class ChatMessageService {
@@ -129,40 +125,6 @@ export class ChatMessageService {
       console.error(message)
       throw new CustomError(message)
     }
-
-    // Calculate the cost, but only if tokens are present and the pricing tier
-    // is paid.
-    var costInCents = 0.0
-
-    if (tech.pricingTier === SereneCoreServerTypes.paid &&
-        (inputTokens > 0 ||
-         outputTokens > 0)) {
-
-      costInCents =
-        this.calcCost(
-          tech,
-          'text',
-          inputTokens,
-          outputTokens)
-    }
-
-    // Create ChatMessageCreated
-    await this.chatMessageCreatedModel.create(
-            prisma,
-            fromUserProfileId,
-            chatSession.instanceId,
-            tech.id,
-            sentByAi,
-            inputTokens,
-            outputTokens,
-            costInCents)
-
-    // Inc used quota
-    await resourceQuotasMutateService.incQuotaUsage(
-            prisma,
-            chatSession.createdById,
-            SereneCoreServerTypes.credits,
-            costInCents)
 
     // Return
     return chatMessage

@@ -1,5 +1,5 @@
 import { CustomError } from '@/serene-core-server/types/errors'
-import { ChatMessage, ServerOnlyTypes } from '../../../types/server-only-types'
+import { ChatMessage, SereneAiServerOnlyTypes } from '../../../types/server-only-types'
 
 export class OpenAiLlmUtilsService {
 
@@ -39,9 +39,9 @@ export class OpenAiLlmUtilsService {
       var role: string = ''
 
       if (chatMessage.sentByAi === false) {
-        role = ServerOnlyTypes.chatGptUserMessageRole
+        role = SereneAiServerOnlyTypes.chatGptUserMessageRole
       } else if (chatMessage.sentByAi === true) {
-        role = ServerOnlyTypes.chatGptModelMessageRole
+        role = SereneAiServerOnlyTypes.chatGptModelMessageRole
       } else {
         throw new CustomError(
           `${fnName}: unhandled chatMessage.sentByAi: ` +
@@ -57,7 +57,7 @@ export class OpenAiLlmUtilsService {
 
     // Add latest message from the user
     messagesWithRoles.push({
-      role: ServerOnlyTypes.chatGptUserMessageRole,
+      role: SereneAiServerOnlyTypes.chatGptUserMessageRole,
       parts: fromContents
     })
 
@@ -79,7 +79,7 @@ export class OpenAiLlmUtilsService {
     // Determine the role
     var role: string = ''
 
-    role = ServerOnlyTypes.chatGptUserMessageRole
+    role = SereneAiServerOnlyTypes.chatGptUserMessageRole
 
     // Add chat message
     messagesWithRoles.push({

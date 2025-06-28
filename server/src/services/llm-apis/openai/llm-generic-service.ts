@@ -1,5 +1,5 @@
 import { CustomError } from '@/serene-core-server/types/errors'
-import { ServerOnlyTypes } from '../../../types/server-only-types'
+import { SereneAiServerOnlyTypes } from '../../../types/server-only-types'
 import { EstimateTokensService } from '../estimate-tokens-service'
 
 // Services
@@ -150,7 +150,7 @@ export class OpenAIGenericLlmService {
       }
 
       messagesWithRoles.push({
-        role: ServerOnlyTypes.chatGptSystemMessageRole,
+        role: SereneAiServerOnlyTypes.chatGptSystemMessageRole,
         content: roleContent
       })
     }
@@ -159,7 +159,7 @@ export class OpenAIGenericLlmService {
     if (systemPrompt != null) {
 
       messagesWithRoles.push({
-        role: ServerOnlyTypes.chatGptSystemMessageRole,
+        role: SereneAiServerOnlyTypes.chatGptSystemMessageRole,
         content: systemPrompt
       })
     }
@@ -184,12 +184,12 @@ export class OpenAIGenericLlmService {
 
       switch (message.role) {
         case 'user': {
-          role = ServerOnlyTypes.chatGptUserMessageRole
+          role = SereneAiServerOnlyTypes.chatGptUserMessageRole
           break
         }
 
         case 'model': {
-          role = ServerOnlyTypes.chatGptAssistantMessageRole
+          role = SereneAiServerOnlyTypes.chatGptAssistantMessageRole
           break
         }
 

@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, Tech } from '@prisma/client'
 import { TechModel } from '../../models/tech/tech-model'
 import { SereneCoreServerTypes } from '../../types/user-types'
 
@@ -36,7 +36,7 @@ export class TechQueryService {
     if (userProfile.isAdmin === false) {
 
       techs =
-        techs.filter(tech => tech.pricingTier !== SereneCoreServerTypes.free)
+        techs.filter((tech: Tech) => tech.pricingTier !== SereneCoreServerTypes.free)
     }
 
     // Return

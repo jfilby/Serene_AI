@@ -2,7 +2,7 @@ import { RateLimitedApiModel } from '@/serene-core-server/models/tech/rate-limit
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
 import { AiTechDefs } from '../../types/tech-defs'
 import { AiTechPricing } from '../../types/tech-pricing'
-import { ServerOnlyTypes } from '../../types/server-only-types'
+import { SereneAiServerOnlyTypes } from '../../types/server-only-types'
 import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
 
 export class SereneAiSetup {
@@ -23,8 +23,8 @@ export class SereneAiSetup {
             this.techModel.upsert(
               prisma,
               undefined,  // id
-              ServerOnlyTypes.apolloIoApi,
-              ServerOnlyTypes.restApi,
+              SereneAiServerOnlyTypes.apolloIoApi,
+              SereneAiServerOnlyTypes.restApi,
               SereneCoreServerTypes.free,
               true,       // isDefaultProvider
               true,       // isEnabled

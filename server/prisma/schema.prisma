@@ -265,7 +265,8 @@ model ChatMessage {
 
 model ChatMessageCreated {
   // Used for quotas and rate-limiting, as ChatMessage can be deleted from as
-  // needed.
+  // needed. Possibly add a FK from ChatMessage if costs per actual message
+  // ever need to be tracked (when the ChatMessage is available).
   id                           String               @id @default(cuid())
   userProfileId                String               @map("user_profile_id")
   userProfile                  UserProfile          @relation(fields: [userProfileId], references: [id])

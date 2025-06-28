@@ -1,28 +1,35 @@
 import { CustomError } from '@/serene-core-server/types/errors'
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
+import { SereneAiServerOnlyTypes } from '../../types/server-only-types'
+import { ChatSessionModel } from '../../models/chat/chat-session-model'
 import { ChatSettingsModel } from '../../models/chat/chat-settings-model'
 import { AgentsService } from '../agents/agents-service'
 import { ChatService } from './chat-service'
 import { LlmUtilsService } from './utils-service'
 
+// Models
+const chatSessionModel = new ChatSessionModel()
+const chatSettingsModel = new ChatSettingsModel()
+const techModel = new TechModel()
+
+// Services
+const agentsService = new AgentsService()
+const chatService = new ChatService()
+const llmUtilsService = new LlmUtilsService()
+
+// Class
 export class AgentLlmService {
 
   // Consts
   clName = 'AgentLlmService'
 
-  // Models
-  chatSettingsModel = new ChatSettingsModel()
-  techModel = new TechModel()
-
-  // Services
-  agentsService = new AgentsService()
-  chatService = new ChatService()
-  llmUtilsService = new LlmUtilsService()
-
   // Code
   async agentSingleShotLlmRequest(
           prisma: any,
           tech: any,
+          userProfileId: string,
+          instanceId: string | null,
+          chatSettingsName: string,
           agentUniqueRefId: string | null,
           agentName: string,
           agentRole: string,
@@ -40,32 +47,58 @@ export class AgentLlmService {
     if (tech == null) {
 
       tech = await
-        this.techModel.getByVariantName(
+        techModel.getByVariantName(
           prisma,
           process.env.NEXT_PUBLIC_DEFAULT_LLM_VARIANT as string)
     }
 
     // Get or create agent
     const agentUser = await
-            this.agentsService.getOrCreate(
+            agentsService.getOrCreate(
               prisma,
               agentUniqueRefId,
               agentName,
               agentRole,
               null)
 
+    // Get ChatSettings
+    const chatSettings = await
+            chatSettingsModel.getByName(
+              prisma,
+              chatSettingsName)
+
+    if (chatSettings == null) {
+      throw new CustomError(`${fnName}: chatSettings == null for ` +
+                            chatSettingsName)
+    }
+
+    // Create a ChatSession
+    const chatSession = await
+            chatSessionModel.create(
+              prisma,
+              undefined,  // id
+              chatSettings.id,
+              instanceId,
+              SereneAiServerOnlyTypes.activeStatus,
+              false,      // isEncryptedAtRest
+              null,       // name
+              null,       // externalIntegration
+              null,       // externalId
+              userProfileId)  // createdById
+
     // Build the messages
     const inputMessagesWithRoles = await
-            this.llmUtilsService.buildMessagesWithRolesForSinglePrompt(
+            llmUtilsService.buildMessagesWithRolesForSinglePrompt(
               prisma,
               undefined,  // tech
               prompt)
 
     // Make the LLM request
     const chatCompletionResults = await
-            this.chatService.llmRequest(
+            chatService.llmRequest(
               prisma,
               tech.id,    // llmTechId
+              chatSession,
               undefined,  // userProfile
               agentUser,
               inputMessagesWithRoles,

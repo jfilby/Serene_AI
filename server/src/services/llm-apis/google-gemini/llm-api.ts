@@ -2,7 +2,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai')
 import { CustomError } from '@/serene-core-server/types/errors'
 import { FeatureFlags } from '../../../types/feature-flags'
 import { AiTechDefs } from '../../../types/tech-defs'
-import { ServerOnlyTypes } from '../../../types/server-only-types'
+import { SereneAiServerOnlyTypes } from '../../../types/server-only-types'
 import { EstimateTokensService } from '../estimate-tokens-service'
 
 // Interfaces
@@ -244,12 +244,12 @@ export class GoogleGeminiLlmService {
       // Add messages
       // Gemini doesn't have the system role
       messagesWithRoles.push({
-        role: ServerOnlyTypes.geminiUserMessageRole,
+        role: SereneAiServerOnlyTypes.geminiUserMessageRole,
         parts: [{type: '', text: systemAndRolePrompt}]
       })
 
       messagesWithRoles.push({
-        role: ServerOnlyTypes.geminiModelMessageRole,
+        role: SereneAiServerOnlyTypes.geminiModelMessageRole,
         parts: [{type: '', text: this.okMsg}]
       })
     }
@@ -263,11 +263,11 @@ export class GoogleGeminiLlmService {
       // console.log(`${fnName}: message: ${JSON.stringify(message)}`)
 
       // Fill in a model response if none found
-      if (previousRole === ServerOnlyTypes.geminiUserMessageRole &&
-          message.role === ServerOnlyTypes.geminiUserMessageRole) {
+      if (previousRole === SereneAiServerOnlyTypes.geminiUserMessageRole &&
+          message.role === SereneAiServerOnlyTypes.geminiUserMessageRole) {
 
         messagesWithRoles.push({
-          role: ServerOnlyTypes.geminiModelMessageRole,
+          role: SereneAiServerOnlyTypes.geminiModelMessageRole,
           parts: [{type: '', text: this.okMsg}]
         })
       }

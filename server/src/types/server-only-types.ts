@@ -3,7 +3,14 @@ export interface ChatMessage {
   text: string
 }
 
-export class ServerOnlyTypes {
+export class SereneAiServerOnlyTypes {
+
+  // Status
+  static activeStatus = 'A'
+  static newStatus = 'N'
+
+  // Chat settings names
+  static defaultChatSettingsName = 'default'
 
   // Google Gemini message roles
   static geminiUserMessageRole = 'user'

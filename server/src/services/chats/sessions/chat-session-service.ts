@@ -626,6 +626,7 @@ export class ChatSessionService {
             this.chatService.llmRequest(
               prisma,
               chatSession.chatSettings.llmTechId,
+              chatSession,
               fromUserProfile,
               agentInfo.agentUser,
               messagesWithRoles,

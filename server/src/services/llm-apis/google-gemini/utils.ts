@@ -1,5 +1,5 @@
 import { CustomError } from '@/serene-core-server/types/errors'
-import { ChatMessage, ServerOnlyTypes } from '../../../types/server-only-types'
+import { ChatMessage, SereneAiServerOnlyTypes } from '../../../types/server-only-types'
 
 export class GoogleGeminiLlmUtilsService {
 
@@ -39,9 +39,9 @@ export class GoogleGeminiLlmUtilsService {
       var role: string = ''
 
       if (chatMessage.sentByAi === false) {
-        role = ServerOnlyTypes.geminiUserMessageRole
+        role = SereneAiServerOnlyTypes.geminiUserMessageRole
       } else if (chatMessage.sentByAi === true) {
-        role = ServerOnlyTypes.geminiModelMessageRole
+        role = SereneAiServerOnlyTypes.geminiModelMessageRole
       } else {
         throw new CustomError(
                     `${fnName}: unhandled chatMessage.sentByAi: ` +
@@ -57,7 +57,7 @@ export class GoogleGeminiLlmUtilsService {
 
     // Add latest message from the user
     messagesWithRoles.push({
-      role: ServerOnlyTypes.geminiUserMessageRole,
+      role: SereneAiServerOnlyTypes.geminiUserMessageRole,
       parts: fromContents
     })
 
@@ -79,7 +79,7 @@ export class GoogleGeminiLlmUtilsService {
     // Determine the role
     var role: string = ''
 
-    role = ServerOnlyTypes.geminiUserMessageRole
+    role = SereneAiServerOnlyTypes.geminiUserMessageRole
 
     // Add chat message
     messagesWithRoles.push({

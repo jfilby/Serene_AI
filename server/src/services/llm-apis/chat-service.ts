@@ -5,7 +5,9 @@ import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
 import { sleepSeconds } from '@/serene-core-server/services/process/sleep'
 import { RateLimitedApiEventModel } from '@/serene-core-server/models/tech/rate-limited-api-event-model'
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
+import { ResourceQuotasMutateService } from '@/serene-core-server/services/quotas/mutate-service'
 import { ResourceQuotasQueryService } from '@/serene-core-server/services/quotas/query-service'
+import { ChatMessageCreatedModel } from '../../models/chat/chat-message-created-model'
 import { LlmCacheModel } from '../../models/cache/llm-cache-model'
 import { ChatApiUsageService } from '../api-usage/chat-api-usage-service'
 import { ChatMessageService } from '../chats/messages/service'
@@ -14,8 +16,10 @@ import { LlmUtilsService } from './utils-service'
 import { TextParsingService } from '../content/text-parsing-service'
 
 // Models
+const chatMessageCreatedModel = new ChatMessageCreatedModel()
 const llmCacheModel = new LlmCacheModel()
 const rateLimitedApiEventModel = new RateLimitedApiEventModel()
+const resourceQuotasMutateService = new ResourceQuotasMutateService()
 const techModel = new TechModel()
 
 // Services
@@ -99,6 +103,7 @@ export class ChatService {
   async llmRequest(
           prisma: any,
           llmTechId: string | undefined,
+          chatSession: any,
           userProfile: any | undefined,
           agentUser: any,
           messagesWithRoles: any[],
@@ -124,6 +129,7 @@ export class ChatService {
         this.prepAndSendLlmRequest(
           prisma,
           llmTechId,
+          chatSession,
           userProfile,
           agentUser,
           messagesWithRoles,
@@ -193,6 +199,7 @@ export class ChatService {
   private async prepAndSendLlmRequest(
                   prisma: any,
                   llmTechId: string | undefined,
+                  chatSession: any,
                   userProfile: any,
                   agentUser: any,
                   messagesWithRoles: any[],
@@ -374,6 +381,28 @@ export class ChatService {
               systemPrompt,
               messagesResults.messages,
               jsonMode)
+
+    // Post-proc for non-null results
+    if (results != null) {
+
+      // Create ChatMessageCreated
+      await chatMessageCreatedModel.create(
+              prisma,
+              agentUser.userProfileId,
+              chatSession.instanceId,
+              tech.id,
+              true,  // sentByAi
+              results.inputTokens,
+              results.outputTokens,
+              costInCents)
+
+      // Inc used quota
+      await resourceQuotasMutateService.incQuotaUsage(
+              prisma,
+              chatSession.createdById,
+              SereneCoreServerTypes.credits,
+              costInCents)
+    }
 
     // Get result output as a string
     var messageText = ''
