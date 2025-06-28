@@ -169,7 +169,8 @@ export class TestLlmService {
     if (adminUserQuotaAndUsage1.usage !== adminUserQuotaAndUsage2.usage) {
 
       throw new CustomError(
-                  `${fnName}: pre usage: ${adminUserQuotaAndUsage1.usage} ` +
+                  `${fnName}: admin user/free: pre usage: ` +
+                  `${adminUserQuotaAndUsage1.usage} ` +
                   `!= post usage: ${adminUserQuotaAndUsage2.usage}`)
     }
 
@@ -209,7 +210,7 @@ export class TestLlmService {
         regularTestUserQuotaAndUsage2.usage) {
 
       throw new CustomError(
-                  `${fnName}: pre usage: ` +
+                  `${fnName}: regular test user/free: pre usage: ` +
                   `${regularTestUserQuotaAndUsage1.usage} ` +
                   `!= post usage: ${regularTestUserQuotaAndUsage2.usage}`)
     }
@@ -282,7 +283,8 @@ export class TestLlmService {
     if (adminUserQuotaAndUsage1.usage !== adminUserQuotaAndUsage2.usage) {
 
       throw new CustomError(
-                  `${fnName}: pre usage: ${adminUserQuotaAndUsage1.usage} ` +
+                  `${fnName}: admin user/paid: pre usage: ` +
+                  `${adminUserQuotaAndUsage1.usage} ` +
                   `!= post usage: ${adminUserQuotaAndUsage2.usage}`)
     }
 
@@ -322,7 +324,7 @@ export class TestLlmService {
         regularTestUserQuotaAndUsage2.usage) {
 
       throw new CustomError(
-                  `${fnName}: pre usage: ` +
+                  `${fnName}: regular test user/paid: pre usage: ` +
                   `${regularTestUserQuotaAndUsage1.usage} ` +
                   `<= post usage: ${regularTestUserQuotaAndUsage2.usage}`)
     }
