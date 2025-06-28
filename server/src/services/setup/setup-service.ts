@@ -36,6 +36,18 @@ export class SereneAiSetup {
             apolloIoApiTech.id,
             1000000)
 
+    // Mocked LLM (paid)
+    const mockedLlmTech = await
+            this.techModel.upsert(
+              prisma,
+              undefined,  // id
+              AiTechDefs.mockedLlm,
+              AiTechDefs.llms,
+              SereneCoreServerTypes.paid,
+              false,      // isDefaultProvider
+              true,       // isEnabled
+              true)       // isAdminOnly
+
     // Gemini v1.5 Pro
     const geminiV1pt5ProTech = await
             this.techModel.upsert(

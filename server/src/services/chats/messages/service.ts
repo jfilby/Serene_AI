@@ -40,6 +40,10 @@ export class ChatMessageService {
     // Define pricing key
     const pricingKey = `${tech.variantName}/${tech.pricingTier}/${resource}`
 
+    // Debug
+    console.log(`${fnName}: AiTechPricing.pricing: ` +
+                JSON.stringify(AiTechPricing.pricing))
+
     // Validate
     if (!AiTechPricing.pricing.hasOwnProperty(pricingKey)) {
 

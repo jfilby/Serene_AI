@@ -10,7 +10,7 @@ export class SereneAiServerOnlyTypes {
   static newStatus = 'N'
 
   // Chat settings names
-  static defaultChatSettingsName = 'default'
+  static defaultChatSettingsName = 'Default'
 
   // Google Gemini message roles
   static geminiUserMessageRole = 'user'

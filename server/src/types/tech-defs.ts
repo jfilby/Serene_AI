@@ -8,6 +8,7 @@ export class AiTechDefs {
   static writerLlmCategory = 'Writer LLM'
 
   // Tech providers
+  static mockedProvider = 'Mocked provider'
   static googleGeminiProvider = 'Google Gemini'
   static gcpPlatform = 'GCP'
   static googleVendor = 'Google'
@@ -19,6 +20,9 @@ export class AiTechDefs {
   static googleGemini = 'Google Gemini'
 
   // Variant names
+  // Mock
+  static mockedLlm = 'Mocked LLM'
+
   // Last updated: 18th Feb 2024
   // Run the Setup in /admin/setup to install new variants and effect any
   // upgrade paths in service/tech/data/llms.ts.
@@ -85,6 +89,12 @@ export class AiTechDefs {
       provider: this.chatGptProvider,
       variantName: this.chatGpt4o,
       default: false
+    },
+    // Mock
+    {
+      provider: this.mockedProvider,
+      variantName: this.mockedLlm,
+      default: false
     }
   ]
 
@@ -118,6 +128,8 @@ export class AiTechDefs {
 
   // Variant to providers
   static variantToProviders = {
+    [AiTechDefs.mockedLlm]: this.mockedProvider,
+
     [AiTechDefs.googleGeminiV1Pro]: this.googleGeminiProvider,
     [AiTechDefs.googleGeminiV1pt5Pro]: this.googleGeminiProvider,
     [AiTechDefs.googleGeminiV1pt5Flash]: this.googleGeminiProvider,
@@ -131,6 +143,10 @@ export class AiTechDefs {
 
   // Variant names to descriptions
   static variantNamesToDescriptions = {
+
+    // Mocked
+    [AiTechDefs.mockedLlm]: 'Mocked LLM',
+
     // Google Gemini
     [AiTechDefs.googleGeminiV1Pro]: 'Gemini v1 Pro',
     [AiTechDefs.googleGeminiV1pt5Pro]: 'Gemini v1.5 Pro',
@@ -150,7 +166,14 @@ export class AiTechDefs {
   static largeContextTokenSize = 100000  // 100k
 
   // Context windows by variant
+  static mockedInputTokens = 1000
+  static mockedOutputTokens = 1000
+
   static variantToMaxInputTokens = {
+
+    // Mocked
+    [AiTechDefs.mockedLlm]: AiTechDefs.mockedInputTokens,
+
     // Google Gemini
     // Source: https://ai.google.dev/models/gemini
     [AiTechDefs.googleGeminiV1Pro]: 1048576,
@@ -169,6 +192,10 @@ export class AiTechDefs {
   }
 
   static variantToMaxOutputTokens = {
+
+    // Mocked
+    [AiTechDefs.mockedLlm]: AiTechDefs.mockedOutputTokens,
+
     // Google Gemini
     // Source: https://ai.google.dev/models/gemini
     [AiTechDefs.googleGeminiV1Pro]: 8192,

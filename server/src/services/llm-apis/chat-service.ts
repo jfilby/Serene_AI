@@ -114,6 +114,11 @@ export class ChatService {
     // Debug
     const fnName = `${this.clName}.llmRequest()`
 
+    // Validate
+    if (agentUser == null) {
+      throw new CustomError(`${fnName}: agentUser == null`)
+    }
+
     // Loop until not rate-limited
     var chatCompletionResults: any = {
       message: `${fnName}: Not initialized`
@@ -211,6 +216,11 @@ export class ChatService {
     const fnName = `${this.clName}.prepAndSendLlmRequest()`
 
     // console.log(`${fnName}: starting with jsonMode: ${jsonMode}`)
+
+    // Validate
+    if (agentUser == null) {
+      throw new CustomError(`${fnName}: agentUser == null`)
+    }
 
     // If llmTechId isn't specified, get the default
     var tech: any

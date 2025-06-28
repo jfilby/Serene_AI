@@ -2,8 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import { CustomError } from '@/serene-core-server/types/errors'
 import { AiTechDefs } from '../../types/tech-defs'
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
-import { ChatMessage } from '../../types/server-only-types'
-import { CommonTypes } from '../../types/types'
+import { ChatMessage, SereneAiServerOnlyTypes } from '../../types/server-only-types'
 import { ChatSettingsModel } from '../../models/chat/chat-settings-model'
 import { AgentsService } from '../agents/agents-service'
 import { GoogleGeminiLlmService } from './google-gemini/llm-api'
@@ -205,7 +204,7 @@ export class LlmUtilsService {
         this.chatSettingsModel.create(
           prisma,
           baseChatSettingsId,
-          CommonTypes.activeStatus,
+          SereneAiServerOnlyTypes.activeStatus,
           thisIsEncryptedAtRest,
           thisIsJsonMode,
           false,      // isPinned
@@ -231,6 +230,11 @@ export class LlmUtilsService {
 
     // Debug
     const fnName = `${this.clName}.prepareChatMessages()`
+
+    // Validate
+    if (agentUser == null) {
+      throw new CustomError(`${fnName}: agentUser == null`)
+    }
 
     // Get tech provider
     const provider = AiTechDefs.variantToProviders[tech.variantName]
@@ -261,6 +265,16 @@ export class LlmUtilsService {
                        systemPrompt,
                        messagesWithRoles,
                        false)  // anonymize
+      }
+
+      case AiTechDefs.mockedProvider: {
+
+        return {
+          messages: messagesWithRoles,
+          variantName: tech.variantName,
+          estimatedInputTokens: AiTechDefs.mockedInputTokens,
+          estimatedOutputTokens: AiTechDefs.mockedOutputTokens
+        }
       }
 
       default: {
@@ -324,6 +338,19 @@ export class LlmUtilsService {
                        tech,
                        prepareMessagesResults.messages,
                        jsonMode)
+      }
+
+      case AiTechDefs.mockedProvider: {
+
+        return {
+          status: true,
+          message: undefined,
+          messages: messages,
+          model: AiTechDefs.mockedLlm,  // Assume the same name as the variant
+          actualTech: tech,
+          inputTokens: AiTechDefs.mockedInputTokens,
+          outputTokens: AiTechDefs.mockedOutputTokens
+        }
       }
 
       default: {

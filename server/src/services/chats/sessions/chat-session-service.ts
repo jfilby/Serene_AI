@@ -2,8 +2,7 @@ import { CustomError } from '@/serene-core-server/types/errors'
 import { UserTypes } from '@/serene-core-server/types/user-types'
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
 import { UsersService } from '@/serene-core-server/services/users/service'
-import { ChatMessage } from '../../../types/server-only-types'
-import { CommonTypes } from '../../../types/types'
+import { ChatMessage, SereneAiServerOnlyTypes } from '../../../types/server-only-types'
 import { AgentUserModel } from '../../../models/agents/agent-user-model'
 import { ChatMessageModel } from '../../../models/chat/chat-message-model'
 import { ChatParticipantModel } from '../../../models/chat/chat-participant-model'
@@ -87,7 +86,7 @@ export class ChatSessionService {
             undefined,  // id,
             chatSettings.id,
             instanceId,
-            CommonTypes.newStatus,
+            SereneAiServerOnlyTypes.newStatus,
             encryptedAtRest,
             name,
             externalIntegration,
@@ -668,7 +667,7 @@ export class ChatSessionService {
     //             JSON.stringify(sessionTurnData))
 
     // Switch that status from N (new) to A (active)
-    if (chatSession.status === CommonTypes.newStatus) {
+    if (chatSession.status === SereneAiServerOnlyTypes.newStatus) {
 
       chatSession = await
         this.chatSessionModel.update(
@@ -676,7 +675,7 @@ export class ChatSessionService {
           chatSession.id,
           undefined,  // chatSettingsId
           undefined,  // instanceId
-          CommonTypes.activeStatus,
+          SereneAiServerOnlyTypes.activeStatus,
           undefined,  // isEncryptedAtRest
           undefined,  // name
           undefined,  // externalIntegration
