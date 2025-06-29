@@ -11,7 +11,9 @@ export class UserErrorModel {
                userProfileId: string,
                endUserProfileId: string | null,
                instanceId: string | null,
-               message: string) {
+               origin: string,
+               message: string,
+               techMessage: string | null) {
 
     // Debug
     const fnName = `${this.clName}.filter()`
@@ -24,7 +26,9 @@ export class UserErrorModel {
           userProfileId: userProfileId,
           endUserProfileId: endUserProfileId,
           instanceId: instanceId,
-          message: message
+          origin: origin,
+          message: message,
+          techMessage: techMessage
         }
       })
     } catch(error) {
@@ -74,10 +78,11 @@ export class UserErrorModel {
   }
 
   async filter(prisma: PrismaClient,
-               userErrorSummaryId: string,
-               userProfileId: string,
-               endUserProfileId: string | null,
-               instanceId: string | null) {
+               userErrorSummaryId: string | undefined,
+               userProfileId: string | undefined,
+               endUserProfileId: string | null | undefined,
+               instanceId: string | null | undefined,
+               origin: string | undefined) {
 
     // Debug
     const fnName = `${this.clName}.filter()`
@@ -89,7 +94,8 @@ export class UserErrorModel {
           userErrorSummaryId: userErrorSummaryId,
           userProfileId: userProfileId,
           endUserProfileId: endUserProfileId,
-          instanceId: instanceId
+          instanceId: instanceId,
+          origin: origin
         }
       })
     } catch(error) {
@@ -104,7 +110,9 @@ export class UserErrorModel {
                userProfileId: string | undefined,
                endUserProfileId: string | null | undefined,
                instanceId: string | null | undefined,
-               message: string | undefined) {
+               origin: string | undefined,
+               message: string | undefined,
+               techMessage: string | null | undefined) {
 
     // Debug
     const fnName = `${this.clName}.update()`
@@ -117,7 +125,9 @@ export class UserErrorModel {
           userProfileId: userProfileId,
           endUserProfileId: endUserProfileId,
           instanceId: instanceId,
-          message: message
+          origin: origin,
+          message: message,
+          techMessage: techMessage
         },
         where: {
           id: id
@@ -135,7 +145,9 @@ export class UserErrorModel {
                userProfileId: string | undefined,
                endUserProfileId: string | null | undefined,
                instanceId: string | null | undefined,
-               message: string | undefined) {
+               origin: string | undefined,
+               message: string | undefined,
+               techMessage: string | null | undefined) {
 
     // Debug
     const fnName = `${this.clName}.upsert()`
@@ -164,8 +176,18 @@ export class UserErrorModel {
         throw 'Prisma error'
       }
 
+      if (origin == null) {
+        console.error(`${fnName}: id is null and origin is null`)
+        throw 'Prisma error'
+      }
+
       if (message == null) {
         console.error(`${fnName}: id is null and message is null`)
+        throw 'Prisma error'
+      }
+
+      if (techMessage === undefined) {
+        console.error(`${fnName}: id is null and techMessage is undefined`)
         throw 'Prisma error'
       }
 
@@ -176,7 +198,9 @@ export class UserErrorModel {
                      userProfileId,
                      endUserProfileId,
                      instanceId,
-                     message)
+                     origin,
+                     message,
+                     techMessage)
     } else {
 
       // Update
@@ -187,7 +211,9 @@ export class UserErrorModel {
                      userProfileId,
                      endUserProfileId,
                      instanceId,
-                     message)
+                     origin,
+                     message,
+                     techMessage)
     }
   }
 }

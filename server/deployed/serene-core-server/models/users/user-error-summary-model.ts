@@ -9,6 +9,7 @@ export class UserErrorSummaryModel {
   async create(prisma: PrismaClient,
                userProfileId: string,
                instanceId: string | null,
+               origin: string | null,
                message: string,
                count: number) {
 
@@ -21,6 +22,7 @@ export class UserErrorSummaryModel {
         data: {
           userProfileId: userProfileId,
           instanceId: instanceId,
+          origin: origin,
           message: message,
           count: count
         }
@@ -52,8 +54,9 @@ export class UserErrorSummaryModel {
   }
 
   async filter(prisma: PrismaClient,
-               userProfileId: string,
-               instanceId: string | null) {
+               userProfileId: string | undefined,
+               instanceId: string | null | undefined,
+               origin: string | null | undefined) {
 
     // Debug
     const fnName = `${this.clName}.filter()`
@@ -63,7 +66,8 @@ export class UserErrorSummaryModel {
       return await prisma.userErrorSummary.findMany({
         where: {
           userProfileId: userProfileId,
-          instanceId: instanceId
+          instanceId: instanceId,
+          origin: origin
         }
       })
     } catch(error) {
@@ -76,6 +80,7 @@ export class UserErrorSummaryModel {
           prisma: PrismaClient,
           userProfileId: string,
           instanceId: string | null,
+          origin: string | null | undefined,
           message: string) {
 
     // Debug
@@ -87,6 +92,7 @@ export class UserErrorSummaryModel {
         where: {
           userProfileId: userProfileId,
           instanceId: instanceId,
+          origin: origin,
           message: message
         }
       })
@@ -100,6 +106,7 @@ export class UserErrorSummaryModel {
                id: string,
                userProfileId: string | undefined,
                instanceId: string | null | undefined,
+               origin: string | null | undefined,
                message: string | undefined,
                count: number | undefined) {
 
@@ -112,6 +119,7 @@ export class UserErrorSummaryModel {
         data: {
           userProfileId: userProfileId,
           instanceId: instanceId,
+          origin: origin,
           message: message,
           count: count
         },
@@ -129,6 +137,7 @@ export class UserErrorSummaryModel {
                id: string | undefined,
                userProfileId: string | undefined,
                instanceId: string | null | undefined,
+               origin: string | null | undefined,
                message: string | undefined,
                count: number | undefined) {
 
@@ -146,6 +155,7 @@ export class UserErrorSummaryModel {
                 prisma,
                 userProfileId,
                 instanceId,
+                origin,
                 message)
 
       if (userErrorSummary != null) {
@@ -167,6 +177,11 @@ export class UserErrorSummaryModel {
         throw 'Prisma error'
       }
 
+      if (origin === undefined) {
+        console.error(`${fnName}: id is null and origin is undefined`)
+        throw 'Prisma error'
+      }
+
       if (message == null) {
         console.error(`${fnName}: id is null and message is null`)
         throw 'Prisma error'
@@ -182,6 +197,7 @@ export class UserErrorSummaryModel {
                      prisma,
                      userProfileId,
                      instanceId,
+                     origin,
                      message,
                      count)
     } else {
@@ -192,6 +208,7 @@ export class UserErrorSummaryModel {
                      id,
                      userProfileId,
                      instanceId,
+                     origin,
                      message,
                      count)
     }

@@ -15,7 +15,9 @@ export class UserErrorService {
           endUserProfileId: string | null,
           instanceId: string | null,
           summaryMessage: string | undefined,
-          message: string) {
+          origin: string,
+          message: string,
+          techMessage: string | null) {
 
     // If the summaryMessage isn't specified, set it to the message
     if (summaryMessage == null) {
@@ -28,6 +30,7 @@ export class UserErrorService {
             prisma,
             userProfileId,
             instanceId,
+            origin,
             summaryMessage)
 
     // Create/update UserErrorSummary
@@ -39,6 +42,7 @@ export class UserErrorService {
           prisma,
           userProfileId,
           instanceId,
+          origin,
           summaryMessage,
           1)  // count
     } else {
@@ -48,6 +52,7 @@ export class UserErrorService {
         userErrorSummaryModel.update(
           prisma,
           userErrorSummary.id,
+          undefined,
           undefined,
           undefined,
           undefined,
@@ -62,6 +67,8 @@ export class UserErrorService {
               userProfileId,
               endUserProfileId,
               instanceId,
-              message)
+              origin,
+              message,
+              techMessage)
   }
 }
