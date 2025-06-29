@@ -38,7 +38,7 @@ export class ResourceQuotaTotalModel {
           userProfileId: string) {
 
     // Debug
-    const fnName = `${this.clName}.filter()`
+    const fnName = `${this.clName}.deleteByUserProfileId()`
 
     // Query
     try {
