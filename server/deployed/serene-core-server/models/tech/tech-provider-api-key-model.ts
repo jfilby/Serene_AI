@@ -1,9 +1,9 @@
 import { CustomError } from '../../types/errors'
 
-export class TechProviderModel {
+export class TechProviderApiKeyModel {
 
   // Consts
-  clName = 'TechProviderModel'
+  clName = 'TechProviderApiKeyModel'
 
   // Code
   async create(
@@ -11,6 +11,7 @@ export class TechProviderModel {
           techProviderId: string,
           status: string,
           name: string,
+          accountEmail: string,
           apiKey: string,
           pricingTier: string | null) {
 
@@ -24,6 +25,7 @@ export class TechProviderModel {
           techProviderId: techProviderId,
           status: status,
           name: name,
+          accountEmail: accountEmail,
           apiKey: apiKey,
           pricingTier: pricingTier
         }
@@ -38,6 +40,7 @@ export class TechProviderModel {
           prisma: any,
           techProviderId: string | undefined,
           status: string | undefined,
+          accountEmail: string | undefined,
           pricingTier: string | null | undefined) {
 
     // Debug
@@ -124,7 +127,7 @@ export class TechProviderModel {
     var techProvider: any = null
 
     try {
-      techProvider = await prisma.techProviderApiKey.findUnique({
+      techProvider = await prisma.techProviderApiKey.findFirst({
         where: {
           techProviderId: techProviderId,
           name: name
@@ -147,6 +150,7 @@ export class TechProviderModel {
           techProviderId: string | undefined,
           status: string | undefined,
           name: string | undefined,
+          accountEmail: string | undefined,
           apiKey: string | undefined,
           pricingTier: string | null | undefined) {
 
@@ -160,6 +164,7 @@ export class TechProviderModel {
           techProviderId: techProviderId,
           status: status,
           name: name,
+          accountEmail: accountEmail,
           apiKey: apiKey,
           pricingTier: pricingTier
         },
@@ -178,6 +183,7 @@ export class TechProviderModel {
                techProviderId: string | undefined,
                status: string | undefined,
                name: string | undefined,
+               accountEmail: string | undefined,
                apiKey: string | undefined,
                pricingTier: string | null | undefined) {
 
@@ -219,6 +225,11 @@ export class TechProviderModel {
         throw 'Prisma error'
       }
 
+      if (accountEmail === undefined) {
+        console.error(`${fnName}: id is null and accountEmail is undefined`)
+        throw 'Prisma error'
+      }
+
       if (apiKey == null) {
         console.error(`${fnName}: id is null and apiKey is null`)
         throw 'Prisma error'
@@ -238,6 +249,7 @@ export class TechProviderModel {
                  techProviderId,
                  status,
                  name,
+                 accountEmail,
                  apiKey,
                  pricingTier)
     } else {
@@ -252,6 +264,7 @@ export class TechProviderModel {
                  techProviderId,
                  status,
                  name,
+                 accountEmail,
                  apiKey,
                  pricingTier)
     }
