@@ -16,6 +16,11 @@ export class AiTechDefs {
 
   static chatGptProvider = 'ChatGPT'
 
+  // Tech protocols: AI
+  static mockedAiProtocol = 'Mocked AI'
+  static openAiProtocol = 'OpenAI'
+  static geminiProtocol = 'Gemini'
+
   // LLMs by provider
   static googleGemini = 'Google Gemini'
 

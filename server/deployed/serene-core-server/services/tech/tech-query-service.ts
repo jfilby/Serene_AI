@@ -31,6 +31,7 @@ export class TechQueryService {
             undefined,  // techProviderId
             SereneCoreServerTypes.activeStatus,
             resource,
+            undefined,  // protocol
             isAdminOnly)
 
     // Remove free tech if not an admin

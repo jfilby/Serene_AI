@@ -25,4 +25,7 @@ export class SereneAiServerOnlyTypes {
   // Tech
   static apolloIoApi = 'Apollo.io API'
   static restApi = 'REST API'
+
+  // Tech protocols: APIs
+  static graphQlProtocol = 'GraphQL'
 }

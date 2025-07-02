@@ -12,6 +12,7 @@ export class TechModel {
           status: string,
           variantName: string,
           resource: string,
+          protocol: string | null,
           pricingTier: string,
           isDefaultProvider: boolean,
           isAdminOnly: boolean) {
@@ -27,6 +28,7 @@ export class TechModel {
           status: status,
           variantName: variantName,
           resource: resource,
+          protocol: protocol,
           pricingTier: pricingTier,
           isDefaultProvider: isDefaultProvider,
           isAdminOnly: isAdminOnly
@@ -43,6 +45,7 @@ export class TechModel {
           techProviderId: string | undefined,
           status: string | undefined,
           resource: string | undefined,
+          protocol: string | null | undefined,
           isAdminOnly: boolean | undefined) {
 
     // Debug
@@ -59,6 +62,7 @@ export class TechModel {
           techProviderId: techProviderId,
           status: status,
           resource: resource,
+          protocol: protocol,
           isAdminOnly: isAdminOnly
         },
         orderBy: [
@@ -183,6 +187,7 @@ export class TechModel {
           status: string | undefined,
           variantName: string | undefined,
           resource: string | undefined,
+          protocol: string | null | undefined,
           pricingTier: string | undefined,
           isDefaultProvider: boolean | undefined,
           isAdminOnly: boolean | undefined) {
@@ -198,6 +203,7 @@ export class TechModel {
           status: status,
           variantName: variantName,
           resource: resource,
+          protocol: protocol,
           pricingTier: pricingTier,
           isDefaultProvider: isDefaultProvider,
           isAdminOnly: isAdminOnly
@@ -218,6 +224,7 @@ export class TechModel {
                status: string | undefined,
                variantName: string | undefined,
                resource: string | undefined,
+               protocol: string | null | undefined,
                pricingTier: string | undefined,
                isDefaultProvider: boolean | undefined,
                isAdminOnly: boolean | undefined) {
@@ -263,6 +270,11 @@ export class TechModel {
         throw 'Prisma error'
       }
 
+      if (protocol == null) {
+        console.error(`${fnName}: id is null and protocol is null`)
+        throw 'Prisma error'
+      }
+
       if (pricingTier == null) {
         console.error(`${fnName}: id is null and pricingTier is null`)
         throw 'Prisma error'
@@ -288,6 +300,7 @@ export class TechModel {
                  status,
                  variantName,
                  resource,
+                 protocol,
                  pricingTier,
                  isDefaultProvider,
                  isAdminOnly)
@@ -304,6 +317,7 @@ export class TechModel {
                  status,
                  variantName,
                  resource,
+                 protocol,
                  pricingTier,
                  isDefaultProvider,
                  isAdminOnly)

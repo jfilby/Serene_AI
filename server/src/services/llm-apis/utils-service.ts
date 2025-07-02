@@ -39,13 +39,10 @@ export class LlmUtilsService {
     // Debug
     const fnName = `${this.clName}.buildMessagesWithRoles()`
 
-    // Get tech provider
-    const provider = AiTechDefs.variantToProviders[tech.variantName]
-
     // Route to appropriate LLM utils
-    switch (provider) {
+    switch (tech.protocol) {
 
-      case AiTechDefs.chatGptProvider: {
+      case AiTechDefs.openAiProtocol: {
         return this.openAiLlmUtilsService.buildMessagesWithRoles(
                  chatMessages,
                  fromContents,
@@ -53,7 +50,7 @@ export class LlmUtilsService {
                  agentChatParticipantIds)
       }
 
-      case AiTechDefs.googleGeminiProvider: {
+      case AiTechDefs.geminiProtocol: {
         return this.googleGeminiLlmUtilsService.buildMessagesWithRoles(
                  chatMessages,
                  fromContents,
@@ -62,8 +59,9 @@ export class LlmUtilsService {
       }
 
       default: {
-        throw new CustomError(`${fnName}: unhandled provider: ${provider} ` +
-                              `for variant: ${tech.variantName}`)
+        throw new CustomError(
+                    `${fnName}: unhandled protocol: ${tech.protocol} ` +
+                    `for tech.id: ${tech.id}`)
       }
     }
   }
@@ -85,25 +83,23 @@ export class LlmUtilsService {
           process.env.DEFAULT_LLM_VARIANT as string)
     }
 
-    // Get tech provider
-    const provider = AiTechDefs.variantToProviders[tech.variantName]
-
     // Route to appropriate LLM utils
-    switch (provider) {
+    switch (tech.protocol) {
 
-      case AiTechDefs.chatGptProvider: {
+      case AiTechDefs.openAiProtocol: {
         return this.openAiLlmUtilsService.buildMessagesWithRolesForSinglePrompt(
                  prompt)
       }
 
-      case AiTechDefs.googleGeminiProvider: {
+      case AiTechDefs.geminiProtocol: {
         return this.googleGeminiLlmUtilsService.buildMessagesWithRolesForSinglePrompt(
                  prompt)
       }
 
       default: {
-        throw new CustomError(`${fnName}: unhandled provider: ${provider} ` +
-                              `for variant: ${tech.variantName}`)
+        throw new CustomError(
+                    `${fnName}: unhandled protocol: ${tech.protocol} ` +
+                    `for tech.id: ${tech.id}`)
       }
     }
   }
@@ -236,13 +232,10 @@ export class LlmUtilsService {
       throw new CustomError(`${fnName}: agentUser == null`)
     }
 
-    // Get tech provider
-    const provider = AiTechDefs.variantToProviders[tech.variantName]
-
     // Route to appropriate LLM utils
-    switch (provider) {
+    switch (tech.protocol) {
 
-      case AiTechDefs.chatGptProvider: {
+      case AiTechDefs.openAiProtocol: {
 
         // Prepare messages
         return await this.openAIGenericLlmService.prepareMessages(
@@ -255,7 +248,7 @@ export class LlmUtilsService {
                        false)  // anonymize
       }
 
-      case AiTechDefs.googleGeminiProvider: {
+      case AiTechDefs.geminiProtocol: {
 
         // Prepare messages
         return await this.googleGeminiLlmService.prepareMessages(
@@ -267,7 +260,7 @@ export class LlmUtilsService {
                        false)  // anonymize
       }
 
-      case AiTechDefs.mockedProvider: {
+      case AiTechDefs.mockedAiProtocol: {
 
         return {
           messages: messagesWithRoles,
@@ -278,8 +271,9 @@ export class LlmUtilsService {
       }
 
       default: {
-        throw new CustomError(`${fnName}: unhandled provider: ${provider} ` +
-                              `for variant: ${tech.variantName}`)
+        throw new CustomError(
+                    `${fnName}: unhandled protocol: ${tech.protocol} ` +
+                    `for tech.id: ${tech.id}`)
       }
     }
   }
@@ -295,13 +289,10 @@ export class LlmUtilsService {
     // Debug
     const fnName = `${this.clName}.sendChatMessages()`
 
-    // Get tech provider
-    const provider = AiTechDefs.variantToProviders[tech.variantName]
-
     // Route to appropriate LLM utils
-    switch (provider) {
+    switch (tech.protocol) {
 
-      case AiTechDefs.chatGptProvider: {
+      case AiTechDefs.openAiProtocol: {
 
         // Prepare messages
         const prepareMessagesResults =
@@ -321,7 +312,7 @@ export class LlmUtilsService {
                        jsonMode)
       }
 
-      case AiTechDefs.googleGeminiProvider: {
+      case AiTechDefs.geminiProtocol: {
 
         // Prepare messages
         const prepareMessagesResults =
@@ -340,7 +331,7 @@ export class LlmUtilsService {
                        jsonMode)
       }
 
-      case AiTechDefs.mockedProvider: {
+      case AiTechDefs.mockedAiProtocol: {
 
         // Prepare messages
         const prepareMessagesResults =
@@ -368,8 +359,9 @@ export class LlmUtilsService {
       }
 
       default: {
-        throw new CustomError(`${fnName}: unhandled provider: ${provider} ` +
-                              `for variant: ${tech.variantName}`)
+        throw new CustomError(
+                    `${fnName}: unhandled protocol: ${tech.protocol} ` +
+                    `for tech.id: ${tech.id}`)
       }
     }
   }

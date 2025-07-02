@@ -2,7 +2,6 @@ import { RateLimitedApiModel } from '@/serene-core-server/models/tech/rate-limit
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
 import { TechProviderModel } from '@/serene-core-server/models/tech/tech-provider-model'
 import { AiTechDefs } from '../../types/tech-defs'
-import { AiTechPricing } from '../../types/tech-pricing'
 import { SereneAiServerOnlyTypes } from '../../types/server-only-types'
 import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
 
@@ -36,6 +35,7 @@ export class SereneAiSetup {
               SereneAiServerOnlyTypes.activeStatus,
               SereneAiServerOnlyTypes.apolloIoApi,
               SereneAiServerOnlyTypes.restApi,
+              SereneAiServerOnlyTypes.graphQlProtocol,
               SereneCoreServerTypes.free,
               true,       // isDefaultProvider
               false)      // isAdminOnly
@@ -62,6 +62,7 @@ export class SereneAiSetup {
               SereneAiServerOnlyTypes.activeStatus,
               AiTechDefs.mockedLlmPaid,
               AiTechDefs.llms,
+              AiTechDefs.mockedAiProtocol,
               SereneCoreServerTypes.paid,
               false,      // isDefaultProvider
               true)       // isAdminOnly
@@ -75,6 +76,7 @@ export class SereneAiSetup {
               SereneAiServerOnlyTypes.activeStatus,
               AiTechDefs.mockedLlmFree,
               AiTechDefs.llms,
+              AiTechDefs.mockedAiProtocol,
               SereneCoreServerTypes.free,
               false,      // isDefaultProvider
               true)       // isAdminOnly
@@ -96,6 +98,7 @@ export class SereneAiSetup {
               SereneAiServerOnlyTypes.activeStatus,
               AiTechDefs.googleGeminiV1pt5Pro,
               AiTechDefs.llms,
+              AiTechDefs.geminiProtocol,
               SereneCoreServerTypes.paid,
               false,      // isDefaultProvider
               false)      // isAdminOnly
@@ -115,6 +118,7 @@ export class SereneAiSetup {
               SereneAiServerOnlyTypes.activeStatus,
               AiTechDefs.googleGeminiV1pt5Flash,
               AiTechDefs.llms,
+              AiTechDefs.geminiProtocol,
               SereneCoreServerTypes.paid,
               false,      // isDefaultProvider
               false)      // isAdminOnly
@@ -134,6 +138,7 @@ export class SereneAiSetup {
               SereneAiServerOnlyTypes.activeStatus,
               AiTechDefs.googleGeminiV2FlashFree,
               AiTechDefs.llms,
+              AiTechDefs.geminiProtocol,
               SereneCoreServerTypes.free,
               true,       // isDefaultProvider
               true)       // isAdminOnly
@@ -153,6 +158,7 @@ export class SereneAiSetup {
               SereneAiServerOnlyTypes.activeStatus,
               AiTechDefs.googleGeminiV2Flash,
               AiTechDefs.llms,
+              AiTechDefs.geminiProtocol,
               SereneCoreServerTypes.paid,
               false,      // isDefaultProvider
               false)      // isAdminOnly
@@ -166,6 +172,7 @@ export class SereneAiSetup {
               SereneAiServerOnlyTypes.activeStatus,
               AiTechDefs.googleGeminiLatestExpFree,
               AiTechDefs.llms,
+              AiTechDefs.geminiProtocol,
               SereneCoreServerTypes.paid,
               false,      // isDefaultProvider
               true)       // isAdminOnly
@@ -193,6 +200,7 @@ export class SereneAiSetup {
               SereneAiServerOnlyTypes.activeStatus,
               AiTechDefs.chatGpt4o,
               AiTechDefs.llms,
+              AiTechDefs.openAiProtocol,
               SereneCoreServerTypes.paid,
               false,      // isDefaultProvider
               false)      // isAdminOnly
