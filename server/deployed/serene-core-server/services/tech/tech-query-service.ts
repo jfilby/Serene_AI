@@ -28,8 +28,9 @@ export class TechQueryService {
     var techs = await
           techModel.filter(
             prisma,
+            undefined,  // techProviderId
+            SereneCoreServerTypes.activeStatus,
             resource,
-            true,      // isEnabled
             isAdminOnly)
 
     // Remove free tech if not an admin

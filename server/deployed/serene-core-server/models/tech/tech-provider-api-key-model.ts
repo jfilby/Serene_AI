@@ -1,35 +1,31 @@
 import { CustomError } from '../../types/errors'
 
-export class TechModel {
+export class TechProviderModel {
 
   // Consts
-  clName = 'TechModel'
+  clName = 'TechProviderModel'
 
   // Code
   async create(
           prisma: any,
           techProviderId: string,
           status: string,
-          variantName: string,
-          resource: string,
-          pricingTier: string,
-          isDefaultProvider: boolean,
-          isAdminOnly: boolean) {
+          name: string,
+          apiKey: string,
+          pricingTier: string | null) {
 
     // Debug
     const fnName = `${this.clName}.create()`
 
     // Create record
     try {
-      return await prisma.tech.create({
+      return await prisma.techProviderApiKey.create({
         data: {
           techProviderId: techProviderId,
           status: status,
-          variantName: variantName,
-          resource: resource,
-          pricingTier: pricingTier,
-          isDefaultProvider: isDefaultProvider,
-          isAdminOnly: isAdminOnly
+          name: name,
+          apiKey: apiKey,
+          pricingTier: pricingTier
         }
       })
     } catch(error) {
@@ -42,8 +38,7 @@ export class TechModel {
           prisma: any,
           techProviderId: string | undefined,
           status: string | undefined,
-          resource: string | undefined,
-          isAdminOnly: boolean | undefined) {
+          pricingTier: string | null | undefined) {
 
     // Debug
     const fnName = `${this.clName}.filter()`
@@ -51,15 +46,14 @@ export class TechModel {
     // console.log(`${fnName}: starting..`)
 
     // Query
-    var tech: any = null
+    var techProvider: any = null
 
     try {
-      tech = await prisma.tech.findMany({
+      techProvider = await prisma.techProviderApiKey.findMany({
         where: {
           techProviderId: techProviderId,
           status: status,
-          resource: resource,
-          isAdminOnly: isAdminOnly
+          pricingTier: pricingTier
         },
         orderBy: [
           {
@@ -75,7 +69,7 @@ export class TechModel {
     }
 
     // Return
-    return tech
+    return techProvider
   }
 
   async getById(prisma: any,
@@ -90,10 +84,10 @@ export class TechModel {
     }
 
     // Query
-    var tech: any = null
+    var techProvider: any = null
 
     try {
-      tech = await prisma.tech.findUnique({
+      techProvider = await prisma.techProviderApiKey.findUnique({
         where: {
           id: id
         }
@@ -106,61 +100,34 @@ export class TechModel {
     }
 
     // Return
-    return tech
+    return techProvider
   }
 
-  async getDefaultProvider(
+  async getByUniqueKey(
           prisma: any,
-          resource: string) {
+          techProviderId: string,
+          name: string) {
 
     // Debug
-    const fnName = `${this.clName}.getByKey()`
-
-    // console.log(`${fnName}: starting..`)
-
-    // Query
-    var tech: any = null
-
-    try {
-      tech = await prisma.tech.findFirst({
-        where: {
-          isDefaultProvider: true,
-          resource: resource
-        }
-      })
-    } catch(error: any) {
-      if (!(error instanceof error.NotFound)) {
-        console.error(`${fnName}: error: ${error}`)
-        throw 'Prisma error'
-      }
-    }
-
-    // Return
-    return tech
-  }
-
-  async getByVariantName(
-          prisma: any,
-          variantName: string) {
-
-    // Debug
-    const fnName = `${this.clName}.getByVariantName()`
-
-    // console.log(`${fnName}: variantName: ${variantName}`)
+    const fnName = `${this.clName}.getById()`
 
     // Validate
-    if (variantName == null) {
-      console.error(`${fnName}: id is null and variantName is null`)
-      throw 'Prisma error'
+    if (techProviderId == null) {
+      throw new CustomError(`${fnName}: techProviderId == null`)
+    }
+
+    if (name == null) {
+      throw new CustomError(`${fnName}: name == null`)
     }
 
     // Query
-    var tech: any = null
+    var techProvider: any = null
 
     try {
-      tech = await prisma.tech.findFirst({
+      techProvider = await prisma.techProviderApiKey.findUnique({
         where: {
-          variantName: variantName
+          techProviderId: techProviderId,
+          name: name
         }
       })
     } catch(error: any) {
@@ -170,10 +137,8 @@ export class TechModel {
       }
     }
 
-    // console.log(`${fnName}: tech: ${JSON.stringify(tech)}`)
-
     // Return
-    return tech
+    return techProvider
   }
 
   async update(
@@ -181,26 +146,22 @@ export class TechModel {
           id: string,
           techProviderId: string | undefined,
           status: string | undefined,
-          variantName: string | undefined,
-          resource: string | undefined,
-          pricingTier: string | undefined,
-          isDefaultProvider: boolean | undefined,
-          isAdminOnly: boolean | undefined) {
+          name: string | undefined,
+          apiKey: string | undefined,
+          pricingTier: string | null | undefined) {
 
     // Debug
     const fnName = `${this.clName}.update()`
 
     // Create record
     try {
-      return await prisma.tech.update({
+      return await prisma.techProviderApiKey.update({
         data: {
           techProviderId: techProviderId,
           status: status,
-          variantName: variantName,
-          resource: resource,
-          pricingTier: pricingTier,
-          isDefaultProvider: isDefaultProvider,
-          isAdminOnly: isAdminOnly
+          name: name,
+          apiKey: apiKey,
+          pricingTier: pricingTier
         },
         where: {
           id: id
@@ -216,23 +177,23 @@ export class TechModel {
                id: string | undefined,
                techProviderId: string | undefined,
                status: string | undefined,
-               variantName: string | undefined,
-               resource: string | undefined,
-               pricingTier: string | undefined,
-               isDefaultProvider: boolean | undefined,
-               isAdminOnly: boolean | undefined) {
+               name: string | undefined,
+               apiKey: string | undefined,
+               pricingTier: string | null | undefined) {
 
     // Debug
     const fnName = `${this.clName}.upsert()`
 
-    // If id isn't specified, try to get by variantName
+    // If id isn't specified, try to get by the unique key
     if (id == null &&
-        variantName != null) {
+        techProviderId != null &&
+        name != null) {
 
       const tech = await
-              this.getByVariantName(
+              this.getByUniqueKey(
                 prisma,
-                variantName)
+                techProviderId,
+                name)
 
       if (tech != null) {
         id = tech.id
@@ -253,28 +214,18 @@ export class TechModel {
         throw 'Prisma error'
       }
 
-      if (variantName == null) {
-        console.error(`${fnName}: id is null and variantName is null`)
+      if (name == null) {
+        console.error(`${fnName}: id is null and name is null`)
         throw 'Prisma error'
       }
 
-      if (resource == null) {
-        console.error(`${fnName}: id is null and resource is null`)
+      if (apiKey == null) {
+        console.error(`${fnName}: id is null and apiKey is null`)
         throw 'Prisma error'
       }
 
-      if (pricingTier == null) {
-        console.error(`${fnName}: id is null and pricingTier is null`)
-        throw 'Prisma error'
-      }
-
-      if (isDefaultProvider == null) {
-        console.error(`${fnName}: id is null and isDefaultProvider is null`)
-        throw 'Prisma error'
-      }
-
-      if (isAdminOnly == null) {
-        console.error(`${fnName}: id is null and isAdminOnly is null`)
+      if (pricingTier === undefined) {
+        console.error(`${fnName}: id is null and pricingTier is undefined`)
         throw 'Prisma error'
       }
 
@@ -286,11 +237,9 @@ export class TechModel {
                  prisma,
                  techProviderId,
                  status,
-                 variantName,
-                 resource,
-                 pricingTier,
-                 isDefaultProvider,
-                 isAdminOnly)
+                 name,
+                 apiKey,
+                 pricingTier)
     } else {
 
       // Update
@@ -302,11 +251,9 @@ export class TechModel {
                  id,
                  techProviderId,
                  status,
-                 variantName,
-                 resource,
-                 pricingTier,
-                 isDefaultProvider,
-                 isAdminOnly)
+                 name,
+                 apiKey,
+                 pricingTier)
     }
   }
 }

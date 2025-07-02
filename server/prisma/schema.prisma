@@ -207,18 +207,48 @@ model ResourceQuotaUsage {
 
 model Tech {
   id                           String               @id @default(cuid())
+  techProviderId               String               @map("tech_provider_id")
+  techProvider                 TechProvider         @relation(fields: [techProviderId], references: [id])
+  status                       String               @db.Char(1)
   variantName                  String               @map("variant_name") @unique
   resource                     String
   pricingTier                  String               @map("pricing_tier")
   isDefaultProvider            Boolean              @map("is_default_provider")
-  isEnabled                    Boolean              @map("is_enabled")
   isAdminOnly                  Boolean              @map("is_admin_only")
 
-  ofChatMessageCreated         ChatMessageCreated[]
-  ofLlmCaches                  LlmCache[]
   ofRateLimitedApis            RateLimitedApi[]
 
+  ofChatMessageCreateds        ChatMessageCreated[]
+  ofLlmCaches                  LlmCache[]
+
   @@map("tech")
+  @@schema("public")
+}
+
+model TechProvider {
+  id                           String               @id @default(cuid())
+  status                       String               @db.Char(1)
+  name                         String               @unique
+
+  ofTechs                      Tech[]
+  ofTechProviderApiKeys        TechProviderApiKey[]
+
+  @@map("tech_provider")
+  @@schema("public")
+}
+
+model TechProviderApiKey {
+  id                           String               @id @default(cuid())
+  techProviderId               String               @map("tech_provider_id")
+  techProvider                 TechProvider         @relation(fields: [techProviderId], references: [id])
+  status                       String               @db.Char(1)
+  name                         String
+  apiKey                       String               @map("api_key")
+  pricingTier                  String?              @map("pricing_tier")
+
+  @@unique([techProviderId, name])
+  @@unique([techProviderId, apiKey])
+  @@map("tech_provider_api_key")
   @@schema("public")
 }
 
