@@ -630,7 +630,7 @@ export class ChatSessionService {
     const chatCompletionResults = await
             this.chatService.llmRequest(
               prisma,
-              llmTech.id,
+              llmTech,
               chatSession,
               fromUserProfile,
               agentInfo.agentUser,
