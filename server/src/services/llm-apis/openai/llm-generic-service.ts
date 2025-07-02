@@ -1,9 +1,9 @@
 import { CustomError } from '@/serene-core-server/types/errors'
 import { SereneAiServerOnlyTypes } from '../../../types/server-only-types'
-import { EstimateTokensService } from '../estimate-tokens-service'
+import { EstimateOpenAiTokensService } from './estimate-tokens-service'
 
 // Services
-const estimateTokensService = new EstimateTokensService()
+const estimateOpenAiTokensService = new EstimateOpenAiTokensService()
 
 // Class
 export class OpenAIGenericLlmService {
@@ -170,13 +170,27 @@ export class OpenAIGenericLlmService {
       // Get message content
       var content = ''
 
-      for (const part of message.parts) {
+      if (message.content) {
 
-        if (content.length > 0) {
-          content += '\n'
+        // If in OpenAI format
+        content = message.content
+
+      } else if (message.parts) {
+
+        // If message.parts (the Gemini format)
+        // Debug (warning)
+        console.warn(`${fnName}: the message is in Gemini format, ` +
+                     `converting to OpenAI format..`)
+
+        // Process
+        for (const part of message.parts) {
+
+          if (content.length > 0) {
+            content += '\n'
+          }
+
+          content += part.text
         }
-
-        content += part.text
       }
 
       // Get the OpenAI role
@@ -188,6 +202,7 @@ export class OpenAIGenericLlmService {
           break
         }
 
+        case 'system':  // Gemini system role
         case 'model': {
           role = SereneAiServerOnlyTypes.chatGptAssistantMessageRole
           break
@@ -209,9 +224,10 @@ export class OpenAIGenericLlmService {
 
     // Estimate the input and output tokens
     const estimatedInputTokens =
-            estimateTokensService.estimateInputTokens(messages)
+            estimateOpenAiTokensService.estimateInputTokens(messagesWithRoles)
 
-    const estimatedOutputTokens = estimateTokensService.estimatedOutputTokens
+    const estimatedOutputTokens =
+            estimateOpenAiTokensService.estimatedOutputTokens
 
     // Variant name: may have to determine this based on input tokens and the
     // estimated output tokens.

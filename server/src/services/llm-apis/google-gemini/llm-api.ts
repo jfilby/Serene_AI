@@ -4,7 +4,7 @@ import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
 import { FeatureFlags } from '../../../types/feature-flags'
 import { AiTechDefs } from '../../../types/tech-defs'
 import { SereneAiServerOnlyTypes } from '../../../types/server-only-types'
-import { EstimateTokensService } from '../estimate-tokens-service'
+import { EstimateGeminiTokensService } from './estimate-tokens-service'
 
 // Interfaces
 interface ChatCompletion {
@@ -25,7 +25,7 @@ const paidGenAi =
           undefined
 
 // Services
-const estimateTokensService = new EstimateTokensService()
+const estimateGeminiTokensService = new EstimateGeminiTokensService()
 
 // Class
 export class GoogleGeminiLlmService {
@@ -220,9 +220,9 @@ export class GoogleGeminiLlmService {
     } else {
 
       inputTokens =
-        estimateTokensService.estimateInputTokens(messagesWithRoles)
+        estimateGeminiTokensService.estimateInputTokens(messagesWithRoles)
 
-      outputTokens = estimateTokensService.estimateOutputTokens([text])
+      outputTokens = estimateGeminiTokensService.estimateOutputTokens([text])
     }
 
     // Return
@@ -311,9 +311,10 @@ export class GoogleGeminiLlmService {
 
     // Estimate the input and output tokens
     const estimatedInputTokens =
-        estimateTokensService.estimateInputTokens(messagesWithRoles)
+            estimateGeminiTokensService.estimateInputTokens(messagesWithRoles)
 
-    const estimatedOutputTokens = estimateTokensService.estimatedOutputTokens
+    const estimatedOutputTokens =
+            estimateGeminiTokensService.estimatedOutputTokens
 
     // Variant name: may have to determine this based on input tokens and the
     // estimated output tokens.

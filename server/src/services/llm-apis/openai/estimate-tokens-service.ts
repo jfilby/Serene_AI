@@ -1,9 +1,9 @@
 import { CustomError } from '@/serene-core-server/types/errors'
 
-export class EstimateTokensService {
+export class EstimateOpenAiTokensService {
 
   // Consts
-  clName = 'EstimateTokensService'
+  clName = 'EstimateOpenAiTokensService'
 
   estimatedOutputTokens = 50
 
@@ -13,7 +13,8 @@ export class EstimateTokensService {
     // Debug
     const fnName = `${this.clName}.estimateInputTokens()`
 
-    // console.log(`${fnName}: starting..`)
+    console.log(`${fnName}: starting with messages: ` +
+                JSON.stringify(messages))
 
     // Calculate total length of words
     var words = 0
@@ -23,22 +24,15 @@ export class EstimateTokensService {
       // console.log(`${fnName}: message: ${JSON.stringify(message)}`)
 
       // Validate
-      if (message.parts == null) {
-        throw new CustomError(`${fnName}: message.parts == null`)
+      if (message.content == null) {
+        throw new CustomError(`${fnName}: message.content == null`)
       }
 
       // Add role (1: 'role: ')
       words += 1
 
       // Add messages
-      for (const part of message.parts) {
-
-        if (part.text == null) {
-          throw new CustomError(`${fnName}: part.text == null`)
-        }
-
-        words += part.text.split(' ').length
-      }
+      words += message.content.split(' ').length
     }
 
     // Calculate input tokens
