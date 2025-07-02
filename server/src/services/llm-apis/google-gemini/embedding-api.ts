@@ -5,7 +5,7 @@ export class GoogleVertexEmbeddingService {
   // Consts
   clName = 'GoogleVertexEmbeddingService'
 
-  genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY)
+  genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_FREE_API_KEY)
 
   model = this.genAI.getGenerativeModel({
     model: 'text-embedding-004',

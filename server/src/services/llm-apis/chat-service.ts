@@ -102,7 +102,7 @@ export class ChatService {
 
   async llmRequest(
           prisma: any,
-          llmTechId: string | undefined,
+          llmTech: any | undefined,
           chatSession: any,
           userProfile: any | undefined,
           agentUser: any,
@@ -133,7 +133,7 @@ export class ChatService {
       chatCompletionResults = await
         this.prepAndSendLlmRequest(
           prisma,
-          llmTechId,
+          llmTech,
           chatSession,
           userProfile,
           agentUser,
@@ -216,7 +216,7 @@ export class ChatService {
   // Note: don't call directly, rather call llmRequest().
   private async prepAndSendLlmRequest(
                   prisma: any,
-                  llmTechId: string | undefined,
+                  llmTech: any | undefined,
                   chatSession: any,
                   userProfile: any,
                   agentUser: any,
@@ -236,21 +236,15 @@ export class ChatService {
     }
 
     // If llmTechId isn't specified, get the default
-    var tech: any
+    if (llmTech == null) {
 
-    if (llmTechId == null) {
-
-      tech = await
+      llmTech = await
         techModel.getByVariantName(
           prisma,
           process.env.DEFAULT_LLM_VARIANT as string)
-
-      if (tech != null) {
-        llmTechId = tech.id
-      }
     }
 
-    if (llmTechId == null) {
+    if (llmTech == null) {
       throw new CustomError(`${fnName}: no LLM default LLM tech available`)
     }
 
@@ -272,7 +266,7 @@ export class ChatService {
       const llmCache = await
               llmCacheModel.getByTechIdAndKey(
                 prisma,
-                llmTechId,
+                llmTech.id,
                 cacheKey)
 
       if (llmCache != null) {
@@ -280,7 +274,7 @@ export class ChatService {
           status: true,
           isRateLimited: false,
           waitSeconds: 0,
-          llmTechId: llmTechId,
+          llmTechId: llmTech.id,
           fromCache: true,
           cacheKey: cacheKey,
           message: llmCache.stringValue,
@@ -309,7 +303,7 @@ export class ChatService {
     const rateLimitedData = await
             chatApiUsageService.isRateLimited(
               prisma,
-              llmTechId)
+              llmTech.id)
 
     // If a rate-limited tech
     if (rateLimitedData != null) {
@@ -322,7 +316,7 @@ export class ChatService {
           message: undefined,
           messages: undefined,
           json: undefined,
-          llmTechId: llmTechId,
+          llmTechId: llmTech.id,
           fromCache: false,
           cacheKey: cacheKey,
         }
@@ -336,30 +330,12 @@ export class ChatService {
               userProfile.id)
     }
 
-    // Get Tech if not yet retrieved
-    if (tech == null) {
-
-      tech = await
-        techModel.getById(
-          prisma,
-          llmTechId)
-    }
-
     // Validate the Tech
-    if (tech == null) {
+    if (llmTech.isEnabled === false) {
 
       return {
         status: false,
-        message: `Tech not found for id: ${llmTechId}`,
-        isRateLimited: null
-      }
-    }
-
-    if (tech.isEnabled === false) {
-
-      return {
-        status: false,
-        message: `Tech is disabled for id: ${llmTechId}`,
+        message: `Tech is disabled for id: ${llmTech.id}`,
         isRateLimited: null
       }
     }
@@ -368,7 +344,7 @@ export class ChatService {
     const messagesResults = await
             llmUtilsService.prepareChatMessages(
               prisma,
-              tech,
+              llmTech,
               agentUser,
               systemPrompt,
               messagesWithRoles)
@@ -376,7 +352,7 @@ export class ChatService {
     // Calc estimated cost
     const estimatedCostInCents =
             chatMessageService.calcCostInCents(
-              tech,
+              llmTech,
               'text',
               messagesResults.estimatedInputTokens,
               messagesResults.estimatedOutputTokens)
@@ -408,7 +384,7 @@ export class ChatService {
     const results = await
             llmUtilsService.sendChatMessages(
               prisma,
-              tech,
+              llmTech,
               agentUser,
               systemPrompt,
               messagesResults.messages,
@@ -420,7 +396,7 @@ export class ChatService {
       // Calc cost
       const costInCents =
               chatMessageService.calcCostInCents(
-                tech,
+                llmTech,
                 'text',
                 results.inputTokens,
                 results.outputTokens)
@@ -436,7 +412,7 @@ export class ChatService {
               prisma,
               agentUser.userProfileId,
               chatSession.instanceId,
-              tech.id,
+              llmTech.id,
               true,  // sentByAi
               results.inputTokens,
               results.outputTokens,
@@ -484,7 +460,7 @@ export class ChatService {
       status: results.status,
       isRateLimited: false,
       waitSeconds: 0,
-      llmTechId: llmTechId,
+      llmTechId: llmTech.id,
       message: results.message,
       messages: results.messages,
       json: jsonEmpty,  // Set by caller, llmRequest()

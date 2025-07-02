@@ -1,5 +1,6 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai')
 import { CustomError } from '@/serene-core-server/types/errors'
+import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
 import { FeatureFlags } from '../../../types/feature-flags'
 import { AiTechDefs } from '../../../types/tech-defs'
 import { SereneAiServerOnlyTypes } from '../../../types/server-only-types'
@@ -13,9 +14,15 @@ interface ChatCompletion {
 }
 
 // Consts
-const genAI = process.env.GOOGLE_GEMINI_API_KEY != null ?
-        new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY) :
-        undefined
+const freeGenAi =
+        process.env.GOOGLE_GEMINI_FREE_API_KEY != null ?
+          new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_FREE_API_KEY) :
+          undefined
+
+const paidGenAi =
+        process.env.GOOGLE_GEMINI_PAID_API_KEY != null ?
+          new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_PAID_API_KEY) :
+          undefined
 
 // Services
 const estimateTokensService = new EstimateTokensService()
@@ -102,6 +109,7 @@ export class GoogleGeminiLlmService {
   }
 
   private async getChatCompletions(
+                  tech: any,
                   model: string,
                   messagesWithRoles: any[],
                   jsonMode: boolean = false) {
@@ -132,10 +140,26 @@ export class GoogleGeminiLlmService {
     // console.log(`${fnName}: apiVersion: ${JSON.stringify(apiVersion)}`)
 
     // Get the model
-    const generativeModel =
-            genAI.getGenerativeModel(
-              { model: model },
-              { apiVersion: 'v1beta' })
+    var generativeModel: any = undefined
+
+    if (tech.pricingTier === SereneCoreServerTypes.free) {
+
+      generativeModel =
+        freeGenAi.getGenerativeModel(
+          { model: model },
+          { apiVersion: 'v1beta' })
+
+    } else if (tech.pricingTier === SereneCoreServerTypes.paid) {
+
+      generativeModel =
+        paidGenAi.getGenerativeModel(
+          { model: model },
+          { apiVersion: 'v1beta' })
+
+    } else {
+      throw new CustomError(`${fnName}: unhandled pricingTier: ` +
+                            `${tech.pricingTier}`)
+    }
 
     // Get history: remove the latest message
     // Note: slice()'s end is exclusive of that index position
@@ -210,7 +234,7 @@ export class GoogleGeminiLlmService {
   }
 
   prepareMessages(
-    tech: any,
+    llmTech: any,
     name: string,
     role: string,
     systemPrompt: string | undefined,
@@ -293,7 +317,7 @@ export class GoogleGeminiLlmService {
 
     // Variant name: may have to determine this based on input tokens and the
     // estimated output tokens.
-    const variantName = tech.variantName
+    const variantName = llmTech.variantName
 
     // Return
     return {
@@ -347,6 +371,7 @@ export class GoogleGeminiLlmService {
     //       the version of the NPM for this API.
     const completion = await
             this.getChatCompletions(
+              tech,
               model,
               messagesWithRoles,
               jsonMode)
