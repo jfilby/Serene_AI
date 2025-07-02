@@ -117,7 +117,7 @@ export class TestLlmService {
             SereneCoreServerTypes.credits,
             new Date(),
             tomorrow,
-            10.0)  // qupta
+            10.0)  // quota
   }
 
   async test(

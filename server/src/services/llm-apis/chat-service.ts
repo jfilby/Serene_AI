@@ -145,6 +145,12 @@ export class ChatService {
       // Validate
       if (chatCompletionResults.isRateLimited == null) {
 
+        // Can return an errors?
+        if (chatCompletionResults.status === false) {
+          return chatCompletionResults
+        }
+
+        // Else throw an exception
         throw new CustomError(
                     `${fnName}: chatCompletionResults.isRateLimited == null`)
       }
@@ -345,7 +351,7 @@ export class ChatService {
       return {
         status: false,
         message: `Tech not found for id: ${llmTechId}`,
-        isRateLimited: false
+        isRateLimited: null
       }
     }
 
@@ -354,7 +360,7 @@ export class ChatService {
       return {
         status: false,
         message: `Tech is disabled for id: ${llmTechId}`,
-        isRateLimited: false
+        isRateLimited: null
       }
     }
 
@@ -394,7 +400,7 @@ export class ChatService {
       return {
         status: false,
         message: `Insufficient quota, please buy or upgrade your subscription`,
-        isRateLimited: false
+        isRateLimited: null
       }
     }
 

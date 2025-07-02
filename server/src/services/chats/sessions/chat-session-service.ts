@@ -556,8 +556,8 @@ export class ChatSessionService {
     // Debug
     const fnName = `${this.clName}.runSessionTurn()`
 
-    console.log(`${fnName}: starting with chatSessionId ` +
-                JSON.stringify(chatSessionId))
+    console.log(`${fnName}: starting with chatSessionId: ` +
+                `${chatSessionId} and llmTechId: ${llmTechId}`)
 
     // Get ChatSession
     const chatSession = await
@@ -594,7 +594,7 @@ export class ChatSessionService {
               agentInfo.agentUser.maxPrevMessages)
 
     // Get Tech
-    var llmTech: string | undefined
+    var llmTech: any = undefined
 
     if (llmTechId != null) {
 
@@ -611,6 +611,12 @@ export class ChatSessionService {
           process.env.NEXT_PUBLIC_DEFAULT_LLM_VARIANT as string)
     }
 
+    // Validate llmTech
+    if (llmTech == null) {
+      throw new CustomError(`${fnName}: llmTech == null with llmTechId: ` +
+                            `llmTechId: ${llmTechId}`)
+    }
+
     // Build messagesWithRoles
     const messagesWithRoles =
             this.llmUtilsService.buildMessagesWithRoles(
@@ -624,7 +630,7 @@ export class ChatSessionService {
     const chatCompletionResults = await
             this.chatService.llmRequest(
               prisma,
-              chatSession.chatSettings.llmTechId,
+              llmTech.id,
               chatSession,
               fromUserProfile,
               agentInfo.agentUser,
@@ -635,6 +641,11 @@ export class ChatSessionService {
     // Debug
     // console.log(`${fnName}: chatCompletionResults: ` +
     //             JSON.stringify(chatCompletionResults))
+
+    // Handle errors
+    if (chatCompletionResults.status === false) {
+      return chatCompletionResults
+    }
 
     // Return
     return {
