@@ -339,7 +339,7 @@ model ChatSettings {
   agentUser                    AgentUser            @relation(fields: [agentUserId], references: [id])
   prompt                       String?
   agentRole                    String?              @map("agent_role")
-  appCustom                    Json?                @map("app_customer")   // For additional fields/values (app specific)
+  appCustom                    Json?                @map("app_custom")   // For additional fields/values (app specific)
   createdById                  String               @map("created_by_id")
   createdByUserProfile         UserProfile          @relation(fields: [createdById], references: [id])
   created                      DateTime             @default(now())
