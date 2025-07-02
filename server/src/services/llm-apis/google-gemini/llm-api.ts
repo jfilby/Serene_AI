@@ -13,8 +13,8 @@ interface ChatCompletion {
 }
 
 // Consts
-const genAI = process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY != null ?
-        new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY) :
+const genAI = process.env.GOOGLE_GEMINI_API_KEY != null ?
+        new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY) :
         undefined
 
 // Services

@@ -5,10 +5,10 @@ import { AiTechDefs } from '../../../types/tech-defs'
 import { FeatureFlags } from '../../../types/feature-flags'
 import { OpenAIGenericLlmService } from './llm-generic-service'
 
-const openAi = process.env.NEXT_PUBLIC_OPENAI_API_KEY != null ?
+const openAi = process.env.OPENAI_API_KEY != null ?
         new OpenAI({
-          apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
-          baseURL: process.env.NEXT_PUBLIC_OPENAI_BASE_URL
+          apiKey: process.env.OPENAI_API_KEY,
+          baseURL: process.env.OPENAI_BASE_URL
         }) : undefined
 
 export class OpenAiLlmService {
@@ -36,11 +36,11 @@ export class OpenAiLlmService {
     const fnName = `${this.clName}.constructor()`
 
     /* console.log(`${fnName}: ` +
-                `apiKey: ` + JSON.stringify(process.env.NEXT_PUBLIC_OPENAI_API_KEY) +
-                ` baseURL: ` + JSON.stringify(process.env.NEXT_PUBLIC_OPENAI_BASE_URL)) */
+                `apiKey: ` + JSON.stringify(process.env.OPENAI_API_KEY) +
+                ` baseURL: ` + JSON.stringify(process.env.OPENAI_BASE_URL)) */
 
     /* Validate apiKey
-    if (process.env.NEXT_PUBLIC_OPENAI_API_KEY == null) {
+    if (process.env.OPENAI_API_KEY == null) {
       console.warn(`${fnName}: apiKey isn't set`)
       return
     } */

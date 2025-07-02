@@ -608,7 +608,7 @@ export class ChatSessionService {
       llmTech = await
         this.techModel.getByVariantName(
           prisma,
-          process.env.NEXT_PUBLIC_DEFAULT_LLM_VARIANT as string)
+          process.env.DEFAULT_LLM_VARIANT as string)
     }
 
     // Validate llmTech
