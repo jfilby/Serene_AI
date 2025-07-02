@@ -649,6 +649,7 @@ export class ChatSessionService {
 
     // Return
     return {
+      status: true,
       isRateLimited: false,
       waitSeconds: 0,
       chatSession: chatSession,
