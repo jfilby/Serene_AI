@@ -230,6 +230,7 @@ model TechProvider {
   id                           String               @id @default(cuid())
   status                       String               @db.Char(1)
   name                         String               @unique
+  baseUrl                      String?              @map("base_url")
 
   ofTechs                      Tech[]
   ofTechProviderApiKeys        TechProviderApiKey[]

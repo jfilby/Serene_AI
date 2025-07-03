@@ -57,12 +57,7 @@ export class TechProviderApiKeyModel {
           techProviderId: techProviderId,
           status: status,
           pricingTier: pricingTier
-        },
-        orderBy: [
-          {
-            variantName: 'asc'
-          }
-        ]
+        }
       })
     } catch(error: any) {
       if (!(error instanceof error.NotFound)) {

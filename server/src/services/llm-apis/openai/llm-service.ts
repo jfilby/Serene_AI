@@ -1,16 +1,22 @@
 import OpenAI from 'openai'
+import { PrismaClient } from '@prisma/client'
 import { CustomError } from '@/serene-core-server/types/errors'
+import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
+import { TechProviderApiKeyModel } from '@/serene-core-server/models/tech/tech-provider-api-key-model'
+import { TechProviderModel } from '@/serene-core-server/models/tech/tech-provider-model'
 import { AiTechDefs } from '../../../types/tech-defs'
 import { FeatureFlags } from '../../../types/feature-flags'
 import { OpenAIGenericLlmService } from './llm-generic-service'
 
-const openAi = process.env.OPENAI_API_KEY != null ?
-        new OpenAI({
-          apiKey: process.env.OPENAI_API_KEY,
-          baseURL: process.env.OPENAI_BASE_URL
-        }) : undefined
+// OpenAI clients
+const openAiClients = new Map<string, OpenAI>()
 
+// Models
+const techProviderModel = new TechProviderModel()
+const techProviderApiKeyModel = new TechProviderApiKeyModel()
+
+// Class
 export class OpenAiLlmService {
 
   // Consts
@@ -46,7 +52,55 @@ export class OpenAiLlmService {
     } */
   }
 
+  async getOrCreateClient(
+          prisma: PrismaClient,
+          tech: any) {
+
+    // Debug
+    const fnName = `${this.clName}.getOrCreateClient()`
+
+    // Get by techProviderId
+    if (openAiClients.has(tech.techProviderId)) {
+      return openAiClients.get(tech.techProviderId)
+    }
+
+    // Get the TechProvider
+    const techProvider = await
+            techProviderModel.getById(
+              prisma,
+              tech.techProviderId)
+
+    // Get an API key
+    const techProviderApiKeys = await
+            techProviderApiKeyModel.filter(
+              prisma,
+              techProvider.id,
+              SereneCoreServerTypes.activeStatus,
+              undefined,  // accountEmail
+              undefined)  // pricingTier
+
+    // Found at least one?
+    if (techProviderApiKeys.length === 0) {
+      throw new CustomError(`${fnName}: no API keys for ${techProvider.name}`)
+    }
+
+    // Create a new client
+    const openAi = new OpenAI({
+            apiKey: techProviderApiKeys[0].apiKey,
+            baseURL: techProvider.baseUrl
+          })
+
+    // Save
+    openAiClients.set(
+      tech.techProviderId,
+      openAi)
+
+    // Return
+    return openAi
+  }
+
   async sendChatMessages(
+          prisma: PrismaClient,
           tech: any,
           messagesWithRoles: any[],
           jsonMode: boolean = false) {
@@ -55,6 +109,12 @@ export class OpenAiLlmService {
     const fnName = `${this.clName}.sendChatMessages()`
 
     // console.log(`${fnName}: starting with variant: ${tech.variantName}`)
+
+    // Get/create OpenAI client
+    const openAi = await
+            this.getOrCreateClient(
+              prisma,
+              tech)
 
     // Validate
     if (openAi == null) {
@@ -81,7 +141,7 @@ export class OpenAiLlmService {
 
     // Ignore jsonMode?
     if (jsonMode === true &&
-        AiTechDefs.variantNamesToIgnoreJsonMode[tech.variantName] === true) {
+        AiTechDefs.variantNamesToIgnoreJsonMode.includes(tech.variantName)) {
 
       jsonMode = false
     }

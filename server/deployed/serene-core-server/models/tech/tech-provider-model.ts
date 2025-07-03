@@ -9,7 +9,8 @@ export class TechProviderModel {
   async create(
           prisma: any,
           status: string,
-          name: string) {
+          name: string,
+          baseUrl: string | null) {
 
     // Debug
     const fnName = `${this.clName}.create()`
@@ -19,7 +20,8 @@ export class TechProviderModel {
       return await prisma.techProvider.create({
         data: {
           status: status,
-          name: name
+          name: name,
+          baseUrl: baseUrl
         }
       })
     } catch(error) {
@@ -134,7 +136,8 @@ export class TechProviderModel {
           prisma: any,
           id: string,
           status: string | undefined,
-          name: string | undefined) {
+          name: string | undefined,
+          baseUrl: string | null | undefined) {
 
     // Debug
     const fnName = `${this.clName}.update()`
@@ -144,7 +147,8 @@ export class TechProviderModel {
       return await prisma.techProvider.update({
         data: {
           status: status,
-          name: name
+          name: name,
+          baseUrl: baseUrl
         },
         where: {
           id: id
@@ -159,7 +163,8 @@ export class TechProviderModel {
   async upsert(prisma: any,
                id: string | undefined,
                status: string | undefined,
-               name: string | undefined) {
+               name: string | undefined,
+               baseUrl: string | null | undefined) {
 
     // Debug
     const fnName = `${this.clName}.upsert()`
@@ -192,6 +197,11 @@ export class TechProviderModel {
         throw 'Prisma error'
       }
 
+      if (baseUrl === undefined) {
+        console.error(`${fnName}: id is null and baseUrl is undefined`)
+        throw 'Prisma error'
+      }
+
       // Create
       // console.log(`${fnName}: create..`)
 
@@ -199,7 +209,8 @@ export class TechProviderModel {
                this.create(
                  prisma,
                  status,
-                 name)
+                 name,
+                 baseUrl)
     } else {
 
       // Update
@@ -210,7 +221,8 @@ export class TechProviderModel {
                  prisma,
                  id,
                  status,
-                 name)
+                 name,
+                 baseUrl)
     }
   }
 }

@@ -25,7 +25,8 @@ export class SereneAiSetup {
               prisma,
               undefined,  // id
               SereneAiServerOnlyTypes.activeStatus,
-              'Apollo.io')
+              'Apollo.io',
+              null)       // baseUrl
 
     const apolloIoApiTech = await
             this.techModel.upsert(
@@ -50,9 +51,10 @@ export class SereneAiSetup {
     const mockedProvider = await
             this.techProviderModel.upsert(
               prisma,
-              undefined, // id
+              undefined,  // id
               SereneAiServerOnlyTypes.activeStatus,
-              'Mock provider')
+              'Mock provider',
+              null)       // baseUrl
 
     const mockedLlmPaidTech = await
             this.techModel.upsert(
@@ -87,7 +89,8 @@ export class SereneAiSetup {
               prisma,
               undefined,  // id
               SereneAiServerOnlyTypes.activeStatus,
-              'Google Gemini')
+              'Google Gemini',
+              null)       // baseUrl
 
     // Gemini v1.5 Pro
     const geminiV1pt5ProTech = await
@@ -189,7 +192,8 @@ export class SereneAiSetup {
               prisma,
               undefined,  // id
               SereneAiServerOnlyTypes.activeStatus,
-              'OpenAI')
+              'OpenAI',
+              null)       // baseUrl
 
     // ChatGPT 4o
     const chatGpt4oTech = await
@@ -202,6 +206,29 @@ export class SereneAiSetup {
               AiTechDefs.llms,
               AiTechDefs.openAiProtocol,
               SereneCoreServerTypes.paid,
+              false,      // isDefaultProvider
+              false)      // isAdminOnly
+
+    // OpenRouter provider
+    const openRouterTechProvider = await
+            this.techProviderModel.upsert(
+              prisma,
+              undefined,                       // id
+              SereneAiServerOnlyTypes.activeStatus,
+              'OpenRouter',
+              'https://openrouter.ai/api/v1')  // baseUrl
+
+    // Deepseek R1 (Chutes)
+    const deepseekR1ChutesTech = await
+            this.techModel.upsert(
+              prisma,
+              undefined,  // id
+              openRouterTechProvider.id,
+              SereneAiServerOnlyTypes.activeStatus,
+              AiTechDefs.deepSeekR1_0528_Chutes,
+              AiTechDefs.llms,
+              AiTechDefs.openAiProtocol,
+              SereneCoreServerTypes.free,
               false,      // isDefaultProvider
               false)      // isAdminOnly
   }

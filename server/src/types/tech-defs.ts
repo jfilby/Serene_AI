@@ -10,11 +10,10 @@ export class AiTechDefs {
   // Tech providers
   static mockedProvider = 'Mocked provider'
   static googleGeminiProvider = 'Google Gemini'
-  static gcpPlatform = 'GCP'
-  static googleVendor = 'Google'
   static defaultLlmProvider = this.googleGeminiProvider
 
   static chatGptProvider = 'ChatGPT'
+  static openRouterProvider = 'OpenRouter'
 
   // Tech protocols: AI
   static mockedAiProtocol = 'Mocked AI'
@@ -49,8 +48,8 @@ export class AiTechDefs {
   // OpenAI
   static chatGpt4o = 'GPT-4o'
 
-  // The Llama models use OpenAI's client (provider)
-  static llama3_8b = 'Llama 3 8B'
+  // OpenRouter
+  static deepSeekR1_0528_Chutes = 'DeepSeek R1 (0528)'
 
   // Project default
   static defaultLlmVariantName = this.googleGeminiV1pt5Pro
@@ -96,6 +95,12 @@ export class AiTechDefs {
       variantName: this.chatGpt4o,
       default: false
     },
+    // OpenRouter
+    {
+      provider: this.openRouterProvider,
+      variantName: this.deepSeekR1_0528_Chutes,
+      default: false
+    },
     // Mock
     {
       provider: this.mockedProvider,
@@ -118,7 +123,7 @@ export class AiTechDefs {
 
   static chatGpt4oModelName = 'gpt-4o'
 
-  static llama3_8bModelName = 'llama3-8b-8192'
+  static openRouterDeepSeekR1_0528_Chutes_ModelName = 'deepseek/deepseek-r1-0528:free'
 
   // Variant to model names
   static variantToModelNames = {
@@ -133,8 +138,8 @@ export class AiTechDefs {
     // OpenAI
     [AiTechDefs.chatGpt4o]: this.chatGpt4oModelName,
 
-    // OpenAI compatible
-    [AiTechDefs.llama3_8b]: this.llama3_8bModelName
+    // OpenRouter
+    [AiTechDefs.deepSeekR1_0528_Chutes]: this.openRouterDeepSeekR1_0528_Chutes_ModelName
   }
 
   // Variant to providers
@@ -150,7 +155,7 @@ export class AiTechDefs {
     [AiTechDefs.googleGeminiLatestExpFree]: this.googleGeminiProvider,
 
     [AiTechDefs.chatGpt4o]: this.chatGptProvider,
-    [AiTechDefs.llama3_8b]: this.chatGptProvider   // The Llama models use the OpenAI client
+    [AiTechDefs.deepSeekR1_0528_Chutes]: this.openRouterProvider
   }
 
   // Variant names to descriptions
@@ -171,8 +176,8 @@ export class AiTechDefs {
     // OpenAI
     [AiTechDefs.chatGpt4o]: 'GPT-4o',
 
-    // Llama 3
-    [AiTechDefs.llama3_8b]: 'Llama 3 8B'
+    // OpenRouter
+    [AiTechDefs.deepSeekR1_0528_Chutes]: 'DeepSeek R1 (0528) (OpenRouter/Chutes)'
   }
 
   // Define a large context token size
@@ -200,9 +205,8 @@ export class AiTechDefs {
     // OpenAI
     [AiTechDefs.chatGpt4o]: 128000,
 
-    // Llama 3
-    // Source: https://huggingface.co/meta-llama/Meta-Llama-3-8B
-    [AiTechDefs.llama3_8b]: 8000
+    // OpenRouter
+    [AiTechDefs.deepSeekR1_0528_Chutes]: 163840
   }
 
   static variantToMaxOutputTokens = {
@@ -223,16 +227,15 @@ export class AiTechDefs {
     // OpenAI
     [AiTechDefs.chatGpt4o]: 16384,
 
-    // Llama 3
-    // Source: https://huggingface.co/meta-llama/Meta-Llama-3-8B
-    [AiTechDefs.llama3_8b]: 2048
+    // OpenRouter
+    [AiTechDefs.deepSeekR1_0528_Chutes]: 163840
   }
 
   // Variants for which to ignore jsonMode. This is useful for those that keep
   // raising an exception due to badly formed JSON. An alternative can then be
   // tried, e.g. jsonRepair.
   // Not used by the Google Gemini provider
-  static variantNamesToIgnoreJsonMode = {
-    [AiTechDefs.llama3_8b]: true
-  }
+  static variantNamesToIgnoreJsonMode = [
+    ''  // Can't be an empty array or a TypeScript error is raised
+  ]
 }
