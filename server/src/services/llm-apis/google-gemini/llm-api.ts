@@ -1,6 +1,9 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai')
+import { PrismaClient } from '@prisma/client'
 import { CustomError } from '@/serene-core-server/types/errors'
 import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
+import { TechProviderApiKeyModel } from '@/serene-core-server/models/tech/tech-provider-api-key-model'
+import { TechProviderModel } from '@/serene-core-server/models/tech/tech-provider-model'
 import { FeatureFlags } from '../../../types/feature-flags'
 import { AiTechDefs } from '../../../types/tech-defs'
 import { SereneAiServerOnlyTypes } from '../../../types/server-only-types'
@@ -13,16 +16,12 @@ interface ChatCompletion {
   outputTokens: number
 }
 
-// Consts
-const freeGenAi =
-        process.env.GOOGLE_GEMINI_FREE_API_KEY != null ?
-          new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_FREE_API_KEY) :
-          undefined
+// Gemini clients
+const geminiAiClients = new Map<string, typeof GoogleGenerativeAI>()
 
-const paidGenAi =
-        process.env.GOOGLE_GEMINI_PAID_API_KEY != null ?
-          new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_PAID_API_KEY) :
-          undefined
+// Models
+const techProviderModel = new TechProviderModel()
+const techProviderApiKeyModel = new TechProviderApiKeyModel()
 
 // Services
 const estimateGeminiTokensService = new EstimateGeminiTokensService()
@@ -109,6 +108,7 @@ export class GoogleGeminiLlmService {
   }
 
   private async getChatCompletions(
+                  prisma: PrismaClient,
                   tech: any,
                   model: string,
                   messagesWithRoles: any[],
@@ -121,6 +121,12 @@ export class GoogleGeminiLlmService {
                 JSON.stringify(messagesWithRoles))
 
     console.log(`${fnName}: starting with model: ` + JSON.stringify(model))
+
+    // Get/create the Gemini AI client
+    const geminiAiClient = await
+            this.getOrCreateClient(
+              prisma,
+              tech)
 
     /* List models (for debugging only)
     const models = await
@@ -145,14 +151,14 @@ export class GoogleGeminiLlmService {
     if (tech.pricingTier === SereneCoreServerTypes.free) {
 
       generativeModel =
-        freeGenAi.getGenerativeModel(
+        geminiAiClient.getGenerativeModel(
           { model: model },
           { apiVersion: 'v1beta' })
 
     } else if (tech.pricingTier === SereneCoreServerTypes.paid) {
 
       generativeModel =
-        paidGenAi.getGenerativeModel(
+        geminiAiClient.getGenerativeModel(
           { model: model },
           { apiVersion: 'v1beta' })
 
@@ -231,6 +237,60 @@ export class GoogleGeminiLlmService {
       inputTokens: inputTokens,
       outputTokens: outputTokens
     }
+  }
+
+  async getOrCreateClient(
+          prisma: PrismaClient,
+          tech: any) {
+
+    // Debug
+    const fnName = `${this.clName}.getOrCreateClient()`
+
+    // Validate the pricingTier
+    if (tech.pricingTier == null) {
+      throw new CustomError(
+                  `${fnName}: pricingTier not set for Tech.id: ${tech.id}`)
+    }
+
+    // Define the cached client key by free/paid
+    const clientKey = tech.pricingTier
+
+    // Get by techProviderId
+    if (geminiAiClients.has(clientKey)) {
+      return geminiAiClients.get(clientKey)
+    }
+
+    // Get the TechProvider
+    const techProvider = await
+            techProviderModel.getById(
+              prisma,
+              tech.techProviderId)
+
+    // Get an API key
+    const techProviderApiKeys = await
+            techProviderApiKeyModel.filter(
+              prisma,
+              techProvider.id,
+              SereneCoreServerTypes.activeStatus,
+              undefined,  // accountEmail
+              tech.pricingTier)
+
+    // Found at least one?
+    if (techProviderApiKeys.length === 0) {
+      throw new CustomError(`${fnName}: no API keys for ${techProvider.name}`)
+    }
+
+    // Create a new client
+    const googleGenerateAi =
+            new GoogleGenerativeAI(techProviderApiKeys[0].apiKey)
+
+    // Save
+    geminiAiClients.set(
+      clientKey,
+      googleGenerateAi)
+
+    // Return
+    return googleGenerateAi
   }
 
   prepareMessages(
@@ -330,6 +390,7 @@ export class GoogleGeminiLlmService {
   }
 
   async sendChatMessages(
+          prisma: PrismaClient,
           tech: any,
           messagesWithRoles: any[],
           jsonMode: boolean = false) {
@@ -372,6 +433,7 @@ export class GoogleGeminiLlmService {
     //       the version of the NPM for this API.
     const completion = await
             this.getChatCompletions(
+              prisma,
               tech,
               model,
               messagesWithRoles,

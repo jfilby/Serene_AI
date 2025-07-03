@@ -36,22 +36,6 @@ export class OpenAiLlmService {
   openAIGenericLlmService = new OpenAIGenericLlmService()
 
   // Code
-  constructor() {
-
-    // Debug
-    const fnName = `${this.clName}.constructor()`
-
-    /* console.log(`${fnName}: ` +
-                `apiKey: ` + JSON.stringify(process.env.OPENAI_API_KEY) +
-                ` baseURL: ` + JSON.stringify(process.env.OPENAI_BASE_URL)) */
-
-    /* Validate apiKey
-    if (process.env.OPENAI_API_KEY == null) {
-      console.warn(`${fnName}: apiKey isn't set`)
-      return
-    } */
-  }
-
   async getOrCreateClient(
           prisma: PrismaClient,
           tech: any) {

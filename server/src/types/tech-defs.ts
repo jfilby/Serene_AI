@@ -115,28 +115,28 @@ export class AiTechDefs {
   ]
 
   // Model names
-  static googleGeminiV1ProModelName = 'gemini-pro'
-  static googleGeminiV1pt5ProModelName = 'gemini-1.5-pro'
-  static googleGeminiV1pt5FlashModelName = 'gemini-1.5-flash'
-  static googleGeminiV2FlashModelName = 'gemini-2.0-flash'
-  static googleGeminiLatestExpModelName = 'gemini-2.0-pro-exp-02-05'
+  static googleGeminiV1Pro_ModelName = 'gemini-pro'
+  static googleGeminiV1pt5Pro_ModelName = 'gemini-1.5-pro'
+  static googleGeminiV1pt5Flash_ModelName = 'gemini-1.5-flash'
+  static googleGeminiV2Flash_ModelName = 'gemini-2.0-flash'
+  static googleGeminiLatestExp_ModelName = 'gemini-2.0-pro-exp-02-05'
 
-  static chatGpt4oModelName = 'gpt-4o'
+  static chatGpt4o_ModelName = 'gpt-4o'
 
   static openRouterDeepSeekR1_0528_Chutes_ModelName = 'deepseek/deepseek-r1-0528:free'
 
   // Variant to model names
   static variantToModelNames = {
     // Google Gemini
-    [AiTechDefs.googleGeminiV1Pro]: this.googleGeminiV1ProModelName,
-    [AiTechDefs.googleGeminiV1pt5Pro]: this.googleGeminiV1pt5ProModelName,
-    [AiTechDefs.googleGeminiV1pt5Flash]: this.googleGeminiV1pt5FlashModelName,
-    [AiTechDefs.googleGeminiV2Flash]: this.googleGeminiV2FlashModelName,
-    [AiTechDefs.googleGeminiV2FlashFree]: this.googleGeminiV2FlashModelName,
-    [AiTechDefs.googleGeminiLatestExpFree]: this.googleGeminiLatestExpModelName,
+    [AiTechDefs.googleGeminiV1Pro]: this.googleGeminiV1Pro_ModelName,
+    [AiTechDefs.googleGeminiV1pt5Pro]: this.googleGeminiV1pt5Pro_ModelName,
+    [AiTechDefs.googleGeminiV1pt5Flash]: this.googleGeminiV1pt5Flash_ModelName,
+    [AiTechDefs.googleGeminiV2Flash]: this.googleGeminiV2Flash_ModelName,
+    [AiTechDefs.googleGeminiV2FlashFree]: this.googleGeminiV2Flash_ModelName,
+    [AiTechDefs.googleGeminiLatestExpFree]: this.googleGeminiLatestExp_ModelName,
 
     // OpenAI
-    [AiTechDefs.chatGpt4o]: this.chatGpt4oModelName,
+    [AiTechDefs.chatGpt4o]: this.chatGpt4o_ModelName,
 
     // OpenRouter
     [AiTechDefs.deepSeekR1_0528_Chutes]: this.openRouterDeepSeekR1_0528_Chutes_ModelName

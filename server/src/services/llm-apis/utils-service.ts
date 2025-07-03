@@ -327,6 +327,7 @@ export class LlmUtilsService {
 
         // Gemini LLM request
         return await this.googleGeminiLlmService.sendChatMessages(
+                       prisma,
                        tech,
                        prepareMessagesResults.messages,
                        jsonMode)

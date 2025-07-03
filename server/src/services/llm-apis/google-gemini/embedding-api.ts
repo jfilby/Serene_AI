@@ -1,21 +1,26 @@
-const { GoogleGenerativeAI } = require('@google/generative-ai')
+import { GoogleGeminiLlmService } from './llm-api'
 
+// Services
+const googleGeminiLlmService = new GoogleGeminiLlmService()
+
+// Class
 export class GoogleVertexEmbeddingService {
 
   // Consts
   clName = 'GoogleVertexEmbeddingService'
-
-  genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_FREE_API_KEY)
-
-  model = this.genAI.getGenerativeModel({
-    model: 'text-embedding-004',
-  })
 
   // Code
   async requestBatchEmbeddings(texts: string[]) {
 
     // Debug
     const fnName = `${this.clName}.requestBatchEmbeddings()`
+
+    // Get/create Gemini AI client
+    // TOFIX: need to pass the model in the Gemini client instantiation: model: 'text-embedding-004'
+    const geminiAiClient = await
+            googleGeminiLlmService.getOrCreateClient(
+              prisma,
+              undefined)  // tech
 
     // Convert texts to requests
     var requests: any[] = []
@@ -31,7 +36,7 @@ export class GoogleVertexEmbeddingService {
     }
 
     // Make request
-    const results = await this.model.batchEmbedContents({
+    const results = await geminiAiClient.batchEmbedContents({
       requests: requests
     })
 
@@ -59,8 +64,15 @@ export class GoogleVertexEmbeddingService {
     // Debug
     const fnName = `${this.clName}.requestEmbedding()`
 
-    // Make request
-    const results = await this.model.embedContent(text)
+    // Get/create Gemini AI client
+    // TOFIX: need to pass the model in the Gemini client instantiation: model: 'text-embedding-004'
+    const geminiAiClient = await
+            googleGeminiLlmService.getOrCreateClient(
+              prisma,
+              undefined)  // tech
+
+              // Make request
+    const results = await geminiAiClient.embedContent(text)
 
     // Validate
     if (results.embedding == null) {
