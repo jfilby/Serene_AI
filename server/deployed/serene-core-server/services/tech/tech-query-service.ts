@@ -31,6 +31,7 @@ export class TechQueryService {
             undefined,  // techProviderId
             SereneCoreServerTypes.activeStatus,
             resource,
+            undefined,  // model
             undefined,  // protocol
             isAdminOnly)
 

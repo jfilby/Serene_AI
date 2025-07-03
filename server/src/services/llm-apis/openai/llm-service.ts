@@ -92,7 +92,8 @@ export class OpenAiLlmService {
     // Debug
     const fnName = `${this.clName}.sendChatMessages()`
 
-    // console.log(`${fnName}: starting with variant: ${tech.variantName}`)
+    console.log(`${fnName}: starting with variant: ${tech.variantName} ` +
+                `model: ${tech.model}`)
 
     // Get/create OpenAI client
     const openAi = await
@@ -108,20 +109,6 @@ export class OpenAiLlmService {
       console.error(message)
       throw new CustomError(message)
     }
-
-    // Verify that the variant has a model name
-    if (!AiTechDefs.variantToModelNames.hasOwnProperty(tech.variantName)) {
-
-      const message =
-              `Variant ${tech.variantName} has no corresponding model name`
-
-      console.error(`${fnName}: ${message}`)
-
-      throw new CustomError(message)
-    }
-
-    // Get the variant's model name
-    const model = AiTechDefs.variantToModelNames[tech.variantName]
 
     // Ignore jsonMode?
     if (jsonMode === true &&
@@ -145,7 +132,7 @@ export class OpenAiLlmService {
 
     // Set Completions options
     var completionsOptions: any = {
-          model: model,
+          model: tech.model,
           messages: messagesWithRoles
         }
 

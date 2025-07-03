@@ -212,6 +212,7 @@ model Tech {
   status                       String               @db.Char(1)
   variantName                  String               @map("variant_name") @unique
   resource                     String
+  model                        String?
   protocol                     String?              // E.g. for LLMs 'OpenAI' or 'Gemini'
   pricingTier                  String               @map("pricing_tier")
   isDefaultProvider            Boolean              @map("is_default_provider")

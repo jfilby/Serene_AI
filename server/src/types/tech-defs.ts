@@ -1,3 +1,5 @@
+import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
+
 export class AiTechDefs {
 
   // Consts
@@ -50,197 +52,234 @@ export class AiTechDefs {
   // OpenRouter
   static deepSeekR1_0528_Chutes = 'DeepSeek R1 (0528)'
 
+  // Model names
+  static googleGemini_V1Pro_ModelName = 'gemini-pro'
+  static googleGemini_V1pt5Pro_ModelName = 'gemini-1.5-pro'
+  static googleGemini_V1pt5Flash_ModelName = 'gemini-1.5-flash'
+  static googleGemini_V2Flash_ModelName = 'gemini-2.0-flash'
+  static googleGemini_LatestExp_ModelName = 'gemini-2.0-pro-exp-02-05'
+  static googleGemini_V2pt5Pro_ModelName = 'gemini-2.5-pro'
+  static googleGemini_V2pt5Flash_ModelName = 'gemini-2.5-flash'
+  static googleGemini_V2pt5FlashLite_ModelName = 'gemini-2.5-flash-lite-preview-06-17'
+
+  static openAi_Gpt4o_ModelName = 'gpt-4o'
+  static openAi_Gpt4pt1_ModelName = 'gpt-4.1-2025-04-14'
+  static openAi_O4Mini_ModelName = 'o4-mini-2025-04-16'
+  static openAi_O3_ModelName = 'o3-2025-04-16'
+
+  static openRouter_DeepSeekR1_0528_Chutes_ModelName = 'deepseek/deepseek-r1-0528:free'
+
+  // Context sizes
+  static mockedInputTokens = 1000
+  static mockedOutputTokens = 1000
+
+  // LLM tech providers
+  static llmTechProviders = [
+    {
+      name: this.googleGeminiProvider
+    },
+    {
+      name: this.chatGptProvider
+    },
+    {
+      name: this.openRouterProvider,
+      baseUrl: 'https://openrouter.ai/api/v1'
+    },
+    {
+      name: this.mockedProvider
+    }    
+  ]
+
   // A list of available LLMs
-  static userAILlms = [
+  static llmTechs = [
     // Google Gemini
     /* {
       provider: this.googleGeminiProvider,
       variantName: this.googleGemini_V1Pro,
-      default: false
+      model: this.googleGemini_V1Pro_ModelName,
+      protocol: this.geminiProtocol,
+      pricingTier: SereneCoreServerTypes.paid,
+      inputTokens: 1048576,
+      outputTokens: 8192,
+      default: false,
+      isAdminOnly: false
     },
     {
       provider: this.googleGeminiProvider,
       variantName: this.googleGemini_V1pt5Pro,
-      default: false
+      model: this.googleGemini_V1pt5Pro_ModelName,
+      protocol: this.geminiProtocol,
+      pricingTier: SereneCoreServerTypes.paid,
+      inputTokens: 2097152,
+      outputTokens: 8192,
+      default: false,
+      isAdminOnly: false
     },
     {
       provider: this.googleGeminiProvider,
       variantName: this.googleGemini_V1pt5Flash,
-      default: false
+      model: this.googleGeminiV1pt5Flash_ModelName,
+      protocol: this.geminiProtocol,
+      pricingTier: SereneCoreServerTypes.paid,
+      inputTokens: 1048576,
+      outputTokens: 8192,
+      default: false,
+      isAdminOnly: false
     }, */
     {
       provider: this.googleGeminiProvider,
       variantName: this.googleGemini_V2Flash,
-      default: false
+      model: this.googleGemini_V2Flash_ModelName,
+      protocol: this.geminiProtocol,
+      pricingTier: SereneCoreServerTypes.paid,
+      inputTokens: 1048576,
+      outputTokens: 8192,
+      default: false,
+      isAdminOnly: false
     },
     {
       provider: this.googleGeminiProvider,
       variantName: this.googleGemini_V2FlashFree,
-      default: false
+      model: this.googleGemini_V2Flash_ModelName,
+      protocol: this.geminiProtocol,
+      pricingTier: SereneCoreServerTypes.free,
+      inputTokens: 1048576,
+      outputTokens: 8192,
+      default: false,
+      isAdminOnly: true,
+      rateLimited: {
+        perMinute: 10
+      }
     },
     {
       provider: this.googleGeminiProvider,
       variantName: this.googleGemini_LatestExpFree,
-      default: true
+      model: this.googleGemini_LatestExp_ModelName,
+      protocol: this.geminiProtocol,
+      pricingTier: SereneCoreServerTypes.free,
+      inputTokens: 1048576,
+      outputTokens: 8192,
+      default: true,
+      isAdminOnly: true,
+      rateLimited: {
+        perMinute: 10
+      }
     },
     {
       provider: this.googleGeminiProvider,
       variantName: this.googleGemini_V2pt5Pro,
-      default: false
+      model: this.googleGemini_V2pt5Pro_ModelName,
+      protocol: this.geminiProtocol,
+      pricingTier: SereneCoreServerTypes.paid,
+      inputTokens: 1048576,
+      outputTokens: 65536,
+      default: false,
+      isAdminOnly: false
     },
     {
       provider: this.googleGeminiProvider,
       variantName: this.googleGemini_V2pt5Flash,
-      default: false
+      model: this.googleGemini_V2pt5Flash_ModelName,
+      protocol: this.geminiProtocol,
+      pricingTier: SereneCoreServerTypes.paid,
+      inputTokens: 1048576,
+      outputTokens: 65536,
+      default: false,
+      isAdminOnly: false
     },
     {
       provider: this.googleGeminiProvider,
       variantName: this.googleGemini_V2pt5FlashLite,
-      default: false
+      model: this.googleGemini_V2pt5FlashLite_ModelName,
+      protocol: this.geminiProtocol,
+      pricingTier: SereneCoreServerTypes.paid,
+      inputTokens: 1000000,
+      outputTokens: 64000,
+      default: false,
+      isAdminOnly: false
     },
 
     // OpenAI
     {
       provider: this.chatGptProvider,
       variantName: this.openAi_Gpt4o,
-      default: false
+      model: this.openAi_Gpt4o_ModelName,
+      protocol: this.openAiProtocol,
+      pricingTier: SereneCoreServerTypes.paid,
+      inputTokens: 128000,
+      outputTokens: 16384,
+      default: false,
+      isAdminOnly: false
     },
     {
       provider: this.chatGptProvider,
       variantName: this.openAi_Gpt4pt1,
-      default: false
+      model: this.openAi_Gpt4pt1_ModelName,
+      protocol: this.openAiProtocol,
+      pricingTier: SereneCoreServerTypes.paid,
+      inputTokens: 1047576,
+      outputTokens: 32768,
+      default: false,
+      isAdminOnly: false
     },
     {
       provider: this.chatGptProvider,
       variantName: this.openAi_O4Mini,
-      default: false
+      model: this.openAi_O4Mini_ModelName,
+      protocol: this.openAiProtocol,
+      pricingTier: SereneCoreServerTypes.paid,
+      inputTokens: 200000,
+      outputTokens: 100000,
+      default: false,
+      isAdminOnly: false
     },
     {
       provider: this.chatGptProvider,
       variantName: this.openAi_O3,
-      default: false
+      model: this.openAi_O3_ModelName,
+      protocol: this.openAiProtocol,
+      pricingTier: SereneCoreServerTypes.paid,
+      inputTokens: 200000,
+      outputTokens: 100000,
+      default: false,
+      isAdminOnly: false
     },
     // OpenRouter
     {
       provider: this.openRouterProvider,
       variantName: this.deepSeekR1_0528_Chutes,
-      default: false
+      model: this.openRouter_DeepSeekR1_0528_Chutes_ModelName,
+      protocol: this.openAiProtocol,
+      pricingTier: SereneCoreServerTypes.free,
+      inputTokens: 163840,
+      outputTokens: 163840,
+      default: false,
+      isAdminOnly: false
     },
     // Mock
     {
       provider: this.mockedProvider,
       variantName: this.mockedLlmPaid,
-      default: false
+      model: null,
+      protocol: this.mockedAiProtocol,
+      pricingTier: SereneCoreServerTypes.paid,
+      inputTokens: 1000,
+      outputTokens: 1000,
+      default: false,
+      isAdminOnly: false
     },
     {
       provider: this.mockedProvider,
       variantName: this.mockedLlmFree,
-      default: false
+      model: null,
+      protocol: this.mockedAiProtocol,
+      pricingTier: SereneCoreServerTypes.free,
+      inputTokens: 1000,
+      outputTokens: 1000,
+      default: false,
+      isAdminOnly: false
     }
   ]
-
-  // Model names
-  static googleGeminiV1Pro_ModelName = 'gemini-pro'
-  static googleGeminiV1pt5Pro_ModelName = 'gemini-1.5-pro'
-  static googleGeminiV1pt5Flash_ModelName = 'gemini-1.5-flash'
-  static googleGeminiV2Flash_ModelName = 'gemini-2.0-flash'
-  static googleGeminiLatestExp_ModelName = 'gemini-2.0-pro-exp-02-05'
-  static googleGeminiV2pt5Pro_ModelName = 'gemini-2.5-pro'
-  static googleGeminiV2pt5Flash_ModelName = 'gemini-2.5-flash'
-  static googleGeminiV2pt5FlashLite_ModelName = 'gemini-2.5-flash-lite-preview-06-17'
-
-  static openAiGpt4o_ModelName = 'gpt-4o'
-  static openAiGpt4pt1_ModelName = 'gpt-4.1-2025-04-14'
-  static openAiO4Mini_ModelName = 'o4-mini-2025-04-16'
-  static openAiO3_ModelName = 'o3-2025-04-16'
-
-  static openRouterDeepSeekR1_0528_Chutes_ModelName = 'deepseek/deepseek-r1-0528:free'
-
-  // Variant to model names
-  static variantToModelNames = {
-    // Google Gemini
-    /* [AiTechDefs.googleGeminiV1Pro]: this.googleGeminiV1Pro_ModelName,
-    [AiTechDefs.googleGeminiV1pt5Pro]: this.googleGeminiV1pt5Pro_ModelName,
-    [AiTechDefs.googleGeminiV1pt5Flash]: this.googleGeminiV1pt5Flash_ModelName, */
-    [AiTechDefs.googleGemini_V2Flash]: this.googleGeminiV2Flash_ModelName,
-    [AiTechDefs.googleGemini_V2FlashFree]: this.googleGeminiV2Flash_ModelName,
-    [AiTechDefs.googleGemini_LatestExpFree]: this.googleGeminiLatestExp_ModelName,
-    [AiTechDefs.googleGemini_V2pt5Pro]: this.googleGeminiV2pt5Pro_ModelName,
-    [AiTechDefs.googleGemini_V2pt5Flash]: this.googleGeminiV2pt5Flash_ModelName,
-    [AiTechDefs.googleGemini_V2pt5FlashLite]: this.googleGeminiV2pt5FlashLite_ModelName,
-
-    // OpenAI
-    [AiTechDefs.openAi_Gpt4o]: this.openAiGpt4o_ModelName,
-    [AiTechDefs.openAi_Gpt4pt1]: this.openAiGpt4pt1_ModelName,
-    [AiTechDefs.openAi_O4Mini]: this.openAiO4Mini_ModelName,
-    [AiTechDefs.openAi_O3]: this.openAiO3_ModelName,
-
-    // OpenRouter
-    [AiTechDefs.deepSeekR1_0528_Chutes]: this.openRouterDeepSeekR1_0528_Chutes_ModelName
-  }
-
-  // Define a large context token size
-  static largeContextTokenSize = 100000  // 100k
-
-  // Context windows by variant
-  static mockedInputTokens = 1000
-  static mockedOutputTokens = 1000
-
-  static variantToMaxInputTokens = {
-
-    // Mocked
-    [AiTechDefs.mockedLlmPaid]: AiTechDefs.mockedInputTokens,
-    [AiTechDefs.mockedLlmFree]: AiTechDefs.mockedInputTokens,
-
-    // Google Gemini
-    // Source: https://ai.google.dev/models/gemini
-    /* [AiTechDefs.googleGemini_V1Pro]: 1048576,
-    [AiTechDefs.googleGemini_V1pt5Pro]: 2097152,
-    [AiTechDefs.googleGemini_V1pt5Flash]: 1048576, */
-    [AiTechDefs.googleGemini_V2Flash]: 1048576,
-    [AiTechDefs.googleGemini_V2FlashFree]: 1048576,
-    [AiTechDefs.googleGemini_LatestExpFree]: 1048576,
-    [AiTechDefs.googleGemini_V2pt5Pro]: 1048576,
-    [AiTechDefs.googleGemini_V2pt5Flash]: 1048576,
-    [AiTechDefs.googleGemini_V2pt5FlashLite]: 1000000,
-
-    // OpenAI
-    [AiTechDefs.openAi_Gpt4o]: 128000,
-    [AiTechDefs.openAi_Gpt4pt1]: 1047576,
-    [AiTechDefs.openAi_O4Mini]: 200000,
-    [AiTechDefs.openAi_O3]: 200000,
-
-    // OpenRouter
-    [AiTechDefs.deepSeekR1_0528_Chutes]: 163840
-  }
-
-  static variantToMaxOutputTokens = {
-
-    // Mocked
-    [AiTechDefs.mockedLlmPaid]: AiTechDefs.mockedOutputTokens,
-    [AiTechDefs.mockedLlmFree]: AiTechDefs.mockedOutputTokens,
-
-    // Google Gemini
-    // Source: https://ai.google.dev/models/gemini
-    /* [AiTechDefs.googleGemini_V1Pro]: 8192,
-    [AiTechDefs.googleGemini_V1pt5Pro]: 8192,
-    [AiTechDefs.googleGemini_V1pt5Flash]: 8192, */
-    [AiTechDefs.googleGemini_V2Flash]: 8192,
-    [AiTechDefs.googleGemini_V2FlashFree]: 8192,
-    [AiTechDefs.googleGemini_LatestExpFree]: 8192,
-    [AiTechDefs.googleGemini_V2pt5Pro]: 65536,
-    [AiTechDefs.googleGemini_V2pt5Flash]: 65536,
-    [AiTechDefs.googleGemini_V2pt5FlashLite]: 64000,
-
-    // OpenAI
-    [AiTechDefs.openAi_Gpt4o]: 16384,
-    [AiTechDefs.openAi_Gpt4pt1]: 32768,
-    [AiTechDefs.openAi_O4Mini]: 100000,
-    [AiTechDefs.openAi_O3]: 100000,
-
-    // OpenRouter
-    [AiTechDefs.deepSeekR1_0528_Chutes]: 163840
-  }
 
   // Variants for which to ignore jsonMode. This is useful for those that keep
   // raising an exception due to badly formed JSON. An alternative can then be

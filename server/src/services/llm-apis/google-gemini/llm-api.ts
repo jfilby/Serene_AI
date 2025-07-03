@@ -398,23 +398,8 @@ export class GoogleGeminiLlmService {
     // Debug
     const fnName = `${this.clName}.sendChatMessages()`
 
-    console.log(`${fnName}: starting with variant: ${tech.variantName}`)
-
-    // Verify that the variant has a model name
-    if (!AiTechDefs.variantToModelNames.hasOwnProperty(tech.variantName)) {
-
-      const message =
-              `Variant ${tech.variantName} has no corresponding model name`
-
-      console.error(`${fnName}: ${message}`)
-
-      throw new CustomError(message)
-    }
-
-    // Get the variant's model name
-    const model = AiTechDefs.variantToModelNames[tech.variantName]
-
-    console.log(`${fnName}: getting variant's model name: ${model}`)
+    console.log(`${fnName}: starting with variant: ${tech.variantName} ` +
+                `model: ${tech.model}`)
 
     // Return early if external APIs not enabled
     if (FeatureFlags.externalApis === false) {
@@ -435,7 +420,7 @@ export class GoogleGeminiLlmService {
             this.getChatCompletions(
               prisma,
               tech,
-              model,
+              tech.model,
               messagesWithRoles,
               jsonMode)
 
@@ -456,7 +441,7 @@ export class GoogleGeminiLlmService {
     const chatCompletionResults =
             this.convertGeminiChatCompletionResults(
               completion,
-              model,
+              tech.model,
               tech)
 
     // Cache the results

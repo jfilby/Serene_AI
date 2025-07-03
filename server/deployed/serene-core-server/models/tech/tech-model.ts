@@ -12,6 +12,7 @@ export class TechModel {
           status: string,
           variantName: string,
           resource: string,
+          model: string | null,
           protocol: string | null,
           pricingTier: string,
           isDefaultProvider: boolean,
@@ -28,6 +29,7 @@ export class TechModel {
           status: status,
           variantName: variantName,
           resource: resource,
+          model: model,
           protocol: protocol,
           pricingTier: pricingTier,
           isDefaultProvider: isDefaultProvider,
@@ -45,6 +47,7 @@ export class TechModel {
           techProviderId: string | undefined,
           status: string | undefined,
           resource: string | undefined,
+          model: string | null | undefined,
           protocol: string | null | undefined,
           isAdminOnly: boolean | undefined) {
 
@@ -62,6 +65,7 @@ export class TechModel {
           techProviderId: techProviderId,
           status: status,
           resource: resource,
+          model: model,
           protocol: protocol,
           isAdminOnly: isAdminOnly
         },
@@ -187,6 +191,7 @@ export class TechModel {
           status: string | undefined,
           variantName: string | undefined,
           resource: string | undefined,
+          model: string | null | undefined,
           protocol: string | null | undefined,
           pricingTier: string | undefined,
           isDefaultProvider: boolean | undefined,
@@ -195,7 +200,13 @@ export class TechModel {
     // Debug
     const fnName = `${this.clName}.update()`
 
-    // Create record
+    // Validate
+    if (id == null) {
+      throw new CustomError(`${fnName}: id == null for variantName: ` +
+                            `${variantName}`)
+    }
+
+    // Update record
     try {
       return await prisma.tech.update({
         data: {
@@ -203,6 +214,7 @@ export class TechModel {
           status: status,
           variantName: variantName,
           resource: resource,
+          model: model,
           protocol: protocol,
           pricingTier: pricingTier,
           isDefaultProvider: isDefaultProvider,
@@ -224,6 +236,7 @@ export class TechModel {
                status: string | undefined,
                variantName: string | undefined,
                resource: string | undefined,
+               model: string | null | undefined,
                protocol: string | null | undefined,
                pricingTier: string | undefined,
                isDefaultProvider: boolean | undefined,
@@ -270,7 +283,12 @@ export class TechModel {
         throw 'Prisma error'
       }
 
-      if (protocol == null) {
+      if (model === undefined) {
+        console.error(`${fnName}: id is null and model is null`)
+        throw 'Prisma error'
+      }
+
+      if (protocol === undefined) {
         console.error(`${fnName}: id is null and protocol is null`)
         throw 'Prisma error'
       }
@@ -300,6 +318,7 @@ export class TechModel {
                  status,
                  variantName,
                  resource,
+                 model,
                  protocol,
                  pricingTier,
                  isDefaultProvider,
@@ -317,6 +336,7 @@ export class TechModel {
                  status,
                  variantName,
                  resource,
+                 model,
                  protocol,
                  pricingTier,
                  isDefaultProvider,

@@ -60,9 +60,30 @@ export class ChatMessageService {
     // console.log(`${fnName}: pricing: ` + JSON.stringify(pricing))
 
     // Calc cost
-    const costInCents =
-            ((inputTokens * pricing.inputTokens) +
-             (outputTokens * pricing.outputTokens)) / this.million1 * 100
+    var costInCents: number
+
+    // Single price
+    if (Array.isArray(pricing) === false) {
+
+      costInCents =
+        ((inputTokens * pricing.inputTokens) +
+         (outputTokens * pricing.outputTokens)) / this.million1 * 100
+
+    // Array of prices
+    } else {
+
+      const totalTokens = inputTokens + outputTokens
+
+      // Find matching tier
+      const tier = pricing.find(p =>
+          (p.tokensLte != null && totalTokens <= p.tokensLte) ||
+          (p.tokensGt != null && totalTokens > p.tokensGt)
+        ) || pricing[pricing.length - 1]  // Fallback
+
+      costInCents =
+        ((inputTokens * tier.inputTokens) +
+        (outputTokens * tier.outputTokens)) / this.million1 * 100
+    }
 
     // Debug
     // console.log(`${fnName}: costInCents: ` + JSON.stringify(costInCents))

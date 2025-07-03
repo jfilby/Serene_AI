@@ -1,3 +1,4 @@
+import { CustomError } from '@/serene-core-server/types/errors'
 import { RateLimitedApiModel } from '@/serene-core-server/models/tech/rate-limited-api-model'
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
 import { TechProviderModel } from '@/serene-core-server/models/tech/tech-provider-model'
@@ -19,6 +20,9 @@ export class SereneAiSetup {
   // Code
   async upsertTech(prisma: any) {
 
+    // Debug
+    const fnName = `${this.clName}.upsertTech()`
+
     // Apollo.io API
     const apolloIoTechProvider = await
             this.techProviderModel.upsert(
@@ -36,6 +40,7 @@ export class SereneAiSetup {
               SereneAiServerOnlyTypes.activeStatus,
               SereneAiServerOnlyTypes.apolloIoApi,
               SereneAiServerOnlyTypes.restApi,
+              null,       // model
               SereneAiServerOnlyTypes.graphQlProtocol,
               SereneCoreServerTypes.free,
               true,       // isDefaultProvider
@@ -47,190 +52,71 @@ export class SereneAiSetup {
             apolloIoApiTech.id,
             1000000)
 
-    // Mocked LLM (paid)
-    const mockedProvider = await
-            this.techProviderModel.upsert(
-              prisma,
-              undefined,  // id
-              SereneAiServerOnlyTypes.activeStatus,
-              'Mock provider',
-              null)       // baseUrl
+    // LLM tech providers (name -> TechProvider)
+    var techProviders = new Map<string, any>()
 
-    const mockedLlmPaidTech = await
-            this.techModel.upsert(
-              prisma,
-              undefined,  // id
-              mockedProvider.id,
-              SereneAiServerOnlyTypes.activeStatus,
-              AiTechDefs.mockedLlmPaid,
-              AiTechDefs.llms,
-              AiTechDefs.mockedAiProtocol,
-              SereneCoreServerTypes.paid,
-              false,      // isDefaultProvider
-              true)       // isAdminOnly
+    for (const llmTechProvider of AiTechDefs.llmTechProviders) {
 
-    // Mocked LLM (free)
-    const mockedLlmFreeTech = await
-            this.techModel.upsert(
-              prisma,
-              undefined,  // id
-              mockedProvider.id,
-              SereneAiServerOnlyTypes.activeStatus,
-              AiTechDefs.mockedLlmFree,
-              AiTechDefs.llms,
-              AiTechDefs.mockedAiProtocol,
-              SereneCoreServerTypes.free,
-              false,      // isDefaultProvider
-              true)       // isAdminOnly
+      // Handle optional fields
+      var baseUrl: string | null = null
 
-    // Google Gemini provider
-    const googleGeminiTechProvider = await
-            this.techProviderModel.upsert(
-              prisma,
-              undefined,  // id
-              SereneAiServerOnlyTypes.activeStatus,
-              'Google Gemini',
-              null)       // baseUrl
+      if (llmTechProvider.baseUrl) {
+        baseUrl = llmTechProvider.baseUrl
+      }
 
-    // Gemini v1.5 Pro
-    const geminiV1pt5ProTech = await
-            this.techModel.upsert(
-              prisma,
-              undefined,  // id
-              googleGeminiTechProvider.id,
-              SereneAiServerOnlyTypes.activeStatus,
-              AiTechDefs.googleGeminiV1pt5Pro,
-              AiTechDefs.llms,
-              AiTechDefs.geminiProtocol,
-              SereneCoreServerTypes.paid,
-              false,      // isDefaultProvider
-              false)      // isAdminOnly
+      // Upsert TechProvider
+      const techProvider = await
+              this.techProviderModel.upsert(
+                prisma,
+                undefined,  // id
+                SereneAiServerOnlyTypes.activeStatus,
+                llmTechProvider.name,
+                baseUrl)
 
-    await this.rateLimitedApiModel.upsert(
-            prisma,
-            undefined,  // id
-            geminiV1pt5ProTech.id,
-            2)
+      // Set techProviders entry
+      techProviders.set(
+        llmTechProvider.name,
+        techProvider)
+    }
 
-    // Gemini v1.5 Flash
-    const geminiV1pt5FlashTech = await
-            this.techModel.upsert(
-              prisma,
-              undefined,  // id
-              googleGeminiTechProvider.id,
-              SereneAiServerOnlyTypes.activeStatus,
-              AiTechDefs.googleGeminiV1pt5Flash,
-              AiTechDefs.llms,
-              AiTechDefs.geminiProtocol,
-              SereneCoreServerTypes.paid,
-              false,      // isDefaultProvider
-              false)      // isAdminOnly
+    // LLM techs
+    for (const llmTech of AiTechDefs.llmTechs) {
 
-    await this.rateLimitedApiModel.upsert(
-            prisma,
-            undefined,    // id
-            geminiV1pt5FlashTech.id,
-            15 - 1)       // -1 for a buffer (found to be needed in actual runs)
+      // Get the TechProvider
+      if (!techProviders.has(llmTech.provider)) {
 
-    // Gemini v2 Flash (free / admin only)
-    const geminiV2FlashFreeTech = await
-            this.techModel.upsert(
-              prisma,
-              undefined,  // id
-              googleGeminiTechProvider.id,
-              SereneAiServerOnlyTypes.activeStatus,
-              AiTechDefs.googleGeminiV2FlashFree,
-              AiTechDefs.llms,
-              AiTechDefs.geminiProtocol,
-              SereneCoreServerTypes.free,
-              true,       // isDefaultProvider
-              true)       // isAdminOnly
+        throw new CustomError(`${fnName}: techProvider not found for name: ` +
+                              llmTech.provider)
+      }
 
-    await this.rateLimitedApiModel.upsert(
-            prisma,
-            undefined,    // id
-            geminiV2FlashFreeTech.id,
-            10)
+      const techProvider =
+              techProviders.get(llmTech.provider)
 
-    // Gemini v2 Flash (paid)
-    const geminiV2FlashPaidTech = await
-            this.techModel.upsert(
-              prisma,
-              undefined,  // id
-              googleGeminiTechProvider.id,
-              SereneAiServerOnlyTypes.activeStatus,
-              AiTechDefs.googleGeminiV2Flash,
-              AiTechDefs.llms,
-              AiTechDefs.geminiProtocol,
-              SereneCoreServerTypes.paid,
-              false,      // isDefaultProvider
-              false)      // isAdminOnly
+      // Upsert Tech
+      const tech = await
+              this.techModel.upsert(
+                prisma,
+                undefined,  // id
+                techProvider.id,
+                SereneAiServerOnlyTypes.activeStatus,
+                llmTech.variantName,
+                AiTechDefs.llms,
+                llmTech.model,
+                llmTech.protocol,
+                llmTech.pricingTier,
+                llmTech.default,
+                llmTech.isAdminOnly)
 
-    // Gemini latest experimental
-    const geminiLatestExpTech = await
-            this.techModel.upsert(
-              prisma,
-              undefined,  // id
-              googleGeminiTechProvider.id,
-              SereneAiServerOnlyTypes.activeStatus,
-              AiTechDefs.googleGeminiLatestExpFree,
-              AiTechDefs.llms,
-              AiTechDefs.geminiProtocol,
-              SereneCoreServerTypes.paid,
-              false,      // isDefaultProvider
-              true)       // isAdminOnly
+      // Upsert rate-limits if defined
+      if (llmTech.rateLimited) {
 
-    await this.rateLimitedApiModel.upsert(
-            prisma,
-            undefined,    // id
-            geminiLatestExpTech.id,
-            10)
-
-    // OpenAI provider
-    const openAiTechProvider = await
-            this.techProviderModel.upsert(
-              prisma,
-              undefined,  // id
-              SereneAiServerOnlyTypes.activeStatus,
-              'OpenAI',
-              null)       // baseUrl
-
-    // ChatGPT 4o
-    const chatGpt4oTech = await
-            this.techModel.upsert(
-              prisma,
-              undefined,  // id
-              openAiTechProvider.id,
-              SereneAiServerOnlyTypes.activeStatus,
-              AiTechDefs.chatGpt4o,
-              AiTechDefs.llms,
-              AiTechDefs.openAiProtocol,
-              SereneCoreServerTypes.paid,
-              false,      // isDefaultProvider
-              false)      // isAdminOnly
-
-    // OpenRouter provider
-    const openRouterTechProvider = await
-            this.techProviderModel.upsert(
-              prisma,
-              undefined,                       // id
-              SereneAiServerOnlyTypes.activeStatus,
-              'OpenRouter',
-              'https://openrouter.ai/api/v1')  // baseUrl
-
-    // Deepseek R1 (Chutes)
-    const deepseekR1ChutesTech = await
-            this.techModel.upsert(
-              prisma,
-              undefined,  // id
-              openRouterTechProvider.id,
-              SereneAiServerOnlyTypes.activeStatus,
-              AiTechDefs.deepSeekR1_0528_Chutes,
-              AiTechDefs.llms,
-              AiTechDefs.openAiProtocol,
-              SereneCoreServerTypes.free,
-              false,      // isDefaultProvider
-              false)      // isAdminOnly
+        await this.rateLimitedApiModel.upsert(
+                prisma,
+                undefined,    // id
+                tech.id,
+                llmTech.rateLimited.perMinute)
+      }
+    }
   }
 
   /* async upsertTips(prisma: any) {
