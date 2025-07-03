@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import path = require('path')
+import * as path from 'path'
 import { PrismaClient } from '@prisma/client'
 import { CustomError } from '../../types/errors'
 import { TechProviderApiKeyModel } from '../../models/tech/tech-provider-api-key-model'

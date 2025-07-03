@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 
 export class ResourceQuotaTotalModel {
 
@@ -6,7 +6,7 @@ export class ResourceQuotaTotalModel {
   clName = 'ResourceQuotaTotalModel'
 
   // Code
-  async create(prisma: PrismaClient,
+  async create(prisma: Prisma.TransactionClient,
                userProfileId: string,
                resource: string,
                fromDay: Date,
@@ -34,7 +34,7 @@ export class ResourceQuotaTotalModel {
   }
 
   async deleteByUserProfileId(
-          prisma: PrismaClient,
+          prisma: Prisma.TransactionClient,
           userProfileId: string) {
 
     // Debug
@@ -53,7 +53,7 @@ export class ResourceQuotaTotalModel {
     }
   }
 
-  async filter(prisma: PrismaClient,
+  async filter(prisma: Prisma.TransactionClient,
                userProfileId: string,
                resource: string,
                day: Date) {
@@ -88,7 +88,7 @@ export class ResourceQuotaTotalModel {
   }
 
   async getByUniqueKey(
-          prisma: PrismaClient,
+          prisma: Prisma.TransactionClient,
           userProfileId: string,
           resource: string,
           fromDay: Date,
@@ -113,7 +113,7 @@ export class ResourceQuotaTotalModel {
     }
   }
 
-  async sum(prisma: PrismaClient,
+  async sum(prisma: Prisma.TransactionClient,
             userProfileId: string,
             resource: string,
             day: Date) {
@@ -155,7 +155,7 @@ export class ResourceQuotaTotalModel {
     return aggregations._sum.quota ?? 0
   }
 
-  async update(prisma: PrismaClient,
+  async update(prisma: Prisma.TransactionClient,
                id: string,
                userProfileId: string | undefined,
                resource: string | undefined,
@@ -186,7 +186,7 @@ export class ResourceQuotaTotalModel {
     }
   }
 
-  async upsert(prisma: PrismaClient,
+  async upsert(prisma: Prisma.TransactionClient,
                id: string | undefined,
                userProfileId: string,
                resource: string,
