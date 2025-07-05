@@ -203,6 +203,7 @@ export class OpenAIGenericLlmService {
         }
 
         case 'system':  // Gemini system role
+        case 'assistant':
         case 'model': {
           role = SereneAiServerOnlyTypes.chatGptAssistantMessageRole
           break
