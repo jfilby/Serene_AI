@@ -13,8 +13,8 @@ export class EstimateOpenAiTokensService {
     // Debug
     const fnName = `${this.clName}.estimateInputTokens()`
 
-    console.log(`${fnName}: starting with messages: ` +
-                JSON.stringify(messages))
+    // console.log(`${fnName}: starting with messages: ` +
+    //             JSON.stringify(messages))
 
     // Calculate total length of words
     var words = 0
