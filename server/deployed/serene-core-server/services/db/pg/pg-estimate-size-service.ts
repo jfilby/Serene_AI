@@ -18,6 +18,12 @@ export class PgEstimateSizeService {
     records: PgRecordEstimateInput[]
   ): { totalInline: number; totalToast: number; total: number } {
 
+    // Debug
+    const fnName = `${this.clName}.estimateRecordSize()`
+
+    // console.log(`${fnName}: starting..`)
+
+    // Consts and initial vars
     const TOAST_THRESHOLD = 2000  // bytes
     const ROW_OVERHEAD = 24
     const TOAST_POINTER_SIZE = 20
@@ -25,8 +31,13 @@ export class PgEstimateSizeService {
     let totalInline = 0
     let totalToast = 0
 
+    // Per record
     for (const record of records) {
 
+      // Debug
+      // console.log(`${fnName}: record: ` + JSON.stringify(record))
+
+      // Start with initial rowSize
       let rowSize = ROW_OVERHEAD
 
       // Estimate primitive sizes
@@ -35,13 +46,17 @@ export class PgEstimateSizeService {
 
       if (record.stringFields) {
         for (const str of record.stringFields) {
-          rowSize += Buffer.byteLength(str, 'utf8')
+          if (str != null) {
+            rowSize += Buffer.byteLength(str, 'utf8')
+          }
         }
       }
 
       if (record.jsonFields) {
         for (const json of record.jsonFields) {
-          rowSize += Buffer.byteLength(JSON.stringify(json), 'utf8')
+          if (json != null) {
+            rowSize += Buffer.byteLength(JSON.stringify(json), 'utf8')
+          }
         }
       }
 
@@ -49,6 +64,10 @@ export class PgEstimateSizeService {
       if (record.bigStringValues) {
 
         for (const bigStringValue of record.bigStringValues) {
+
+          if (bigStringValue == null) {
+            continue
+          }
 
           const strSize = Buffer.byteLength(bigStringValue, 'utf8')
 
@@ -68,6 +87,10 @@ export class PgEstimateSizeService {
 
         for (const bigJsonValue of record.bigJsonValues) {
 
+          if (bigJsonValue == null) {
+            continue
+          }
+
           const jsonStr = JSON.stringify(bigJsonValue)
           const jsonSize = Buffer.byteLength(jsonStr, 'utf8')
 
@@ -82,6 +105,9 @@ export class PgEstimateSizeService {
         }
       }
     }
+
+    // Debug
+    // console.log(`${fnName}: returning..`)
 
     // Return
     return {

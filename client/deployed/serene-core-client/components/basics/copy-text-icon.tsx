@@ -1,15 +1,16 @@
-import React from 'react'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { IconButton, Tooltip } from '@mui/material'
 
 interface Props {
   text: string
   title?: string
+  style?: any
 }
 
 export default function CopyTextIcon({
                           text,
-                          title = 'Copy'
+                          title = 'Copy',
+                          style = {}
                         }: Props) {
 
   const handleCopy = async () => {
@@ -22,7 +23,9 @@ export default function CopyTextIcon({
 
   // Render
   return (
-    <Tooltip title={title}>
+    <Tooltip
+      style={style}
+      title={title}>
       <IconButton onClick={(e) => handleCopy()} size='small'>
         <ContentCopyIcon fontSize='small' />
       </IconButton>
