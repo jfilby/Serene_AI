@@ -41,6 +41,7 @@ export class AiTechDefs {
   static googleGemini_LatestExpFree = 'Google Gemini Latest Experimental (free tier)'
   static googleGemini_V2pt5Pro = 'Google Gemini v2.5 Pro'
   static googleGemini_V2pt5Flash = 'Google Gemini v2.5 Flash'
+  static googleGemini_V2pt5FlashFree = 'Google Gemini v2.5 Flash (free tier)'
   static googleGemini_V2pt5FlashLite = 'Google Gemini v2.5 Flash-Lite'
 
   // OpenAI
@@ -148,7 +149,7 @@ export class AiTechDefs {
       default: false,
       isAdminOnly: true,
       rateLimited: {
-        perMinute: 10
+        perMinute: 15
       }
     },
     {
@@ -186,6 +187,20 @@ export class AiTechDefs {
       outputTokens: 65536,
       default: false,
       isAdminOnly: false
+    },
+    {
+      provider: this.googleGeminiProvider,
+      variantName: this.googleGemini_V2pt5FlashFree,
+      model: this.googleGemini_V2pt5Flash_ModelName,
+      protocol: this.geminiProtocol,
+      pricingTier: SereneCoreServerTypes.free,
+      inputTokens: 1048576,
+      outputTokens: 65536,
+      default: false,
+      isAdminOnly: true,
+      rateLimited: {
+        perMinute: 10
+      }
     },
     {
       provider: this.googleGeminiProvider,
