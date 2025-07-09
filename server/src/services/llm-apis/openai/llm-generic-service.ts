@@ -178,11 +178,6 @@ export class OpenAIGenericLlmService {
       } else if (message.parts) {
 
         // If message.parts (the Gemini format)
-        // Debug (warning)
-        console.warn(`${fnName}: the message is in Gemini format, ` +
-                     `converting to OpenAI format..`)
-
-        // Process
         for (const part of message.parts) {
 
           if (content.length > 0) {
