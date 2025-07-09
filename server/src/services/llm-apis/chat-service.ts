@@ -340,13 +340,14 @@ export class ChatService {
       }
     }
 
-    // Prepare messages by provider
+    // Prepare messages by provider, but don't add the systemPrompt yet or it
+    // will be added in a later step.
     const messagesResults = await
             llmUtilsService.prepareChatMessages(
               prisma,
               llmTech,
               agentUser,
-              systemPrompt,
+              undefined,  // systemPrompt
               messagesWithRoles)
 
     // Calc estimated cost
