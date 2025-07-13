@@ -249,7 +249,7 @@ export class ChatService {
     }
 
     // Get the cache key if required
-    var cacheKey: string | undefined
+    var cacheKey: string | undefined = undefined
 
     if (tryGetFromCache === true) {
 

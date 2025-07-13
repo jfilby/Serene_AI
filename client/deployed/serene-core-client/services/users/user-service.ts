@@ -114,7 +114,7 @@ export class UsersService {
     // console.log(`${fnName}: idValue: ${idValue}`)
 
     // Set userProfileId if idValue not null
-    var userProfileId: string | null | undefined
+    var userProfileId: string | null | undefined = undefined
 
     if (idValue == null) {
       return null

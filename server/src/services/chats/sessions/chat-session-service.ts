@@ -511,7 +511,7 @@ export class ChatSessionService {
                   chatSession)
 
         // Get message text
-        var firstMessageText: string | undefined
+        var firstMessageText: string | undefined = undefined
 
         for (const message of JSON.parse(chatMessage.message)) {
 
