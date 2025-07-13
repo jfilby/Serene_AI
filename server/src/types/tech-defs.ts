@@ -51,7 +51,7 @@ export class AiTechDefs {
   static openAi_O3 = 'o3'
 
   // OpenRouter
-  static openRouter_MistralSmall3pt2_24B_Chutes = 'Mistral Small 3.2 24B'
+  static openRouter_MistralSmall3pt2_24b_Chutes = 'Mistral Small 3.2 24B'
 
   // Model names
   static googleGemini_V1Pro_ModelName = 'gemini-pro'
@@ -68,7 +68,7 @@ export class AiTechDefs {
   static openAi_O4Mini_ModelName = 'o4-mini-2025-04-16'
   static openAi_O3_ModelName = 'o3-2025-04-16'
 
-  static openRouter_MistralSmall3pt2_24B_Chutes_ModelName = 'mistralai/mistral-small-3.2-24b-instruct-2506:free'
+  static openRouter_MistralSmall3pt2_24b_Chutes_ModelName = 'mistralai/mistral-small-3.2-24b-instruct-2506:free'
 
   // Context sizes
   static mockedInputTokens = 1000
@@ -262,8 +262,8 @@ export class AiTechDefs {
     // OpenRouter
     {
       provider: this.openRouterProvider,
-      variantName: this.openRouter_MistralSmall3pt2_24B_Chutes,
-      model: this.openRouter_MistralSmall3pt2_24B_Chutes_ModelName,
+      variantName: this.openRouter_MistralSmall3pt2_24b_Chutes,
+      model: this.openRouter_MistralSmall3pt2_24b_Chutes_ModelName,
       protocol: this.openAiProtocol,
       pricingTier: SereneCoreServerTypes.free,
       inputTokens: 96000,   // Note: this is really a combined input+output size
