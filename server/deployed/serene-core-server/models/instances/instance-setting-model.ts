@@ -1,3 +1,5 @@
+import { Prisma } from '@prisma/client'
+
 export class InstanceSettingModel {
 
   // Consts
@@ -5,10 +7,10 @@ export class InstanceSettingModel {
 
   // Code
   async create(
-          prisma: any,
+          prisma: Prisma.TransactionClient,
           instanceId: string,
           name: string,
-          value: string | undefined) {
+          value: string) {
 
     // Debug
     const fnName = `${this.clName}.create()`
@@ -29,7 +31,7 @@ export class InstanceSettingModel {
   }
 
   async deleteByInstanceId(
-          prisma: any,
+          prisma: Prisma.TransactionClient,
           instanceId: string) {
 
     // Debug
@@ -49,7 +51,7 @@ export class InstanceSettingModel {
   }
 
   async filter(
-          prisma: any,
+          prisma: Prisma.TransactionClient,
           instanceId: string | undefined,
           name: string | undefined,
           value: string | undefined) {
@@ -75,7 +77,7 @@ export class InstanceSettingModel {
   }
 
   async getById(
-          prisma: any,
+          prisma: Prisma.TransactionClient,
           id: string) {
 
     // Debug
@@ -102,7 +104,7 @@ export class InstanceSettingModel {
   }
 
   async getByInstanceIdAndName(
-          prisma: any,
+          prisma: Prisma.TransactionClient,
           instanceId: string,
           name: string) {
 
@@ -140,7 +142,7 @@ export class InstanceSettingModel {
   }
 
   async update(
-          prisma: any,
+          prisma: Prisma.TransactionClient,
           id: string,
           instanceId: string | undefined,
           name: string | undefined,
@@ -167,7 +169,7 @@ export class InstanceSettingModel {
     }
   }
 
-  async upsert(prisma: any,
+  async upsert(prisma: Prisma.TransactionClient,
                id: string | undefined,
                instanceId: string | undefined,
                name: string | undefined,
@@ -203,6 +205,11 @@ export class InstanceSettingModel {
 
       if (name == null) {
         console.error(`${fnName}: id is null and name is null`)
+        throw 'Prisma error'
+      }
+
+      if (value == null) {
+        console.error(`${fnName}: id is null and value is null`)
         throw 'Prisma error'
       }
 

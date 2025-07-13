@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 
 export class InstanceModel {
 
@@ -7,7 +7,7 @@ export class InstanceModel {
 
   // Code
   async create(
-          prisma: PrismaClient,
+          prisma: Prisma.TransactionClient,
           parentId: string | null,
           userProfileId: string,
           instanceType: string,
@@ -51,7 +51,7 @@ export class InstanceModel {
   }
 
   async deleteById(
-          prisma: PrismaClient,
+          prisma: Prisma.TransactionClient,
           id: string) {
 
     // Debug
@@ -73,7 +73,7 @@ export class InstanceModel {
   }
 
   async filter(
-          prisma: PrismaClient,
+          prisma: Prisma.TransactionClient,
           parentId: string | null | undefined = undefined,
           userProfileId: string | undefined = undefined,
           instanceType: string | undefined = undefined,
@@ -121,7 +121,7 @@ export class InstanceModel {
   }
 
   async getById(
-          prisma: PrismaClient,
+          prisma: Prisma.TransactionClient,
           id: string,
           includeParent: boolean = false,
           includeUserProfile: boolean = false,
@@ -159,7 +159,7 @@ export class InstanceModel {
   }
 
   async getByNameAndIsAdminUserProfile(
-          prisma: PrismaClient,
+          prisma: Prisma.TransactionClient,
           name: string) {
 
     // Debug
@@ -187,7 +187,7 @@ export class InstanceModel {
   }
 
   async getByParentIdAndUserProfileIdAndIsDefault(
-          prisma: PrismaClient,
+          prisma: Prisma.TransactionClient,
           parentId: string | null,
           userProfileId: string) {
 
@@ -215,7 +215,7 @@ export class InstanceModel {
   }
 
   async getByParentIdAndNameAndUserProfileId(
-          prisma: PrismaClient,
+          prisma: Prisma.TransactionClient,
           parentId: string | null,
           name: string,
           userProfileId: string) {
@@ -258,7 +258,7 @@ export class InstanceModel {
   }
 
   async getByUserProfileIdAndName(
-          prisma: PrismaClient,
+          prisma: Prisma.TransactionClient,
           userProfileId: string,
           name: string) {
 
@@ -285,7 +285,7 @@ export class InstanceModel {
   }
 
   async getByUserProfileIdAndParentNameAndName(
-          prisma: PrismaClient,
+          prisma: Prisma.TransactionClient,
           userProfileId: string,
           parentName: string,
           name: string) {
@@ -334,7 +334,7 @@ export class InstanceModel {
   }
 
   async update(
-          prisma: PrismaClient,
+          prisma: Prisma.TransactionClient,
           id: string,
           parentId: string | null | undefined,
           userProfileId: string | undefined,
@@ -374,7 +374,7 @@ export class InstanceModel {
   }
 
   async updateByParentId(
-          prisma: any,
+          prisma: Prisma.TransactionClient,
           parentId: string | null | undefined,
           userProfileId: string | undefined,
           instanceType: string | undefined,
@@ -411,7 +411,7 @@ export class InstanceModel {
     }
   }
 
-  async upsert(prisma: any,
+  async upsert(prisma: Prisma.TransactionClient,
                id: string | undefined,
                parentId: string | null | undefined,
                userProfileId: string | undefined,
