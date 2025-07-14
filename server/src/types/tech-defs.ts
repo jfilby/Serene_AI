@@ -14,7 +14,7 @@ export class AiTechDefs {
   static googleGeminiProvider = 'Google Gemini'
   static defaultLlmProvider = this.googleGeminiProvider
 
-  static chatGptProvider = 'ChatGPT'
+  static openAiProvider = 'OpenAI'
   static openRouterProvider = 'OpenRouter'
 
   // Tech protocols: AI
@@ -80,7 +80,7 @@ export class AiTechDefs {
       name: this.googleGeminiProvider
     },
     {
-      name: this.chatGptProvider
+      name: this.openAiProvider
     },
     {
       name: this.openRouterProvider,
@@ -216,7 +216,7 @@ export class AiTechDefs {
 
     // OpenAI
     {
-      provider: this.chatGptProvider,
+      provider: this.openAiProvider,
       variantName: this.openAi_Gpt4o,
       model: this.openAi_Gpt4o_ModelName,
       protocol: this.openAiProtocol,
@@ -227,7 +227,7 @@ export class AiTechDefs {
       isAdminOnly: false
     },
     {
-      provider: this.chatGptProvider,
+      provider: this.openAiProvider,
       variantName: this.openAi_Gpt4pt1,
       model: this.openAi_Gpt4pt1_ModelName,
       protocol: this.openAiProtocol,
@@ -238,7 +238,7 @@ export class AiTechDefs {
       isAdminOnly: false
     },
     {
-      provider: this.chatGptProvider,
+      provider: this.openAiProvider,
       variantName: this.openAi_O4Mini,
       model: this.openAi_O4Mini_ModelName,
       protocol: this.openAiProtocol,
@@ -249,7 +249,7 @@ export class AiTechDefs {
       isAdminOnly: false
     },
     {
-      provider: this.chatGptProvider,
+      provider: this.openAiProvider,
       variantName: this.openAi_O3,
       model: this.openAi_O3_ModelName,
       protocol: this.openAiProtocol,
