@@ -3,20 +3,26 @@ import { jsonrepair } from 'jsonrepair'
 import { CustomError } from '@/serene-core-server/types/errors'
 import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
 import { sleepSeconds } from '@/serene-core-server/services/process/sleep'
+import { ChatMessageModel } from '@/serene-core-server/models/chat/chat-message-model'
+import { ChatMessageCreatedModel } from '@/serene-core-server/models/chat/chat-message-created-model'
+import { ChatSessionModel } from '@/serene-core-server/models/chat/chat-session-model'
 import { RateLimitedApiEventModel } from '@/serene-core-server/models/tech/rate-limited-api-event-model'
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
 import { ResourceQuotasMutateService } from '@/serene-core-server/services/quotas/mutate-service'
 import { ResourceQuotasQueryService } from '@/serene-core-server/services/quotas/query-service'
-import { ChatMessageCreatedModel } from '../../models/chat/chat-message-created-model'
+import { ChatMessage } from '../../types/server-only-types'
 import { LlmCacheModel } from '../../models/cache/llm-cache-model'
 import { ChatApiUsageService } from '../api-usage/chat-api-usage-service'
 import { ChatMessageService } from '../chats/messages/service'
+import { ChatSessionService } from '../chats/sessions/chat-session-service'
 import { DetectContentTypeService } from '../content/detect-content-type-service'
 import { LlmUtilsService } from './utils-service'
 import { TextParsingService } from '../content/text-parsing-service'
 
 // Models
 const chatMessageCreatedModel = new ChatMessageCreatedModel()
+const chatMessageModel = new ChatMessageModel(process.env.NEXT_PUBLIC_DB_ENCRYPT_SECRET)
+const chatSessionModel = new ChatSessionModel()
 const llmCacheModel = new LlmCacheModel()
 const rateLimitedApiEventModel = new RateLimitedApiEventModel()
 const resourceQuotasMutateService = new ResourceQuotasMutateService()
@@ -24,7 +30,8 @@ const techModel = new TechModel()
 
 // Services
 const chatApiUsageService = new ChatApiUsageService()
-const chatMessageService = new ChatMessageService(process.env.NEXT_PUBLIC_DB_ENCRYPT_SECRET)
+const chatMessageService = new ChatMessageService()
+const chatSessionService = new ChatSessionService()
 const detectContentTypeService = new DetectContentTypeService()
 const llmUtilsService = new LlmUtilsService()
 const resourceQuotasService = new ResourceQuotasQueryService()
@@ -471,6 +478,129 @@ export class ChatService {
       outputTokens: results.outputTokens,
       fromCache: false,
       cacheKey: cacheKey
+    }
+  }
+
+  async runSessionTurn(
+          prisma: any,
+          llmTechId: string | undefined,
+          chatSessionId: string,
+          fromChatParticipantId: string,
+          fromUserProfile: any,
+          fromName: string,
+          fromContents: ChatMessage[]) {
+
+    // Debug
+    const fnName = `${this.clName}.runSessionTurn()`
+
+    console.log(`${fnName}: starting with chatSessionId: ` +
+                `${chatSessionId} and llmTechId: ${llmTechId}`)
+
+    // Get ChatSession
+    const chatSession = await
+            chatSessionModel.getById(
+              prisma,
+              chatSessionId,
+              true)  // includeChatSettings
+
+    // Debug
+    // console.log(`${fnName}: chatSession: ` + JSON.stringify(chatSession))
+
+    const agentInfo = await
+            chatSessionService.getAgentInfo(
+              prisma,
+              chatSessionId)
+
+    // Validate
+    if (agentInfo.agentUser == null) {
+
+      throw new CustomError(`${fnName}: agentInfo.agentUser == null`)
+    }
+
+    if (agentInfo.agentUser.maxPrevMessages == null) {
+
+      throw new CustomError(`${fnName}: agentInfo.agentUser.maxPrevMessages ` +
+                            `== null`)
+    }
+
+    // Get chat messages
+    const chatMessages = await
+            chatMessageModel.getByChatSessionId(
+              prisma,
+              chatSession,
+              agentInfo.agentUser.maxPrevMessages)
+
+    // Get Tech
+    var llmTech: any = undefined
+
+    if (llmTechId != null) {
+
+      llmTech = await
+        techModel.getById(
+          prisma,
+          llmTechId)
+    } else {
+
+      // Get default tech if not specified
+      llmTech = await
+        techModel.getByVariantName(
+          prisma,
+          process.env.DEFAULT_LLM_VARIANT as string)
+    }
+
+    // Validate llmTech
+    if (llmTech == null) {
+      throw new CustomError(`${fnName}: llmTech == null with llmTechId: ` +
+                            `llmTechId: ${llmTechId}`)
+    }
+
+    // Build messagesWithRoles
+    const messagesWithRoles =
+            llmUtilsService.buildMessagesWithRoles(
+              llmTech,
+              chatMessages,
+              fromContents,
+              [fromChatParticipantId],
+              [agentInfo.toChatParticipant.id])
+
+    // Call the LLM
+    const chatCompletionResults = await
+            this.llmRequest(
+              prisma,
+              llmTech,
+              chatSession,
+              fromUserProfile,
+              agentInfo.agentUser,
+              messagesWithRoles,
+              chatSession.chatSettings.prompt,
+              chatSession.chatSettings.isJsonMode)
+
+    // Debug
+    // console.log(`${fnName}: chatCompletionResults: ` +
+    //             JSON.stringify(chatCompletionResults))
+
+    // Handle errors
+    if (chatCompletionResults.status === false) {
+      return chatCompletionResults
+    }
+
+    // Return
+    return {
+      status: true,
+      isRateLimited: false,
+      waitSeconds: 0,
+      chatSession: chatSession,
+      fromChatParticipantId: fromChatParticipantId,
+      fromUserProfileId: fromUserProfile.id,
+      fromContents: fromContents,
+      toChatParticipantId: agentInfo.toChatParticipant.id,
+      toUserProfileId: agentInfo.toUserProfile.id,
+      toName: agentInfo.agentUser.name,
+      toContents: chatCompletionResults.messages,
+      toJson: chatCompletionResults.json,
+      tech: llmTech,
+      inputTokens: chatCompletionResults.inputTokens,
+      outputTokens: chatCompletionResults.outputTokens
     }
   }
 }

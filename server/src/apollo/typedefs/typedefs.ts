@@ -3,6 +3,25 @@ export const typeDefs = `#graphql
   # Serene AI Types
   # ----
 
+  type StatusAndMessage {
+    status: Boolean!
+    message: String
+  }
+
+  type Workbook {
+    id: String!
+    status: String!
+  }
+
+  type WorkbookResults {
+    status: Boolean!
+    message: String
+    workbook: Workbook
+  }
+
+  # Serene Core (types)
+  # ---
+
   type ChatMessage {
     id: String!
     name: String!
@@ -42,25 +61,6 @@ export const typeDefs = `#graphql
     message: String
     chatSession: ChatSession
   }
-
-  type StatusAndMessage {
-    status: Boolean!
-    message: String
-  }
-
-  type Workbook {
-    id: String!
-    status: String!
-  }
-
-  type WorkbookResults {
-    status: Boolean!
-    message: String
-    workbook: Workbook
-  }
-
-  # Serene Core (types)
-  # ---
 
   type ExistsResults {
     status: Boolean!

@@ -1,5 +1,5 @@
-import { ChatSessionModel } from '../../models/chat/chat-session-model'
-import { ChatSettingsModel } from '../../models/chat/chat-settings-model'
+import { ChatSessionModel } from '@/serene-core-server/models/chat/chat-session-model'
+import { ChatSettingsModel } from '@/serene-core-server/models/chat/chat-settings-model'
 
 export class SereneAiCleanUpService {
 

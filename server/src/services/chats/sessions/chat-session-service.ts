@@ -2,17 +2,31 @@ import { CustomError } from '@/serene-core-server/types/errors'
 import { UserTypes } from '@/serene-core-server/types/user-types'
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
 import { UsersService } from '@/serene-core-server/services/users/service'
-import { ChatMessage, SereneAiServerOnlyTypes } from '../../../types/server-only-types'
+import { SereneAiServerOnlyTypes } from '../../../types/server-only-types'
 import { AgentUserModel } from '../../../models/agents/agent-user-model'
-import { ChatMessageModel } from '../../../models/chat/chat-message-model'
-import { ChatParticipantModel } from '../../../models/chat/chat-participant-model'
-import { ChatSessionModel } from '../../../models/chat/chat-session-model'
-import { ChatSettingsModel } from '../../../models/chat/chat-settings-model'
+import { ChatMessageModel } from '@/serene-core-server/models/chat/chat-message-model'
+import { ChatParticipantModel } from '@/serene-core-server/models/chat/chat-participant-model'
+import { ChatSessionModel } from '@/serene-core-server/models/chat/chat-session-model'
+import { ChatSettingsModel } from '@/serene-core-server/models/chat/chat-settings-model'
 import { AgentsService } from '../../agents/agents-service'
 import { ChatMessageService } from '../messages/service'
-import { ChatService } from '../../llm-apis/chat-service'
 import { LlmUtilsService } from '../../llm-apis/utils-service'
 
+// Models
+const agentUserModel = new AgentUserModel()
+const chatParticipantModel = new ChatParticipantModel()
+const chatMessageModel = new ChatMessageModel(process.env.NEXT_PUBLIC_DB_ENCRYPT_SECRET)
+const chatSessionModel = new ChatSessionModel()
+const chatSettingsModel = new ChatSettingsModel()
+const techModel = new TechModel()
+
+// Services
+const agentsService = new AgentsService()
+const chatMessageService = new ChatMessageService()
+const llmUtilsService = new LlmUtilsService()
+const usersService = new UsersService()
+
+// Class
 export class ChatSessionService {
 
   // Consts
@@ -21,28 +35,7 @@ export class ChatSessionService {
   systemPromptPostfix =
     `Keep your answers concise and inline with the objective.\n`
 
-  // Models
-  agentUserModel = new AgentUserModel()
-  chatParticipantModel = new ChatParticipantModel()
-  chatMessageModel
-  chatSessionModel = new ChatSessionModel()
-  chatSettingsModel = new ChatSettingsModel()
-  techModel = new TechModel()
-
-  // Services
-  agentsService = new AgentsService()
-  chatMessageService
-  chatService = new ChatService()
-  llmUtilsService = new LlmUtilsService()
-  usersService = new UsersService()
-
   // Code
-  constructor(encryptionKey: string | undefined) {
-
-    this.chatMessageModel = new ChatMessageModel(encryptionKey)
-    this.chatMessageService = new ChatMessageService(encryptionKey)
-  }
-
   async createChatSession(
           prisma: any,
           baseChatSettingsId: string | null,
@@ -62,7 +55,7 @@ export class ChatSessionService {
     console.log(`${fnName}: starting with userProfileId: ${userProfileId}`)
 
     const chatSettingsResults = await
-            this.llmUtilsService.getOrCreateChatSettings(
+            llmUtilsService.getOrCreateChatSettings(
               prisma,
               baseChatSettingsId,
               userProfileId,
@@ -81,7 +74,7 @@ export class ChatSessionService {
     // Create ChatSession
     // Start in new status, only active once there are messages
     var chatSession = await
-          this.chatSessionModel.create(
+          chatSessionModel.create(
             prisma,
             undefined,  // id,
             chatSettings.id,
@@ -95,7 +88,7 @@ export class ChatSessionService {
 
     // Get Agent
     const agentUser = await
-            this.agentUserModel.getById(
+            agentUserModel.getById(
               prisma,
               chatSettings.agentUserId)
 
@@ -110,7 +103,7 @@ export class ChatSessionService {
 
     // Create agent ChatParticipant
     const agentChatParticipant = await
-            this.chatParticipantModel.upsert(
+            chatParticipantModel.upsert(
               prisma,
               undefined,  // id
               chatSession.id,
@@ -119,13 +112,13 @@ export class ChatSessionService {
     chatParticipants.push(agentChatParticipant)
 
     // Ensure ownerType is set for user
-    await this.usersService.verifyHumanUserProfile(
+    await usersService.verifyHumanUserProfile(
             prisma,
             userProfileId)
 
     // Create user ChatParticipant
     const userChatParticipant = await
-            this.chatParticipantModel.upsert(
+            chatParticipantModel.upsert(
               prisma,
               undefined,  // id
               chatSession.id,
@@ -172,20 +165,20 @@ export class ChatSessionService {
 
     // Get the chatParticipant record of the bot
     const toChatParticipant = await
-            this.chatParticipantModel.getByChatSessionIdAndOwnerType(
+            chatParticipantModel.getByChatSessionIdAndOwnerType(
               prisma,
               chatSessionId,
               UserTypes.botRoleOwnerType)
 
     // Get the userProfileId of the bot
     const toUserProfile = await
-            this.usersService.getById(
+            usersService.getById(
               prisma,
               toChatParticipant.userProfileId)
 
     // Get agent name
     const agentUser = await
-            this.agentUserModel.getByUserProfileId(
+            agentUserModel.getByUserProfileId(
               prisma,
               toUserProfile.id)
 
@@ -211,13 +204,13 @@ export class ChatSessionService {
 
     // Get ChatSession record
     const chatSession = await
-            this.chatSessionModel.getById(
+            chatSessionModel.getById(
               prisma,
               chatSessionId)
 
     // Get messages
     var chatMessages = await
-          this.chatMessageService.getAllByChatSessionId(
+          chatMessageService.getAllByChatSessionId(
             prisma,
             chatSession)
 
@@ -235,7 +228,7 @@ export class ChatSessionService {
 
       } else {
         chatParticipant = await
-          this.chatParticipantModel.getById(
+          chatParticipantModel.getById(
             prisma,
             chatParticipantId)
 
@@ -271,7 +264,7 @@ export class ChatSessionService {
 
     // Get UserProfile record
     const userProfile = await
-            this.usersService.getById(
+            usersService.getById(
               prisma,
               userProfileId)
 
@@ -279,7 +272,7 @@ export class ChatSessionService {
 
       case UserTypes.botRoleOwnerType: {
         const agentUser = await
-                this.agentUserModel.getByUserProfileId(
+                agentUserModel.getByUserProfileId(
                   prisma,
                   userProfileId)
 
@@ -288,7 +281,7 @@ export class ChatSessionService {
 
       case UserTypes.humanRoleOwnerType: {
         const user = await
-                this.usersService.getUserByUserProfileId(
+                usersService.getUserByUserProfileId(
                   prisma,
                   userProfileId)
 
@@ -333,7 +326,7 @@ export class ChatSessionService {
 
     // Get chatSession
     var chatSession = await
-          this.chatSessionModel.getById(
+          chatSessionModel.getById(
             prisma,
             chatSessionId,
             true)  // includeChatSettings
@@ -346,7 +339,7 @@ export class ChatSessionService {
 
     // Get participants
     chatSession.chatParticipants = await
-      this.chatParticipantModel.getByChatSessionId(
+      chatParticipantModel.getByChatSessionId(
         prisma,
         chatSession.id)
 
@@ -373,7 +366,7 @@ export class ChatSessionService {
 
     // Get records
     var chatSessions = await
-          this.chatSessionModel.filter(
+          chatSessionModel.filter(
             prisma,
             instanceId,
             status,
@@ -414,7 +407,7 @@ export class ChatSessionService {
 
     // Try to get the chat session
     var chatSession = await
-          this.chatSessionModel.getById(
+          chatSessionModel.getById(
             prisma,
             chatSessionId)
 
@@ -438,12 +431,12 @@ export class ChatSessionService {
       tech = chatSession.tech
     } else {
       const chatSettings = await
-              this.chatSettingsModel.getById(
+              chatSettingsModel.getById(
                 prisma,
                 chatSession.chatSettingsId)
 
       tech = await
-        this.techModel.getById(
+        techModel.getById(
           prisma,
           chatSettings.llmTechId)
     }
@@ -506,7 +499,7 @@ export class ChatSessionService {
           chatSession.name.trim() === '') {
 
         const chatMessage = await
-                this.chatMessageModel.getFirst(
+                chatMessageModel.getFirst(
                   prisma,
                   chatSession)
 
@@ -523,7 +516,7 @@ export class ChatSessionService {
 
         // Update chatMessage.name
         chatSession = await
-          this.chatSessionModel.update(
+          chatSessionModel.update(
             prisma,
             chatSession.id,
             undefined,  // chatSettingsId
@@ -544,129 +537,6 @@ export class ChatSessionService {
     return updatedChatSessions
   }
 
-  async runSessionTurn(
-          prisma: any,
-          llmTechId: string | undefined,
-          chatSessionId: string,
-          fromChatParticipantId: string,
-          fromUserProfile: any,
-          fromName: string,
-          fromContents: ChatMessage[]) {
-
-    // Debug
-    const fnName = `${this.clName}.runSessionTurn()`
-
-    console.log(`${fnName}: starting with chatSessionId: ` +
-                `${chatSessionId} and llmTechId: ${llmTechId}`)
-
-    // Get ChatSession
-    const chatSession = await
-            this.chatSessionModel.getById(
-              prisma,
-              chatSessionId,
-              true)  // includeChatSettings
-
-    // Debug
-    // console.log(`${fnName}: chatSession: ` + JSON.stringify(chatSession))
-
-    const agentInfo = await
-            this.getAgentInfo(
-              prisma,
-              chatSessionId)
-
-    // Validate
-    if (agentInfo.agentUser == null) {
-
-      throw new CustomError(`${fnName}: agentInfo.agentUser == null`)
-    }
-
-    if (agentInfo.agentUser.maxPrevMessages == null) {
-
-      throw new CustomError(`${fnName}: agentInfo.agentUser.maxPrevMessages ` +
-                            `== null`)
-    }
-
-    // Get chat messages
-    const chatMessages = await
-            this.chatMessageModel.getByChatSessionId(
-              prisma,
-              chatSession,
-              agentInfo.agentUser.maxPrevMessages)
-
-    // Get Tech
-    var llmTech: any = undefined
-
-    if (llmTechId != null) {
-
-      llmTech = await
-        this.techModel.getById(
-          prisma,
-          llmTechId)
-    } else {
-
-      // Get default tech if not specified
-      llmTech = await
-        this.techModel.getByVariantName(
-          prisma,
-          process.env.DEFAULT_LLM_VARIANT as string)
-    }
-
-    // Validate llmTech
-    if (llmTech == null) {
-      throw new CustomError(`${fnName}: llmTech == null with llmTechId: ` +
-                            `llmTechId: ${llmTechId}`)
-    }
-
-    // Build messagesWithRoles
-    const messagesWithRoles =
-            this.llmUtilsService.buildMessagesWithRoles(
-              llmTech,
-              chatMessages,
-              fromContents,
-              [fromChatParticipantId],
-              [agentInfo.toChatParticipant.id])
-
-    // Call the LLM
-    const chatCompletionResults = await
-            this.chatService.llmRequest(
-              prisma,
-              llmTech,
-              chatSession,
-              fromUserProfile,
-              agentInfo.agentUser,
-              messagesWithRoles,
-              chatSession.chatSettings.prompt,
-              chatSession.chatSettings.isJsonMode)
-
-    // Debug
-    // console.log(`${fnName}: chatCompletionResults: ` +
-    //             JSON.stringify(chatCompletionResults))
-
-    // Handle errors
-    if (chatCompletionResults.status === false) {
-      return chatCompletionResults
-    }
-
-    // Return
-    return {
-      status: true,
-      isRateLimited: false,
-      waitSeconds: 0,
-      chatSession: chatSession,
-      fromChatParticipantId: fromChatParticipantId,
-      fromUserProfileId: fromUserProfile.id,
-      fromContents: fromContents,
-      toChatParticipantId: agentInfo.toChatParticipant.id,
-      toUserProfileId: agentInfo.toUserProfile.id,
-      toName: agentInfo.agentUser.name,
-      toContents: chatCompletionResults.messages,
-      toJson: chatCompletionResults.json,
-      tech: llmTech,
-      inputTokens: chatCompletionResults.inputTokens,
-      outputTokens: chatCompletionResults.outputTokens
-    }
-  }
-
   async saveMessages(
           prisma: any,
           chatSession: any,
@@ -682,7 +552,7 @@ export class ChatSessionService {
     if (chatSession.status === SereneAiServerOnlyTypes.newStatus) {
 
       chatSession = await
-        this.chatSessionModel.update(
+        chatSessionModel.update(
           prisma,
           chatSession.id,
           undefined,  // chatSettingsId
@@ -697,7 +567,7 @@ export class ChatSessionService {
 
     // Save from message
     const userChatMessage = await
-            this.chatMessageService.saveChatMessage(
+            chatMessageService.saveChatMessage(
               prisma,
               chatSession,
               null,       // replyToId
@@ -713,7 +583,7 @@ export class ChatSessionService {
 
     // Save to message
     const aiReplyChatMessage = await
-            this.chatMessageService.saveChatMessage(
+            chatMessageService.saveChatMessage(
               prisma,
               chatSession,
               userChatMessage.id,  // replyToId

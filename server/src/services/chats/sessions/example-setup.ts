@@ -1,8 +1,7 @@
+import { ChatSettingsModel } from '@/serene-core-server/models/chat/chat-settings-model'
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
-import { CommonTypes } from '../../../types/types'
-import { AiTechDefs } from '../../../types/tech-defs'
 import { AgentUserModel } from '../../../models/agents/agent-user-model'
-import { ChatSettingsModel } from '../../../models/chat/chat-settings-model'
+import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
 
 export class ExampleChatSessionSetupService {
 
@@ -36,7 +35,7 @@ export class ExampleChatSessionSetupService {
               prisma,
               undefined,            // id
               undefined,            // baseChatSettingsId
-              CommonTypes.activeStatus,
+              SereneCoreServerTypes.activeStatus,
               false,                // isEncryptedAtRest
               false,                // isJsonMode
               false,                // isPinned

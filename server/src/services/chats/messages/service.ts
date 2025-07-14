@@ -1,11 +1,15 @@
 import { PrismaClient } from '@prisma/client'
 import { CustomError } from '@/serene-core-server/types/errors'
 import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
+import { ChatMessageCreatedModel } from '@/serene-core-server/models/chat/chat-message-created-model'
+import { ChatMessageModel } from '@/serene-core-server/models/chat/chat-message-model'
 import { AiTechPricing } from '../../../types/tech-pricing'
-import { ChatMessageCreatedModel } from '../../../models/chat/chat-message-created-model'
-import { ChatMessageModel } from '../../../models/chat/chat-message-model'
 
-// Class
+// Models
+const chatMessageCreatedModel = new ChatMessageCreatedModel()
+const chatMessageModel = new ChatMessageModel(process.env.NEXT_PUBLIC_DB_ENCRYPT_SECRET)
+
+  // Class
 export class ChatMessageService {
 
   // Consts
@@ -13,16 +17,7 @@ export class ChatMessageService {
 
   million1 = 1000000  // 1 million
 
-  // Models
-  chatMessageCreatedModel = new ChatMessageCreatedModel()
-  chatMessageModel
-
   // Code
-  constructor(encryptionKey: string | undefined) {
-
-    this.chatMessageModel = new ChatMessageModel(encryptionKey)
-  }
-
   calcCostInCents(
     tech: any,
     resource: string,
@@ -96,7 +91,7 @@ export class ChatMessageService {
           prisma: PrismaClient,
           chatSession: any) {
 
-    return await this.chatMessageModel.getByChatSessionId(
+    return await chatMessageModel.getByChatSessionId(
                    prisma,
                    chatSession,
                    null)  // maxPrevMessages
@@ -124,7 +119,7 @@ export class ChatMessageService {
 
     // Create ChatMessage
     const chatMessage = await
-            this.chatMessageModel.create(
+            chatMessageModel.create(
               prisma,
               undefined,  // id
               chatSession,

@@ -4,7 +4,7 @@ import { ChatSessionService } from '../../../services/chats/sessions/chat-sessio
 
 
 // Services
-const chatSessionService = new ChatSessionService(process.env.NEXT_PUBLIC_DB_ENCRYPT_SECRET)
+const chatSessionService = new ChatSessionService()
 
 
 // Code

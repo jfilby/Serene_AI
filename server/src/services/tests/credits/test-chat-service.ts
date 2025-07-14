@@ -1,14 +1,14 @@
 import { PrismaClient } from '@prisma/client'
 import { CustomError } from '@/serene-core-server/types/errors'
 import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
+import { ChatSessionModel } from '@/serene-core-server/models/chat/chat-session-model'
+import { ChatSettingsModel } from '@/serene-core-server/models/chat/chat-settings-model'
 import { ResourceQuotaTotalModel } from '@/serene-core-server/models/quotas/resource-quota-total-model'
 import { ResourceQuotaUsageModel } from '@/serene-core-server/models/quotas/resource-quota-usage-model'
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
 import { ResourceQuotasQueryService } from '@/serene-core-server/services/quotas/query-service'
 import { AiTechDefs } from '../../../types/tech-defs'
 import { SereneAiServerOnlyTypes } from '../../../types/server-only-types'
-import { ChatSessionModel } from '../../../models/chat/chat-session-model'
-import { ChatSettingsModel } from '../../../models/chat/chat-settings-model'
 import { AgentsService } from '../../agents/agents-service'
 import { ChatService } from '../../llm-apis/chat-service'
 import { ChatMessageService } from '../../chats/messages/service'
@@ -35,7 +35,7 @@ export class TestLlmService {
   // Services
   agentsService = new AgentsService()
   chatService = new ChatService()
-  chatMessageService = new ChatMessageService(process.env.NEXT_PUBLIC_DB_ENCRYPT_SECRET)
+  chatMessageService = new ChatMessageService()
   resourceQuotasQueryService = new ResourceQuotasQueryService()
 
   // Code

@@ -1,4 +1,4 @@
-import { UsersService } from '@/serene-core-server/services/users/service'
+import { UsersService } from '../../services/users/service'
 
 export class ChatParticipantModel {
 
