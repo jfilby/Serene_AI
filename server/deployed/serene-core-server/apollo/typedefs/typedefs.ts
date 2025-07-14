@@ -1,5 +1,45 @@
 export const typeDefs = `#graphql
 
+  type ChatMessage {
+    id: String!
+    name: String!
+    message: String!
+    created: String!
+    updated: String
+  }
+
+  type ChatMessageResults {
+    status: Boolean!
+    message: String
+    chatMessages: [ChatMessage]
+  }
+
+  type ChatParticipant {
+    id: String!
+    userProfileId: String!
+    name: String!
+  }
+
+  type ChatParticipantResults {
+    status: Boolean!
+    message: String
+    chatParticipants: [ChatParticipant]
+  }
+
+  type ChatSession {
+    id: String!
+    status: String!
+    name: String
+    updated: String!
+    chatParticipants: [ChatParticipant]
+  }
+
+  type ChatSessionResults {
+    status: Boolean!
+    message: String
+    chatSession: ChatSession
+  }
+
   type ResourceQuotaUsage {
     userProfileId: String!
     resource: String!

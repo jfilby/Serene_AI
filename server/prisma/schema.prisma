@@ -386,7 +386,7 @@ model TechProviderApiKey {
   @@schema("public")
 }
 
-// Serene Gemini AI
+// Serene AI
 
 // Cache and rate-limiting
 
