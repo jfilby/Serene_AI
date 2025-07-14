@@ -90,14 +90,14 @@ export class AgentLlmService {
     const inputMessagesWithRoles = await
             llmUtilsService.buildMessagesWithRolesForSinglePrompt(
               prisma,
-              undefined,  // tech
+              tech,
               prompt)
 
     // Make the LLM request
     const chatCompletionResults = await
             chatService.llmRequest(
               prisma,
-              tech.id,    // llmTechId
+              tech,       // llmTechId
               chatSession,
               undefined,  // userProfile
               agentUser,
@@ -105,6 +105,11 @@ export class AgentLlmService {
               undefined,  // systemPrompt
               isJsonMode,
               tryGetFromCache)
+
+    // Handle status false
+    if (chatCompletionResults.status === false) {
+      return chatCompletionResults
+    }
 
     // Validate
     if (chatCompletionResults.messages == null) {
