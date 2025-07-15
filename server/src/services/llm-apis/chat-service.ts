@@ -10,6 +10,7 @@ import { RateLimitedApiEventModel } from '@/serene-core-server/models/tech/rate-
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
 import { ResourceQuotasMutateService } from '@/serene-core-server/services/quotas/mutate-service'
 import { ResourceQuotasQueryService } from '@/serene-core-server/services/quotas/query-service'
+import { UsersService } from '@/serene-core-server/services/users/service'
 import { ChatMessage } from '../../types/server-only-types'
 import { LlmCacheModel } from '../../models/cache/llm-cache-model'
 import { ChatApiUsageService } from '../api-usage/chat-api-usage-service'
@@ -36,6 +37,7 @@ const detectContentTypeService = new DetectContentTypeService()
 const llmUtilsService = new LlmUtilsService()
 const resourceQuotasService = new ResourceQuotasQueryService()
 const textParsingService = new TextParsingService()
+const usersService = new UsersService()
 
 // Class
 export class ChatService {
@@ -298,7 +300,10 @@ export class ChatService {
     if (userProfile == null &&
         agentUser != null) {
 
-      userProfile = agentUser
+      userProfile = await
+        usersService.getById(
+          prisma,
+          agentUser.userProfileId)
     }
 
     if (userProfile == null) {
