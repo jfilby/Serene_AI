@@ -34,8 +34,8 @@ export class AgentLlmService {
           agentName: string,
           agentRole: string,
           prompt: string,
-          isEncryptedAtRest: boolean,
           isJsonMode: boolean,
+          retries: number = 5,
           tryGetFromCache: boolean = false) {
 
     // Single-shot agent LLM request
@@ -93,18 +93,38 @@ export class AgentLlmService {
               tech,
               prompt)
 
-    // Make the LLM request
-    const chatCompletionResults = await
-            chatService.llmRequest(
-              prisma,
-              tech,       // llmTechId
-              chatSession,
-              undefined,  // userProfile
-              agentUser,
-              inputMessagesWithRoles,
-              undefined,  // systemPrompt
-              isJsonMode,
-              tryGetFromCache)
+    // Make the LLM request (with retries)
+    var chatCompletionResults: any = undefined
+
+    for (var i = 0; i < retries; i++) {
+
+      // Retry log statement
+      if (i > 0) {
+        console.log(`${fnName}: retrying: ${i+1} of ${retries}`)
+      }
+
+      // Try
+      try {
+        chatCompletionResults = await
+          chatService.llmRequest(
+            prisma,
+            tech,       // llmTechId
+            chatSession,
+            undefined,  // userProfile
+            agentUser,
+            inputMessagesWithRoles,
+            undefined,  // systemPrompt
+            isJsonMode,
+            tryGetFromCache)
+      } catch (e: any) {
+        console.log(`${fnName}: e: ` + JSON.stringify(e))
+      }
+
+      // Done?
+      if (chatCompletionResults != null) {
+        break
+      }
+    }
 
     // Handle status false
     if (chatCompletionResults.status === false) {
