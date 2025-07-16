@@ -28,6 +28,22 @@ export class UserModel {
     }
   }
 
+  async filter(prisma: any) {
+
+    // Debug
+    const fnName = `${this.clName}.filter()`
+  
+    // Filter
+    try {
+      return await prisma.user.findMany({})
+    } catch(error: any) {
+      if (!(error instanceof error.NotFound)) {
+        console.error(`${fnName}: error: ${error}`)
+        throw 'Prisma error'
+      }
+    }
+  }
+
   async getByEmail(prisma: any,
                    email: string) {
 
