@@ -79,7 +79,7 @@ export class SereneAiSetup {
         techProvider)
     }
 
-    // LLM techs
+    // Upsert Tech records
     for (const llmTech of AiTechDefs.llmTechs) {
 
       // Get the TechProvider
@@ -100,7 +100,7 @@ export class SereneAiSetup {
                 techProvider.id,
                 SereneAiServerOnlyTypes.activeStatus,
                 llmTech.variantName,
-                AiTechDefs.llms,
+                llmTech.resource,
                 llmTech.model,
                 llmTech.protocol,
                 llmTech.pricingTier,
@@ -114,7 +114,7 @@ export class SereneAiSetup {
                 prisma,
                 undefined,    // id
                 tech.id,
-                llmTech.rateLimited.perMinute)
+                llmTech.rateLimited?.perMinute!)
       }
     }
   }

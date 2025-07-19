@@ -1,9 +1,32 @@
 import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
 
+export interface RateLimitedDef {
+  perMinute?: number | undefined
+}
+
+export interface TechDef {
+  provider: string
+  variantName: string
+  resource: string  // NOTE: Should possibly be resources: string[] to support multiple resources per tech def
+  model: string | null
+  protocol: string
+  pricingTier: string
+  inputTokens: number | null
+  outputTokens: number | null
+  default: boolean
+  isAdminOnly: boolean
+  rateLimited?: RateLimitedDef | undefined
+}
+
 export class AiTechDefs {
 
   // Consts
-  static llms = 'LLMs'
+
+  // Resources
+  static embeddingsResource = 'Embeddings'
+  static llmsResource = 'LLMs'
+
+  // API types
   static chatCompletion = 'Chat Completion'
 
   // Categories (for UserTechProvider.category)
@@ -50,6 +73,8 @@ export class AiTechDefs {
   static openAi_O4Mini = 'o4-mini'
   static openAi_O3 = 'o3'
 
+  static openAi_TextEmedding3Small = 'OpenAI text-embedding-3-small'
+
   // OpenRouter
   static openRouter_MistralSmall3pt2_24b_Chutes = 'Mistral Small 3.2 24B'
 
@@ -67,6 +92,8 @@ export class AiTechDefs {
   static openAi_Gpt4pt1_ModelName = 'gpt-4.1-2025-04-14'
   static openAi_O4Mini_ModelName = 'o4-mini-2025-04-16'
   static openAi_O3_ModelName = 'o3-2025-04-16'
+
+  static openAi_TextEmedding3Small_ModelName = 'text-embedding-3-small'
 
   static openRouter_MistralSmall3pt2_24b_Chutes_ModelName = 'mistralai/mistral-small-3.2-24b-instruct-2506:free'
 
@@ -92,11 +119,12 @@ export class AiTechDefs {
   ]
 
   // A list of available LLMs
-  static llmTechs = [
+  static llmTechs: TechDef[] = [
     // Google Gemini
     /* {
       provider: this.googleGeminiProvider,
       variantName: this.googleGemini_V1Pro,
+      resource: this.llmsResource,
       model: this.googleGemini_V1Pro_ModelName,
       protocol: this.geminiProtocol,
       pricingTier: SereneCoreServerTypes.paid,
@@ -108,6 +136,7 @@ export class AiTechDefs {
     {
       provider: this.googleGeminiProvider,
       variantName: this.googleGemini_V1pt5Pro,
+      resource: this.llmsResource,
       model: this.googleGemini_V1pt5Pro_ModelName,
       protocol: this.geminiProtocol,
       pricingTier: SereneCoreServerTypes.paid,
@@ -119,6 +148,7 @@ export class AiTechDefs {
     {
       provider: this.googleGeminiProvider,
       variantName: this.googleGemini_V1pt5Flash,
+      resource: this.llmsResource,
       model: this.googleGeminiV1pt5Flash_ModelName,
       protocol: this.geminiProtocol,
       pricingTier: SereneCoreServerTypes.paid,
@@ -130,6 +160,7 @@ export class AiTechDefs {
     {
       provider: this.googleGeminiProvider,
       variantName: this.googleGemini_V2Flash,
+      resource: this.llmsResource,
       model: this.googleGemini_V2Flash_ModelName,
       protocol: this.geminiProtocol,
       pricingTier: SereneCoreServerTypes.paid,
@@ -141,6 +172,7 @@ export class AiTechDefs {
     {
       provider: this.googleGeminiProvider,
       variantName: this.googleGemini_V2FlashFree,
+      resource: this.llmsResource,
       model: this.googleGemini_V2Flash_ModelName,
       protocol: this.geminiProtocol,
       pricingTier: SereneCoreServerTypes.free,
@@ -155,6 +187,7 @@ export class AiTechDefs {
     {
       provider: this.googleGeminiProvider,
       variantName: this.googleGemini_LatestExpFree,
+      resource: this.llmsResource,
       model: this.googleGemini_LatestExp_ModelName,
       protocol: this.geminiProtocol,
       pricingTier: SereneCoreServerTypes.free,
@@ -169,6 +202,7 @@ export class AiTechDefs {
     {
       provider: this.googleGeminiProvider,
       variantName: this.googleGemini_V2pt5Pro,
+      resource: this.llmsResource,
       model: this.googleGemini_V2pt5Pro_ModelName,
       protocol: this.geminiProtocol,
       pricingTier: SereneCoreServerTypes.paid,
@@ -180,6 +214,7 @@ export class AiTechDefs {
     {
       provider: this.googleGeminiProvider,
       variantName: this.googleGemini_V2pt5Flash,
+      resource: this.llmsResource,
       model: this.googleGemini_V2pt5Flash_ModelName,
       protocol: this.geminiProtocol,
       pricingTier: SereneCoreServerTypes.paid,
@@ -191,6 +226,7 @@ export class AiTechDefs {
     {
       provider: this.googleGeminiProvider,
       variantName: this.googleGemini_V2pt5FlashFree,
+      resource: this.llmsResource,
       model: this.googleGemini_V2pt5Flash_ModelName,
       protocol: this.geminiProtocol,
       pricingTier: SereneCoreServerTypes.free,
@@ -205,6 +241,7 @@ export class AiTechDefs {
     {
       provider: this.googleGeminiProvider,
       variantName: this.googleGemini_V2pt5FlashLite,
+      resource: this.llmsResource,
       model: this.googleGemini_V2pt5FlashLite_ModelName,
       protocol: this.geminiProtocol,
       pricingTier: SereneCoreServerTypes.paid,
@@ -218,6 +255,7 @@ export class AiTechDefs {
     {
       provider: this.openAiProvider,
       variantName: this.openAi_Gpt4o,
+      resource: this.llmsResource,
       model: this.openAi_Gpt4o_ModelName,
       protocol: this.openAiProtocol,
       pricingTier: SereneCoreServerTypes.paid,
@@ -229,6 +267,7 @@ export class AiTechDefs {
     {
       provider: this.openAiProvider,
       variantName: this.openAi_Gpt4pt1,
+      resource: this.llmsResource,
       model: this.openAi_Gpt4pt1_ModelName,
       protocol: this.openAiProtocol,
       pricingTier: SereneCoreServerTypes.paid,
@@ -240,6 +279,7 @@ export class AiTechDefs {
     {
       provider: this.openAiProvider,
       variantName: this.openAi_O4Mini,
+      resource: this.llmsResource,
       model: this.openAi_O4Mini_ModelName,
       protocol: this.openAiProtocol,
       pricingTier: SereneCoreServerTypes.paid,
@@ -251,6 +291,7 @@ export class AiTechDefs {
     {
       provider: this.openAiProvider,
       variantName: this.openAi_O3,
+      resource: this.llmsResource,
       model: this.openAi_O3_ModelName,
       protocol: this.openAiProtocol,
       pricingTier: SereneCoreServerTypes.paid,
@@ -263,6 +304,7 @@ export class AiTechDefs {
     {
       provider: this.openRouterProvider,
       variantName: this.openRouter_MistralSmall3pt2_24b_Chutes,
+      resource: this.llmsResource,
       model: this.openRouter_MistralSmall3pt2_24b_Chutes_ModelName,
       protocol: this.openAiProtocol,
       pricingTier: SereneCoreServerTypes.free,
@@ -275,6 +317,7 @@ export class AiTechDefs {
     {
       provider: this.mockedProvider,
       variantName: this.mockedLlmPaid,
+      resource: this.llmsResource,
       model: null,
       protocol: this.mockedAiProtocol,
       pricingTier: SereneCoreServerTypes.paid,
@@ -286,6 +329,7 @@ export class AiTechDefs {
     {
       provider: this.mockedProvider,
       variantName: this.mockedLlmFree,
+      resource: this.llmsResource,
       model: null,
       protocol: this.mockedAiProtocol,
       pricingTier: SereneCoreServerTypes.free,
@@ -294,6 +338,21 @@ export class AiTechDefs {
       default: false,
       isAdminOnly: false
     }
+  ]
+
+  static embeddingTechs: TechDef[] = [
+    {
+      provider: this.openAiProtocol,
+      variantName: this.openAi_TextEmedding3Small,
+      resource: this.embeddingsResource,
+      model: this.openAi_TextEmedding3Small_ModelName,
+      protocol: this.openAiProtocol,
+      pricingTier: SereneCoreServerTypes.paid,
+      inputTokens: null,
+      outputTokens: null,
+      default: false,
+      isAdminOnly: false
+    },
   ]
 
   // Variants for which to ignore jsonMode. This is useful for those that keep

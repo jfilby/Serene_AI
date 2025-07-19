@@ -4,10 +4,10 @@ import { GoogleGeminiLlmService } from './llm-api'
 const googleGeminiLlmService = new GoogleGeminiLlmService()
 
 // Class
-export class GoogleVertexEmbeddingService {
+export class GoogleVertexEmbeddingsService {
 
   // Consts
-  clName = 'GoogleVertexEmbeddingService'
+  clName = 'GoogleVertexEmbeddingsService'
 
   // Code
   async requestBatchEmbeddings(texts: string[]) {
@@ -71,7 +71,7 @@ export class GoogleVertexEmbeddingService {
               prisma,
               undefined)  // tech
 
-              // Make request
+    // Make request
     const results = await geminiAiClient.embedContent(text)
 
     // Validate
