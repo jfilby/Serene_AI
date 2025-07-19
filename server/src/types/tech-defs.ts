@@ -120,43 +120,7 @@ export class AiTechDefs {
 
   // A list of available LLMs
   static llmTechs: TechDef[] = [
-    // Google Gemini
-    /* {
-      provider: this.googleGeminiProvider,
-      variantName: this.googleGemini_V1Pro,
-      resource: this.llmsResource,
-      model: this.googleGemini_V1Pro_ModelName,
-      protocol: this.geminiProtocol,
-      pricingTier: SereneCoreServerTypes.paid,
-      inputTokens: 1048576,
-      outputTokens: 8192,
-      default: false,
-      isAdminOnly: false
-    },
-    {
-      provider: this.googleGeminiProvider,
-      variantName: this.googleGemini_V1pt5Pro,
-      resource: this.llmsResource,
-      model: this.googleGemini_V1pt5Pro_ModelName,
-      protocol: this.geminiProtocol,
-      pricingTier: SereneCoreServerTypes.paid,
-      inputTokens: 2097152,
-      outputTokens: 8192,
-      default: false,
-      isAdminOnly: false
-    },
-    {
-      provider: this.googleGeminiProvider,
-      variantName: this.googleGemini_V1pt5Flash,
-      resource: this.llmsResource,
-      model: this.googleGeminiV1pt5Flash_ModelName,
-      protocol: this.geminiProtocol,
-      pricingTier: SereneCoreServerTypes.paid,
-      inputTokens: 1048576,
-      outputTokens: 8192,
-      default: false,
-      isAdminOnly: false
-    }, */
+    // Google Gemini: LLMs
     {
       provider: this.googleGeminiProvider,
       variantName: this.googleGemini_V2Flash,
@@ -251,7 +215,7 @@ export class AiTechDefs {
       isAdminOnly: false
     },
 
-    // OpenAI
+    // OpenAI: LLMs
     {
       provider: this.openAiProvider,
       variantName: this.openAi_Gpt4o,
@@ -300,7 +264,20 @@ export class AiTechDefs {
       default: false,
       isAdminOnly: false
     },
-    // OpenRouter
+    // OpenAI: embeddings
+    {
+      provider: this.openAiProtocol,
+      variantName: this.openAi_TextEmedding3Small,
+      resource: this.embeddingsResource,
+      model: this.openAi_TextEmedding3Small_ModelName,
+      protocol: this.openAiProtocol,
+      pricingTier: SereneCoreServerTypes.paid,
+      inputTokens: null,
+      outputTokens: null,
+      default: false,
+      isAdminOnly: false
+    },
+    // OpenRouter: LLMs
     {
       provider: this.openRouterProvider,
       variantName: this.openRouter_MistralSmall3pt2_24b_Chutes,
@@ -313,7 +290,7 @@ export class AiTechDefs {
       default: false,
       isAdminOnly: false
     },
-    // Mock
+    // Mock: LLMs
     {
       provider: this.mockedProvider,
       variantName: this.mockedLlmPaid,
@@ -338,21 +315,6 @@ export class AiTechDefs {
       default: false,
       isAdminOnly: false
     }
-  ]
-
-  static embeddingTechs: TechDef[] = [
-    {
-      provider: this.openAiProtocol,
-      variantName: this.openAi_TextEmedding3Small,
-      resource: this.embeddingsResource,
-      model: this.openAi_TextEmedding3Small_ModelName,
-      protocol: this.openAiProtocol,
-      pricingTier: SereneCoreServerTypes.paid,
-      inputTokens: null,
-      outputTokens: null,
-      default: false,
-      isAdminOnly: false
-    },
   ]
 
   // Variants for which to ignore jsonMode. This is useful for those that keep
