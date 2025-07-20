@@ -26,20 +26,23 @@ export class OpenAiEmbeddingsService {
               tech)
 
     // Make request
-    const embedding = await openAi?.embeddings.create({
+    const response = await openAi?.embeddings.create({
       model: tech.model,
       input: text,
       encoding_format: 'float'
     })
 
     // Validate
-    if (embedding == null) {
+    if (response == null) {
 
       return {
         status: false,
-        message: `embedding == null`
+        message: `response == null`
       }
     }
+
+    // Get embedding
+    const embedding = response.data[0].embedding
 
     // Debug
     // console.log(`${fnName}: embedding: ` + JSON.stringify(embedding))
