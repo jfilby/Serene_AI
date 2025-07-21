@@ -117,10 +117,10 @@ export class GoogleGeminiLlmService {
     // Debug
     const fnName = `${this.clName}.getChatCompletions()`
 
-    console.log(`${fnName}: starting with messagesWithRoles: ` +
-                JSON.stringify(messagesWithRoles))
+    // console.log(`${fnName}: starting with messagesWithRoles: ` +
+    //             JSON.stringify(messagesWithRoles))
 
-    console.log(`${fnName}: starting with model: ` + JSON.stringify(model))
+    // console.log(`${fnName}: starting with model: ` + JSON.stringify(model))
 
     // Get/create the Gemini AI client
     const geminiAiClient = await
@@ -138,7 +138,7 @@ export class GoogleGeminiLlmService {
     // Convert to Gemini format
     messagesWithRoles = this.convertToGeminiInputMessages(messagesWithRoles)
 
-    console.log(`${fnName}: got messagesWithRoles`)
+    // console.log(`${fnName}: got messagesWithRoles`)
 
     // Get the apiVersion
     // const apiVersion = this.apiVersionByModelName[model]
@@ -191,7 +191,7 @@ export class GoogleGeminiLlmService {
     })
 
     // Send latest message
-    console.log(`${fnName}: calling chat.sendMessage()..`)
+    // console.log(`${fnName}: calling chat.sendMessage()..`)
 
     const latestMsg =
             messagesWithRoles[messagesWithRoles.length - 1].parts[0].text
