@@ -3,7 +3,7 @@ import { grey } from '@mui/material/colors'
 
 interface Props {
   icon: any
-  label: string
+  label: string | undefined
   onClick: any
   color?: string
   textColor?: string
