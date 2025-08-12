@@ -66,6 +66,7 @@ export class AiTechDefs {
   static googleGemini_V2pt5Flash = 'Google Gemini v2.5 Flash'
   static googleGemini_V2pt5FlashFree = 'Google Gemini v2.5 Flash (free tier)'
   static googleGemini_V2pt5FlashLite = 'Google Gemini v2.5 Flash-Lite'
+  static googleGemini_V2pt5FlashLiteFree = 'Google Gemini v2.5 Flash-Lite (free tier)'
 
   // OpenAI
   static openAi_Gpt4o = 'GPT-4o'
@@ -83,7 +84,7 @@ export class AiTechDefs {
   static googleGemini_V2Flash_ModelName = 'gemini-2.0-flash'
   static googleGemini_V2pt5Pro_ModelName = 'gemini-2.5-pro'
   static googleGemini_V2pt5Flash_ModelName = 'gemini-2.5-flash'
-  static googleGemini_V2pt5FlashLite_ModelName = 'gemini-2.5-flash-lite-preview-06-17'
+  static googleGemini_V2pt5FlashLite_ModelName = 'gemini-2.5-flash-lite'
 
   static openAi_Gpt4o_ModelName = 'gpt-4o'
   static openAi_Gpt4pt1_ModelName = 'gpt-4.1-2025-04-14'
@@ -208,6 +209,18 @@ export class AiTechDefs {
       outputTokens: 64000,
       default: false,
       isAdminOnly: false
+    },
+    {
+      provider: this.googleGeminiProvider,
+      variantName: this.googleGemini_V2pt5FlashLiteFree,
+      resource: this.llmsResource,
+      model: this.googleGemini_V2pt5FlashLite_ModelName,
+      protocol: this.geminiProtocol,
+      pricingTier: SereneCoreServerTypes.free,
+      inputTokens: 1000000,
+      outputTokens: 64000,
+      default: false,
+      isAdminOnly: true
     },
 
     // OpenAI: LLMs
