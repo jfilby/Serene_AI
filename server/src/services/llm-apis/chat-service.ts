@@ -185,7 +185,8 @@ export class ChatService {
           // Manually parse JSON
           var jsonText = chatCompletionResults.messages[0].text
 
-          if (jsonText !== '[' && jsonText !== '{') {
+          if (jsonText.length > 0 &&
+              jsonText[0] !== '[' && jsonText[0] !== '{') {
 
             const jsonExtracts =
                     textParsingService.getJsonExtractExcludingQuotesWithBraces(
