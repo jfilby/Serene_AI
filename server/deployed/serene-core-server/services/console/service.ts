@@ -8,7 +8,10 @@ export class ConsoleService {
 
     stdout.write(query)
     const answer = await this.rl.question('')
-    this.rl.close()
     return answer
+  }
+
+  close(): void {
+    this.rl.close()
   }
 }
