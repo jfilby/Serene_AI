@@ -1,11 +1,10 @@
-const { GoogleGenerativeAI } = require('@google/generative-ai')
+import { GoogleGenAI } from '@google/genai'
 import { PrismaClient } from '@prisma/client'
 import { CustomError } from '@/serene-core-server/types/errors'
 import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
 import { TechProviderApiKeyModel } from '@/serene-core-server/models/tech/tech-provider-api-key-model'
 import { TechProviderModel } from '@/serene-core-server/models/tech/tech-provider-model'
 import { FeatureFlags } from '../../../types/feature-flags'
-import { AiTechDefs } from '../../../types/tech-defs'
 import { SereneAiServerOnlyTypes } from '../../../types/server-only-types'
 import { EstimateGeminiTokensService } from './estimate-tokens-service'
 
@@ -17,7 +16,7 @@ interface ChatCompletion {
 }
 
 // Gemini clients
-const geminiAiClients = new Map<string, typeof GoogleGenerativeAI>()
+const geminiAiClients = new Map<string, GoogleGenAI>()
 
 // Models
 const techProviderModel = new TechProviderModel()
@@ -128,71 +127,34 @@ export class GoogleGeminiLlmService {
               prisma,
               tech)
 
-    /* List models (for debugging only)
-    const models = await
-            this.genAI.listModels()
-
-    console.log(`${fnName}: starting with models: ` +
-                JSON.stringify(models)) */
+    // Validate
+    if (geminiAiClient == null) {
+      throw new CustomError(`${fnName}: geminiAiClient == null`)
+    }
 
     // Convert to Gemini format
     messagesWithRoles = this.convertToGeminiInputMessages(messagesWithRoles)
 
+    // Debug
     // console.log(`${fnName}: got messagesWithRoles`)
-
-    // Get the apiVersion
-    // const apiVersion = this.apiVersionByModelName[model]
-
-    // console.log(`${fnName}: apiVersion: ${JSON.stringify(apiVersion)}`)
-
-    // Get the model
-    var generativeModel: any = undefined
-
-    if (tech.pricingTier === SereneCoreServerTypes.free) {
-
-      generativeModel =
-        geminiAiClient.getGenerativeModel(
-          { model: model },
-          { apiVersion: 'v1beta' })
-
-    } else if (tech.pricingTier === SereneCoreServerTypes.paid) {
-
-      generativeModel =
-        geminiAiClient.getGenerativeModel(
-          { model: model },
-          { apiVersion: 'v1beta' })
-
-    } else {
-      throw new CustomError(`${fnName}: unhandled pricingTier: ` +
-                            `${tech.pricingTier}`)
-    }
 
     // Get history: remove the latest message
     // Note: slice()'s end is exclusive of that index position
     const history = messagesWithRoles.slice(0, messagesWithRoles.length - 1)
 
+    // Debug
     // console.log(`${fnName} history: ${JSON.stringify(history)}`)
 
-    // Start chat
-    var generationConfig: any = undefined
-
-    if (jsonMode === true) {
-      generationConfig = {
-        response_mime_type: `application/json`
-      }
-    }
-
-    const chat = generativeModel.startChat({
+    // Get the model
+    const chat = geminiAiClient.chats.create({
+      model: model,
       history: history,
-      generationConfig: generationConfig
-      /* generationConfig: {
-        // maxOutputTokens: 100,
-      }, */
+      config: jsonMode ? {
+        responseMimeType: 'application/json'
+      } : undefined
     })
 
-    // Send latest message
-    // console.log(`${fnName}: calling chat.sendMessage()..`)
-
+    // Get latest message
     const latestMsg =
             messagesWithRoles[messagesWithRoles.length - 1].parts[0].text
 
@@ -201,27 +163,41 @@ export class GoogleGeminiLlmService {
       throw new CustomError(`${fnName}: latestMsg == null`)
     }
 
+    // Debug
+    // console.log(`${fnName}: calling chat.sendMessage() with: ` +
+    //             JSON.stringify(latestMsg))
+
     // Send message
-    var result: any = undefined
+    var response: any = undefined
 
-    result = await
-      chat.sendMessage(
-        latestMsg)
-
-    const response = await result.response
-    const text = response.text()
+    try {
+      response = await
+        chat.sendMessage({
+          message: latestMsg
+        })
+    } catch(e) {
+      console.error(`${fnName}: e: ` + JSON.stringify(e))
+    }
 
     // Debug
-    // console.log(`${fnName} response.text(): ${text}`)
+    // console.log(`${fnName} response: ` + JSON.stringify(response))
+
+    // Get text
+    const text = response.text
+
+    // Verify text
+    if (text == null) {
+      throw new CustomError(`${fnName}: text == null`)
+    }
 
     // Determine token usage
     var inputTokens: number = 0
     var outputTokens: number = 0
 
-    if (result.usageMetadata != null) {
+    if (response.usageMetadata != null) {
 
-      inputTokens = result.usageMetadata.promptTokenCount,
-      outputTokens = result.usageMetadata.candidatesTokenCount
+      inputTokens = response.usageMetadata.promptTokenCount!
+      outputTokens = response.usageMetadata.candidatesTokenCount!
 
     } else {
 
@@ -281,16 +257,19 @@ export class GoogleGeminiLlmService {
     }
 
     // Create a new client
-    const googleGenerateAi =
-            new GoogleGenerativeAI(techProviderApiKeys[0].apiKey)
+    const geminiAiClient =
+            new GoogleGenAI({
+              vertexai: false,
+              apiKey: techProviderApiKeys[0].apiKey
+          })
 
     // Save
     geminiAiClients.set(
       clientKey,
-      googleGenerateAi)
+      geminiAiClient)
 
     // Return
-    return googleGenerateAi
+    return geminiAiClient
   }
 
   prepareMessages(
