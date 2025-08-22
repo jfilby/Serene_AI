@@ -1,3 +1,4 @@
+import { CustomError } from '@/serene-core-server/types/errors'
 import { GoogleGeminiLlmService } from './llm-api'
 
 // Services
@@ -16,28 +17,20 @@ export class GoogleVertexEmbeddingsService {
     const fnName = `${this.clName}.requestBatchEmbeddings()`
 
     // Get/create Gemini AI client
-    // TOFIX: need to pass the model in the Gemini client instantiation: model: 'text-embedding-004'
     const geminiAiClient = await
             googleGeminiLlmService.getOrCreateClient(
               prisma,
               undefined)  // tech
 
-    // Convert texts to requests
-    var requests: any[] = []
-
-    for (const text of texts) {
-
-      requests.push({
-        content: {
-          role: 'user',
-          parts: [{ text }]
-        }
-      })
+    // Validate
+    if (geminiAiClient == null) {
+      throw new CustomError(`${fnName}: geminiAiClient == null`)
     }
 
     // Make request
-    const results = await geminiAiClient.batchEmbedContents({
-      requests: requests
+    const results = await geminiAiClient.models.embedContent({
+      model: 'text-embedding-004',
+      contents: texts
     })
 
     // Validate
@@ -71,17 +64,16 @@ export class GoogleVertexEmbeddingsService {
               prisma,
               undefined)  // tech
 
-    // Make request
-    const results = await geminiAiClient.embedContent(text)
-
     // Validate
-    if (results.embedding == null) {
-
-      return {
-        status: false,
-        message: `results.embedding == null`
-      }
+    if (geminiAiClient == null) {
+      throw new CustomError(`${fnName}: geminiAiClient == null`)
     }
+
+    // Make request
+    const results = await geminiAiClient.models.embedContent({
+      model: 'text-embedding-004',
+      contents: text
+    })
 
     // Debug
     // console.log(`${fnName}: results: ` + JSON.stringify(results))
@@ -89,7 +81,7 @@ export class GoogleVertexEmbeddingsService {
     // Return
     return {
       status: true,
-      embedding: results.embedding
+      embedding: results.embeddings
     }
   }
 }
