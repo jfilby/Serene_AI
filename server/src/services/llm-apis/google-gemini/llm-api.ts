@@ -187,7 +187,8 @@ export class GoogleGeminiLlmService {
 
     // Verify text
     if (text == null) {
-      throw new CustomError(`${fnName}: text == null`)
+      throw new CustomError(`${fnName}: text == null in response: ` +
+                            JSON.stringify(response))
     }
 
     // Determine token usage
