@@ -17,6 +17,21 @@ export class AiTechPricing {
     },
 
     // OpenAI: https://platform.openai.com/docs/pricing
+    // GPT-5 (gpt-5) / paid / text
+    [AiTechDefs.openAi_Gpt5 + `/${SereneCoreServerTypes.paid}/${AiTechPricing.text}`]: {
+      inputTokens: 1.25,
+      outputTokens: 10.00
+    },
+    // GPT-5-mini (gpt-5-mini) / paid / text
+    [AiTechDefs.openAi_Gpt5Mini + `/${SereneCoreServerTypes.paid}/${AiTechPricing.text}`]: {
+      inputTokens: 0.25,
+      outputTokens: 2.00
+    },
+    // GPT-5-nano (gpt-5-nano) / paid / text
+    [AiTechDefs.openAi_Gpt5Nano + `/${SereneCoreServerTypes.paid}/${AiTechPricing.text}`]: {
+      inputTokens: 0.05,
+      outputTokens: 0.40
+    },
     // GPT4o (gpt-4o-2024-08-06) / paid / text
     [AiTechDefs.openAi_Gpt4o + `/${SereneCoreServerTypes.paid}/${AiTechPricing.text}`]: {
       inputTokens: 2.50,
