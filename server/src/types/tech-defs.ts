@@ -69,6 +69,9 @@ export class AiTechDefs {
   static googleGemini_V2pt5FlashLiteFree = 'Google Gemini v2.5 Flash-Lite (free tier)'
 
   // OpenAI
+  static openAi_Gpt5 = 'GPT-5'
+  static openAi_Gpt5Mini = 'GPT-5-mini'
+  static openAi_Gpt5Nano = 'GPT-5-nano'
   static openAi_Gpt4o = 'GPT-4o'
   static openAi_Gpt4pt1 = 'GPT-4.1'
   static openAi_O4Mini = 'o4-mini'
@@ -86,6 +89,9 @@ export class AiTechDefs {
   static googleGemini_V2pt5Flash_ModelName = 'gemini-2.5-flash'
   static googleGemini_V2pt5FlashLite_ModelName = 'gemini-2.5-flash-lite'
 
+  static openAi_Gpt5_ModelName = 'gpt-5'
+  static openAi_Gpt5Mini_ModelName = 'gpt-5-mini'
+  static openAi_Gpt5Nano_ModelName = 'gpt-5-nano'
   static openAi_Gpt4o_ModelName = 'gpt-4o'
   static openAi_Gpt4pt1_ModelName = 'gpt-4.1-2025-04-14'
   static openAi_O4Mini_ModelName = 'o4-mini-2025-04-16'
@@ -224,6 +230,42 @@ export class AiTechDefs {
     },
 
     // OpenAI: LLMs
+    {
+      provider: this.openAiProvider,
+      variantName: this.openAi_Gpt5,
+      resource: this.llmsResource,
+      model: this.openAi_Gpt5_ModelName,
+      protocol: this.openAiProtocol,
+      pricingTier: SereneCoreServerTypes.paid,
+      inputTokens: 400000,
+      outputTokens: 128000,
+      default: false,
+      isAdminOnly: false
+    },
+    {
+      provider: this.openAiProvider,
+      variantName: this.openAi_Gpt5Mini,
+      resource: this.llmsResource,
+      model: this.openAi_Gpt5Mini_ModelName,
+      protocol: this.openAiProtocol,
+      pricingTier: SereneCoreServerTypes.paid,
+      inputTokens: 400000,
+      outputTokens: 128000,
+      default: false,
+      isAdminOnly: false
+    },
+    {
+      provider: this.openAiProvider,
+      variantName: this.openAi_Gpt5Nano,
+      resource: this.llmsResource,
+      model: this.openAi_Gpt5Nano_ModelName,
+      protocol: this.openAiProtocol,
+      pricingTier: SereneCoreServerTypes.paid,
+      inputTokens: 400000,
+      outputTokens: 128000,
+      default: false,
+      isAdminOnly: false
+    },
     {
       provider: this.openAiProvider,
       variantName: this.openAi_Gpt4o,
