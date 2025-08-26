@@ -255,7 +255,7 @@ export class ChatService {
     }
 
     if (llmTech == null) {
-      throw new CustomError(`${fnName}: no LLM default LLM tech available`)
+      throw new CustomError(`${fnName}: no default LLM tech available`)
     }
 
     // Get the cache key if required
