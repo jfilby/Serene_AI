@@ -472,6 +472,9 @@ export class ChatService {
         tryGetFromCache = true
       }
 
+      // Convert to generic message format
+      results.messages = this.convertToGenericMessageFormat(results.messages)
+
       // Add to the cache
       if (tryGetFromCache === true) {
 
@@ -483,9 +486,6 @@ export class ChatService {
           results.message ?? null,   // message
           results.messages ?? null)  // messages
         }
-
-      // Convert to generic message format
-      results.messages = this.convertToGenericMessageFormat(results.messages)
     } else {
       throw new CustomError(`${fnName}: results == null`)
     }
