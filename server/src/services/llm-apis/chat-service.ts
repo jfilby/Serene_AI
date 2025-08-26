@@ -1,4 +1,4 @@
-const blake2b = require('blake2b')
+import { blake3 } from '@noble/hashes/blake3.js'
 import { jsonrepair } from 'jsonrepair'
 import { CustomError } from '@/serene-core-server/types/errors'
 import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
@@ -263,10 +263,10 @@ export class ChatService {
 
     if (tryGetFromCache === true) {
 
-      const cacheKeyOutput = new Uint8Array(64)
-      const cacheKeyInput = Buffer.from(JSON.stringify(messagesWithRoles).toLowerCase())
-
-      cacheKey = blake2b(cacheKeyOutput.length).update(cacheKeyInput).digest('hex')
+      // Blake3 hash
+      cacheKey =
+        blake3(
+          JSON.stringify(messagesWithRoles).toLowerCase()).toString()
     }
 
     // Try the cache
