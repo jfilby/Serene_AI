@@ -405,9 +405,8 @@ model LlmCache {
   techId                       String?              @map("tech_id")
   tech                         Tech?                @relation(fields: [techId], references: [id])
   key                          String               @unique
-  stringValue                  String?              @map("string_value")
-  stringValues                 String[]             @map("string_values")
-  jsonValue                    Json?                @map("json_value")
+  message                      String?              @map("message")
+  messages                     Json?                @map("messages")
 
   @@unique([key, techId])
   @@map("llm_cache")

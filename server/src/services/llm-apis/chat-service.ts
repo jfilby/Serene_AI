@@ -19,6 +19,7 @@ import { ChatSessionService } from '../chats/sessions/chat-session-service'
 import { DetectContentTypeService } from '../content/detect-content-type-service'
 import { LlmUtilsService } from './utils-service'
 import { TextParsingService } from '../content/text-parsing-service'
+import { FeatureFlags } from '@/types/feature-flags'
 
 // Models
 const chatMessageCreatedModel = new ChatMessageCreatedModel()
@@ -258,6 +259,13 @@ export class ChatService {
       throw new CustomError(`${fnName}: no default LLM tech available`)
     }
 
+    // Try to cache everything?
+    if (FeatureFlags.tryCacheByDefault === true &&
+        tryGetFromCache === false) {
+
+      tryGetFromCache = true
+    }
+
     // Get the cache key if required
     var cacheKey: string | undefined = undefined
 
@@ -280,6 +288,9 @@ export class ChatService {
                 cacheKey)
 
       if (llmCache != null) {
+
+        var jsonEmpty: any
+
         return {
           status: true,
           isRateLimited: false,
@@ -287,9 +298,9 @@ export class ChatService {
           llmTechId: llmTech.id,
           fromCache: true,
           cacheKey: cacheKey,
-          message: llmCache.stringValue,
-          messages: llmCache.stringValues,
-          json: llmCache.jsonValue,
+          message: llmCache.message,
+          messages: llmCache.messages,
+          json: jsonEmpty,
           pricingTier: 'cached',
           inputTokens: 0,
           outputTokens: 0
@@ -454,12 +465,24 @@ export class ChatService {
         messageText += message
       }
 
-      /* Add to the cache
-      this.llmCacheModel.upsert(
-        prisma,
-        undefined,  // id
-        cacheKey,
-        messageText) */
+      // Try to cache everything?
+      if (FeatureFlags.tryCacheByDefault === true &&
+          tryGetFromCache === false) {
+
+        tryGetFromCache = true
+      }
+
+      // Add to the cache
+      if (tryGetFromCache === true) {
+
+        llmCacheModel.upsert(
+          prisma,
+          undefined,  // id
+          llmTech.id,
+          cacheKey!,
+          results.message,   // message
+          results.messages)  // messages
+        }
 
       // Convert to generic message format
       results.messages = this.convertToGenericMessageFormat(results.messages)

@@ -8,9 +8,8 @@ export class LlmCacheModel {
           prisma: any,
           techId: string,
           key: string,
-          stringValue: string | null,
-          stringValues: string[],
-          jsonValue: any | null) {
+          message: string | null,
+          messages: any | null) {
 
     // Debug
     const fnName = `${this.clName}.create()`
@@ -21,9 +20,8 @@ export class LlmCacheModel {
         data: {
           techId: techId,
           key: key,
-          stringValue: stringValue,
-          stringValues: stringValues,
-          jsonValue: jsonValue
+          message: message,
+          messages: messages
         }
       })
     } catch(error) {
@@ -107,9 +105,8 @@ export class LlmCacheModel {
           id: string,
           techId: string | undefined,
           key: string,
-          stringValue: string | null | undefined,
-          stringValues: string[] | undefined,
-          jsonValue: any) {
+          message: string | null | undefined,
+          messages: any | null | undefined) {
 
     // Debug
     const fnName = `${this.clName}.update()`
@@ -120,9 +117,8 @@ export class LlmCacheModel {
         data: {
           techId: techId,
           key: key,
-          stringValue: stringValue,
-          stringValues: stringValues,
-          jsonValue: jsonValue
+          message: message,
+          messages: messages
         },
         where: {
           id: id
@@ -138,9 +134,8 @@ export class LlmCacheModel {
                id: string | undefined,
                techId: string | undefined,
                key: string,
-               stringValue: string | null | undefined,
-               stringValues: string[] | undefined,
-               jsonValue: any) {
+               message: string | null | undefined,
+               messages: any | null | undefined) {
 
     // Debug
     const fnName = `${this.clName}.upsert()`
@@ -173,18 +168,13 @@ export class LlmCacheModel {
         throw 'Prisma error'
       }
 
-      if (stringValue === undefined) {
-        console.error(`${fnName}: id is null and stringValue is undefined`)
+      if (message === undefined) {
+        console.error(`${fnName}: id is null and message is undefined`)
         throw 'Prisma error'
       }
 
-      if (stringValues === undefined) {
-        console.error(`${fnName}: id is null and stringValues is undefined`)
-        throw 'Prisma error'
-      }
-
-      if (jsonValue === undefined) {
-        console.error(`${fnName}: id is null and jsonValue is undefined`)
+      if (messages === undefined) {
+        console.error(`${fnName}: id is null and messages is undefined`)
         throw 'Prisma error'
       }
 
@@ -193,9 +183,8 @@ export class LlmCacheModel {
                  prisma,
                  techId,
                  key,
-                 stringValue,
-                 stringValues,
-                 jsonValue)
+                 message,
+                 messages)
     } else {
 
       // Update
@@ -207,9 +196,8 @@ export class LlmCacheModel {
                  id,
                  techId,
                  key,
-                 stringValue,
-                 stringValues,
-                 jsonValue)
+                 message,
+                 messages)
     }
   }
 }
