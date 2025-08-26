@@ -407,6 +407,7 @@ model LlmCache {
   key                          String               @unique
   message                      String?              @map("message")
   messages                     Json?                @map("messages")
+  created                      DateTime             @default(now())
 
   @@unique([key, techId])
   @@map("llm_cache")

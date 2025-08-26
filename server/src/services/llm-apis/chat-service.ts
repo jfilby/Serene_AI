@@ -11,6 +11,7 @@ import { TechModel } from '@/serene-core-server/models/tech/tech-model'
 import { ResourceQuotasMutateService } from '@/serene-core-server/services/quotas/mutate-service'
 import { ResourceQuotasQueryService } from '@/serene-core-server/services/quotas/query-service'
 import { UsersService } from '@/serene-core-server/services/users/service'
+import { FeatureFlags } from '../../types/feature-flags'
 import { ChatMessage } from '../../types/server-only-types'
 import { LlmCacheModel } from '../../models/cache/llm-cache-model'
 import { ChatApiUsageService } from '../api-usage/chat-api-usage-service'
@@ -19,7 +20,6 @@ import { ChatSessionService } from '../chats/sessions/chat-session-service'
 import { DetectContentTypeService } from '../content/detect-content-type-service'
 import { LlmUtilsService } from './utils-service'
 import { TextParsingService } from '../content/text-parsing-service'
-import { FeatureFlags } from '@/types/feature-flags'
 
 // Models
 const chatMessageCreatedModel = new ChatMessageCreatedModel()
@@ -480,8 +480,8 @@ export class ChatService {
           undefined,  // id
           llmTech.id,
           cacheKey!,
-          results.message,   // message
-          results.messages)  // messages
+          results.message ?? null,   // message
+          results.messages ?? null)  // messages
         }
 
       // Convert to generic message format
