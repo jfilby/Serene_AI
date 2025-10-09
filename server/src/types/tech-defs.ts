@@ -1,3 +1,4 @@
+// NOTE: If variants are set to paid then quotas are expected to be setup.
 import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
 
 export interface RateLimitedDef {
@@ -230,15 +231,13 @@ export class AiTechDefs {
     },
 
     // OpenAI: LLMs
-    // NOTE: temporarily set GPT-5 variants to free for hackathon testing. If
-    // set to paid then quotas are expected to be setup.
     {
       provider: this.openAiProvider,
       variantName: this.openAi_Gpt5,
       resource: this.llmsResource,
       model: this.openAi_Gpt5_ModelName,
       protocol: this.openAiProtocol,
-      pricingTier: SereneCoreServerTypes.free,
+      pricingTier: SereneCoreServerTypes.paid,
       inputTokens: 400000,
       outputTokens: 128000,
       default: false,
@@ -250,7 +249,7 @@ export class AiTechDefs {
       resource: this.llmsResource,
       model: this.openAi_Gpt5Mini_ModelName,
       protocol: this.openAiProtocol,
-      pricingTier: SereneCoreServerTypes.free,
+      pricingTier: SereneCoreServerTypes.paid,
       inputTokens: 400000,
       outputTokens: 128000,
       default: false,
@@ -262,7 +261,7 @@ export class AiTechDefs {
       resource: this.llmsResource,
       model: this.openAi_Gpt5Nano_ModelName,
       protocol: this.openAiProtocol,
-      pricingTier: SereneCoreServerTypes.free,
+      pricingTier: SereneCoreServerTypes.paid,
       inputTokens: 400000,
       outputTokens: 128000,
       default: false,
