@@ -1,4 +1,4 @@
-import { Button, ButtonProps, styled } from '@mui/material'
+import { Box, Button, ButtonProps, styled } from '@mui/material'
 import { grey } from '@mui/material/colors'
 
 interface Props {
@@ -34,13 +34,17 @@ export default function LabeledIconButton({
   }))
 
   // Render
+  // Wrap in a box, so that if there's no onClick event the button isn't
+  // clickable (pointerEvents set to none instead of auto).
   return (
-    <ColorButton
-      onClick={onClick}
-      variant='text'
-      startIcon={<Icon />}
-      style={style}>
-      {label}
-    </ColorButton>
+    <Box sx={{ pointerEvents: onClick == null ? 'none' : 'auto' }}>
+      <ColorButton
+        onClick={onClick}
+        variant='text'
+        startIcon={<Icon />}
+        style={style}>
+        {label}
+      </ColorButton>
+    </Box>
   )
 }
