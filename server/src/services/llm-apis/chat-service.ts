@@ -152,6 +152,14 @@ export class ChatService {
           jsonMode,
           tryGetFromCache)
 
+      // HTTP 503 (service unavailable)?
+      if (chatCompletionResults.statusCode === 503) {
+
+        console.log(`${fnName}: status code 503 encountered, waiting to retry..`)
+        sleepSeconds(60)
+        continue
+      }
+
       // Validate
       if (chatCompletionResults.isRateLimited == null) {
 

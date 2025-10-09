@@ -32,6 +32,7 @@ export class OpenAIGenericLlmService {
     // Initial results map
     var results = {
       status: true,
+      statusCode: openAiResults ? openAiResults.statusCode : undefined,
       model: undefined,
       message: '',     // Error message (if any)
       messages: [],    // Reply messages,

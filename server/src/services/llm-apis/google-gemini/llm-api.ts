@@ -177,6 +177,11 @@ export class GoogleGeminiLlmService {
         })
     } catch(e) {
       console.error(`${fnName}: e: ` + JSON.stringify(e))
+
+      if (response != null) {
+        console.error(`${fnName}: statusCode: ` +
+                      JSON.stringify(response.statusCode))
+      }
     }
 
     // Debug
@@ -212,7 +217,8 @@ export class GoogleGeminiLlmService {
     return {
       messages: [text],
       inputTokens: inputTokens,
-      outputTokens: outputTokens
+      outputTokens: outputTokens,
+      statusCode: response ? response.statusCode : undefined
     }
   }
 
