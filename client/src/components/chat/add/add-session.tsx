@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import { Alert, Typography } from '@mui/material'
 import { getOrCreateChatSessionMutation } from '../../../apollo/chats'
 

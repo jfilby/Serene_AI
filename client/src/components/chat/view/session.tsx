@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useLazyQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client/react'
 import { getChatMessagesQuery } from '../../../apollo/chats'
 import { io } from 'socket.io-client'
 import { Alert, Button, TextareaAutosize } from '@mui/material'
@@ -49,8 +49,8 @@ export default function ViewChatSession({
   const [chatHeight, setChatHeight] = useState(getChatBoxHeight())
 
   // GraphQL
-  const [fetchChatMessages] =
-    useLazyQuery(getChatMessagesQuery, {
+  const { refetch: fetchChatMessages } =
+    useQuery<any>(getChatMessagesQuery, {
       fetchPolicy: 'no-cache'
       /* onCompleted: data => {
         console.log('elementName: ' + elementName)
@@ -82,16 +82,13 @@ export default function ViewChatSession({
   async function getChatMessages() {
 
     // Get project
-    const getChatMessagesData =
-      await fetchChatMessages(
-        {
-          variables: {
-            chatSessionId: chatSession.id,
-            userProfileId: userProfileId
-          }
-        })
+    const { data } = await
+            fetchChatMessages({
+              chatSessionId: chatSession.id,
+              userProfileId: userProfileId
+              })
 
-    const results = getChatMessagesData.data.getChatMessages
+    const results = data.getChatMessages
 
     if (results != null) {
 

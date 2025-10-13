@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useLazyQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client/react'
 import { Divider, Typography } from '@mui/material'
 import { getChatSessionsQuery } from '../../../apollo/chats'
 
@@ -19,8 +19,8 @@ export default function ChatSessionsList({
   const [chatSessions, setChatSessions] = useState<any[] | undefined>(undefined)
 
   // GraphQL
-  const [fetchGetChatSessionsQuery] =
-    useLazyQuery(getChatSessionsQuery, {
+  const { refetch: fetchGetChatSessionsQuery } =
+    useQuery<any>(getChatSessionsQuery, {
       fetchPolicy: 'no-cache'
       /* onCompleted: data => {
         console.log('elementName: ' + elementName)
@@ -35,17 +35,14 @@ export default function ChatSessionsList({
   async function getInstances() {
 
     // Query
-    const getChatSessionsData =
-      await fetchGetChatSessionsQuery(
-        {
-          variables: {
-            instanceId: instanceId,
-            status: status,
-            userProfileId: userProfileId
-          }
-        })
+    const { data } = await
+            fetchGetChatSessionsQuery({
+              instanceId: instanceId,
+              status: status,
+              userProfileId: userProfileId
+          })
 
-        setChatSessions(getChatSessionsData.data.getChatSessions)
+    setChatSessions(data.getChatSessions)
   }
 
   // Effects
