@@ -2,6 +2,7 @@ import { CustomError } from '@/serene-core-server/types/errors'
 import { ChatSessionModel } from '@/serene-core-server/models/chat/chat-session-model'
 import { ChatSettingsModel } from '@/serene-core-server/models/chat/chat-settings-model'
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
+import { sleepSeconds } from '@/serene-core-server/services/process/sleep'
 import { SereneAiServerOnlyTypes } from '../../types/server-only-types'
 import { AgentsService } from '../agents/agents-service'
 import { ChatService } from './chat-service'
@@ -100,6 +101,8 @@ export class AgentLlmService {
 
       // Retry log statement
       if (i > 0) {
+        console.log(`${fnName}: waiting 1m before retrying..`)
+        await sleepSeconds(60)
         console.log(`${fnName}: retrying: ${i+1} of ${retries}`)
       }
 

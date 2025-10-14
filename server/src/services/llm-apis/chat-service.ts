@@ -156,7 +156,7 @@ export class ChatService {
       if (chatCompletionResults.statusCode === 503) {
 
         console.log(`${fnName}: status code 503 encountered, waiting to retry..`)
-        sleepSeconds(60)
+        await sleepSeconds(60)
         continue
       }
 
