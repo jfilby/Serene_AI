@@ -129,6 +129,11 @@ export class AgentLlmService {
       }
     }
 
+    // Validate
+    if (chatCompletionResults == null) {
+      throw new CustomError(`${fnName}: chatCompletionResults == null`)
+    }
+
     // Handle status false
     if (chatCompletionResults.status === false) {
       return chatCompletionResults
