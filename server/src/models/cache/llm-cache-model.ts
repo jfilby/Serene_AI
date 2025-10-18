@@ -10,8 +10,9 @@ export class LlmCacheModel {
           prisma: PrismaClient,
           techId: string,
           key: string,
-          message: string | null,
-          messages: any | null) {
+          inputMessage: string,
+          outputMessage: string | null,
+          outputMessages: any | null) {
 
     // Debug
     const fnName = `${this.clName}.create()`
@@ -22,8 +23,9 @@ export class LlmCacheModel {
         data: {
           techId: techId,
           key: key,
-          message: message,
-          messages: messages
+          inputMessage: inputMessage,
+          outputMessage: outputMessage,
+          outputMessages: outputMessages
         }
       })
     } catch(error) {
@@ -32,22 +34,16 @@ export class LlmCacheModel {
     }
   }
 
-  async deleteByTechIdAndKey(
+  async deleteById(
           prisma: PrismaClient,
-          techId: string,
-          key: string) {
+          id: string) {
 
     // Debug
-    const fnName = `${this.clName}.deleteByTechIdAndKey()`
+    const fnName = `${this.clName}.deleteById()`
 
     // Validate
-    if (techId == null) {
-      console.error(`${fnName}: techId is null`)
-      throw 'Prisma error'
-    }
-
-    if (key == null) {
-      console.error(`${fnName}: key is null`)
+    if (id == null) {
+      console.error(`${fnName}: id is null`)
       throw 'Prisma error'
     }
 
@@ -55,8 +51,7 @@ export class LlmCacheModel {
     try {
       await prisma.llmCache.delete({
         where: {
-          techId: techId,
-          key: key
+          id: id
         }
       })
     } catch(error: any) {
@@ -148,9 +143,10 @@ export class LlmCacheModel {
           prisma: PrismaClient,
           id: string,
           techId: string | undefined,
-          key: string,
-          message: string | null | undefined,
-          messages: any | null | undefined) {
+          key: string | undefined,
+          inputMessage: string | undefined,
+          outputMessage: string | null | undefined,
+          outputMessages: any | null | undefined) {
 
     // Debug
     const fnName = `${this.clName}.update()`
@@ -161,8 +157,9 @@ export class LlmCacheModel {
         data: {
           techId: techId,
           key: key,
-          message: message,
-          messages: messages
+          inputMessage: inputMessage,
+          outputMessage: outputMessage,
+          outputMessages: outputMessages
         },
         where: {
           id: id
@@ -178,8 +175,9 @@ export class LlmCacheModel {
                id: string | undefined,
                techId: string | undefined,
                key: string,
-               message: string | null | undefined,
-               messages: any | null | undefined) {
+               inputMessage: string | undefined,
+               outputMessage: string | null | undefined,
+               outputMessages: any | null | undefined) {
 
     // Debug
     const fnName = `${this.clName}.upsert()`
@@ -212,13 +210,18 @@ export class LlmCacheModel {
         throw 'Prisma error'
       }
 
-      if (message === undefined) {
-        console.error(`${fnName}: id is null and message is undefined`)
+      if (inputMessage === undefined) {
+        console.error(`${fnName}: id is null and inputMessage is undefined`)
         throw 'Prisma error'
       }
 
-      if (messages === undefined) {
-        console.error(`${fnName}: id is null and messages is undefined`)
+      if (outputMessage === undefined) {
+        console.error(`${fnName}: id is null and outputMessage is undefined`)
+        throw 'Prisma error'
+      }
+
+      if (outputMessages === undefined) {
+        console.error(`${fnName}: id is null and outputMessages is undefined`)
         throw 'Prisma error'
       }
 
@@ -227,8 +230,9 @@ export class LlmCacheModel {
                  prisma,
                  techId,
                  key,
-                 message,
-                 messages)
+                 inputMessage,
+                 outputMessage,
+                 outputMessages)
     } else {
 
       // Update
@@ -240,8 +244,9 @@ export class LlmCacheModel {
                  id,
                  techId,
                  key,
-                 message,
-                 messages)
+                 inputMessage,
+                 outputMessage,
+                 outputMessages)
     }
   }
 }

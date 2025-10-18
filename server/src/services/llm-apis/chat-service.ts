@@ -288,6 +288,7 @@ export class ChatService {
 
     // Get the cache key if required
     var cacheKey: string | undefined = undefined
+    var inputMessageStr: string | undefined = undefined
 
     // Try the cache
     if (tryGetFromCache === true &&
@@ -300,6 +301,7 @@ export class ChatService {
                 messagesWithRoles)
 
       cacheKey = llmCacheResults.cacheKey
+      inputMessageStr = llmCacheResults.inputMessageStr
       const llmCache = llmCacheResults.llmCache
 
       if (llmCache != null) {
@@ -490,6 +492,7 @@ export class ChatService {
                 prisma,
                 llmTech.id,
                 cacheKey!,
+                inputMessageStr!,
                 results.message,
                 results.messages)
         }

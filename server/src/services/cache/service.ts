@@ -5,6 +5,7 @@ import { LlmCacheModel } from '../../models/cache/llm-cache-model'
 // Types
 export interface LlmGetInterface {
   cacheKey: string
+  inputMessageStr: string
   llmCache: any
 }
 
@@ -23,10 +24,19 @@ export class LlmCacheService {
           llmTechId: string,
           cacheKey: string) {
 
-    await llmCacheModel.deleteByTechIdAndKey(
+    const llmCache = await
+            llmCacheModel.getByTechIdAndKey(
+              prisma,
+              llmTechId,
+              cacheKey)
+
+    if (llmCache == null) {
+      return
+    }
+
+    await llmCacheModel.deleteById(
             prisma,
-            llmTechId,
-            cacheKey)
+            llmCache.id)
   }
 
   async tryGet(
@@ -34,10 +44,12 @@ export class LlmCacheService {
           llmTechId: string,
           messagesWithRoles: any[]): Promise<LlmGetInterface> {
 
-      // Blake3 hash
+    // Get stringified inputMessage
+    const inputMessageStr = JSON.stringify(messagesWithRoles).toLowerCase()
+
+    // Blake3 hash
     const cacheKey =
-            blake3(
-              JSON.stringify(messagesWithRoles).toLowerCase()).toString()
+            blake3(inputMessageStr).toString()
 
     // Try to get an LlmCache
     const llmCache = await
@@ -46,9 +58,20 @@ export class LlmCacheService {
               llmTechId,
               cacheKey)
 
+    // Verify input
+    if (llmCache?.input != inputMessageStr) {
+
+      return {
+        cacheKey: cacheKey,
+        inputMessageStr: inputMessageStr,
+        llmCache: undefined
+      }
+    }
+
     // Return
     return {
       cacheKey: cacheKey,
+      inputMessageStr: inputMessageStr,
       llmCache: llmCache
     }
   }
@@ -57,15 +80,17 @@ export class LlmCacheService {
           prisma: PrismaClient,
           llmTechId: string,
           cacheKey: string,
-          message: any,
-          messages: any) {
+          inputMessage: string,
+          outputMessage: any,
+          outputMessages: any) {
 
     llmCacheModel.upsert(
       prisma,
       undefined,  // id
       llmTechId,
       cacheKey!,
-      message ?? null,   // message
-      messages ?? null)  // messages
+      inputMessage,
+      outputMessage ?? null,   // message
+      outputMessages ?? null)  // messages
   }
 }

@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
@@ -405,8 +404,9 @@ model LlmCache {
   techId                       String?              @map("tech_id")
   tech                         Tech?                @relation(fields: [techId], references: [id])
   key                          String               @unique
-  message                      String?              @map("message")
-  messages                     Json?                @map("messages")
+  inputMessage                 String               @map("input_message")
+  outputMessage                String?              @map("output_message")
+  outputMessages               Json?                @map("output_messages")
   created                      DateTime             @default(now())
 
   @@unique([key, techId])
