@@ -247,11 +247,22 @@ export class ChatService {
     // Debug
     const fnName = `${this.clName}.prepAndSendLlmRequest()`
 
-    // console.log(`${fnName}: starting with jsonMode: ${jsonMode}`)
+    // console.log(`${fnName}: starting with jsonMode: ${jsonMode} and ` +
+    //             `tryGetFromCache: ${tryGetFromCache}`)
 
     // Validate
     if (agentUser == null) {
       throw new CustomError(`${fnName}: agentUser == null`)
+    }
+
+    if (jsonMode === true &&
+        tryGetFromCache === true) {
+
+      // Don't all use of the LLM cache for JSON requests. This should be done
+      // in the calling application after any required validation.
+      throw new CustomError(
+                  `${fnName}: use of the LLM cache here, for JSON requests ` +
+                  `before validation, is an anti-pattern (can't proceed)`)
     }
 
     // If llmTechId isn't specified, get the default
