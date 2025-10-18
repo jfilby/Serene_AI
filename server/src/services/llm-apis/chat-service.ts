@@ -1,4 +1,3 @@
-import { blake3 } from '@noble/hashes/blake3.js'
 import { jsonrepair } from 'jsonrepair'
 import { CustomError } from '@/serene-core-server/types/errors'
 import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
@@ -13,7 +12,7 @@ import { ResourceQuotasQueryService } from '@/serene-core-server/services/quotas
 import { UsersService } from '@/serene-core-server/services/users/service'
 import { FeatureFlags } from '../../types/feature-flags'
 import { ChatMessage } from '../../types/server-only-types'
-import { LlmCacheModel } from '../../models/cache/llm-cache-model'
+import { LlmCacheService } from '../cache/service'
 import { ChatApiUsageService } from '../api-usage/chat-api-usage-service'
 import { ChatMessageService } from '../chats/messages/service'
 import { ChatSessionService } from '../chats/sessions/chat-session-service'
@@ -25,7 +24,6 @@ import { TextParsingService } from '../content/text-parsing-service'
 const chatMessageCreatedModel = new ChatMessageCreatedModel()
 const chatMessageModel = new ChatMessageModel(process.env.NEXT_PUBLIC_DB_ENCRYPT_SECRET)
 const chatSessionModel = new ChatSessionModel()
-const llmCacheModel = new LlmCacheModel()
 const rateLimitedApiEventModel = new RateLimitedApiEventModel()
 const resourceQuotasMutateService = new ResourceQuotasMutateService()
 const techModel = new TechModel()
@@ -35,6 +33,7 @@ const chatApiUsageService = new ChatApiUsageService()
 const chatMessageService = new ChatMessageService()
 const chatSessionService = new ChatSessionService()
 const detectContentTypeService = new DetectContentTypeService()
+const llmCacheService = new LlmCacheService()
 const llmUtilsService = new LlmUtilsService()
 const resourceQuotasService = new ResourceQuotasQueryService()
 const textParsingService = new TextParsingService()
@@ -290,23 +289,18 @@ export class ChatService {
     // Get the cache key if required
     var cacheKey: string | undefined = undefined
 
-    if (tryGetFromCache === true) {
-
-      // Blake3 hash
-      cacheKey =
-        blake3(
-          JSON.stringify(messagesWithRoles).toLowerCase()).toString()
-    }
-
     // Try the cache
     if (tryGetFromCache === true &&
         cacheKey != null) {
 
-      const llmCache = await
-              llmCacheModel.getByTechIdAndKey(
+      const llmCacheResults = await
+              llmCacheService.tryGet(
                 prisma,
                 llmTech.id,
-                cacheKey)
+                messagesWithRoles)
+
+      cacheKey = llmCacheResults.cacheKey
+      const llmCache = llmCacheResults.llmCache
 
       if (llmCache != null) {
 
@@ -492,13 +486,12 @@ export class ChatService {
       // Add to the cache
       if (tryGetFromCache === true) {
 
-        llmCacheModel.upsert(
-          prisma,
-          undefined,  // id
-          llmTech.id,
-          cacheKey!,
-          results.message ?? null,   // message
-          results.messages ?? null)  // messages
+        await llmCacheService.save(
+                prisma,
+                llmTech.id,
+                cacheKey!,
+                results.message,
+                results.messages)
         }
     } else {
       throw new CustomError(`${fnName}: results == null`)
