@@ -1,3 +1,5 @@
+import { PrismaClient } from '@prisma/client'
+
 export class LlmCacheModel {
 
   // Consts
@@ -5,7 +7,7 @@ export class LlmCacheModel {
 
   // Code
   async create(
-          prisma: any,
+          prisma: PrismaClient,
           techId: string,
           key: string,
           message: string | null,
@@ -30,11 +32,53 @@ export class LlmCacheModel {
     }
   }
 
-  async getById(prisma: any,
+  async deleteByTechIdAndKey(
+          prisma: PrismaClient,
+          techId: string,
+          key: string) {
+
+    // Debug
+    const fnName = `${this.clName}.deleteByTechIdAndKey()`
+
+    // Validate
+    if (techId == null) {
+      console.error(`${fnName}: techId is null`)
+      throw 'Prisma error'
+    }
+
+    if (key == null) {
+      console.error(`${fnName}: key is null`)
+      throw 'Prisma error'
+    }
+
+    // Query
+    try {
+      await prisma.llmCache.delete({
+        where: {
+          techId: techId,
+          key: key
+        }
+      })
+    } catch(error: any) {
+      if (!(error instanceof error.NotFound)) {
+        console.error(`${fnName}: error: ${error}`)
+        throw 'Prisma error'
+      }
+    }
+  }
+
+  async getById(prisma: PrismaClient,
                 id: string) {
 
     // Debug
     const fnName = `${this.clName}.getById()`
+
+
+    // Validate
+    if (id == null) {
+      console.error(`${fnName}: id is null`)
+      throw 'Prisma error'
+    }
 
     // Query
     var llmCache: any = null
@@ -57,7 +101,7 @@ export class LlmCacheModel {
   }
 
   async getByTechIdAndKey(
-          prisma: any,
+          prisma: PrismaClient,
           techId: string,
           key: string) {
 
@@ -101,7 +145,7 @@ export class LlmCacheModel {
   }
 
   async update(
-          prisma: any,
+          prisma: PrismaClient,
           id: string,
           techId: string | undefined,
           key: string,
@@ -130,7 +174,7 @@ export class LlmCacheModel {
     }
   }
 
-  async upsert(prisma: any,
+  async upsert(prisma: PrismaClient,
                id: string | undefined,
                techId: string | undefined,
                key: string,

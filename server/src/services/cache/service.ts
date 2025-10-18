@@ -18,6 +18,17 @@ export class LlmCacheService {
   clName = 'LlmCacheService'
 
   // Code
+  async deleteByTechIdAndKey(
+          prisma: PrismaClient,
+          llmTechId: string,
+          cacheKey: string) {
+
+    await llmCacheModel.deleteByTechIdAndKey(
+            prisma,
+            llmTechId,
+            cacheKey)
+  }
+
   async tryGet(
           prisma: PrismaClient,
           llmTechId: string,
