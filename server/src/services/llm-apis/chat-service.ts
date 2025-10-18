@@ -255,20 +255,7 @@ export class ChatService {
       throw new CustomError(`${fnName}: agentUser == null`)
     }
 
-    // If llmTechId isn't specified, get the default
-    if (llmTech == null) {
-
-      llmTech = await
-        techModel.getByVariantName(
-          prisma,
-          process.env.DEFAULT_LLM_VARIANT as string)
-    }
-
-    if (llmTech == null) {
-      throw new CustomError(`${fnName}: no default LLM tech available`)
-    }
-
-    // Try to cache everything?
+    // Try to cache everything? (Ignore for JSON mode, see validation below).
     if (FeatureFlags.tryCacheByDefault === true &&
         tryGetFromCache === false &&
         jsonMode === false) {
@@ -280,11 +267,24 @@ export class ChatService {
     if (jsonMode === true &&
         tryGetFromCache === true) {
 
-      // Don't all use of the LLM cache for JSON requests. This should be done
-      // in the calling application after any required validation.
+      // Don't allow use of the LLM cache for JSON requests. This should be
+      // done in the calling application after any required validation.
       throw new CustomError(
                   `${fnName}: use of the LLM cache here, for JSON requests ` +
                   `before validation, is an anti-pattern (can't proceed)`)
+    }
+
+    // If llmTechId isn't specified, get the default
+    if (llmTech == null) {
+
+      llmTech = await
+        techModel.getByVariantName(
+          prisma,
+          process.env.DEFAULT_LLM_VARIANT as string)
+    }
+
+    if (llmTech == null) {
+      throw new CustomError(`${fnName}: no default LLM tech available`)
     }
 
     // Get the cache key if required
