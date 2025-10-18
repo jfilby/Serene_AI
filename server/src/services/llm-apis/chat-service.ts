@@ -255,16 +255,6 @@ export class ChatService {
       throw new CustomError(`${fnName}: agentUser == null`)
     }
 
-    if (jsonMode === true &&
-        tryGetFromCache === true) {
-
-      // Don't all use of the LLM cache for JSON requests. This should be done
-      // in the calling application after any required validation.
-      throw new CustomError(
-                  `${fnName}: use of the LLM cache here, for JSON requests ` +
-                  `before validation, is an anti-pattern (can't proceed)`)
-    }
-
     // If llmTechId isn't specified, get the default
     if (llmTech == null) {
 
@@ -280,9 +270,21 @@ export class ChatService {
 
     // Try to cache everything?
     if (FeatureFlags.tryCacheByDefault === true &&
-        tryGetFromCache === false) {
+        tryGetFromCache === false &&
+        jsonMode === false) {
 
       tryGetFromCache = true
+    }
+
+    // Validate cache use
+    if (jsonMode === true &&
+        tryGetFromCache === true) {
+
+      // Don't all use of the LLM cache for JSON requests. This should be done
+      // in the calling application after any required validation.
+      throw new CustomError(
+                  `${fnName}: use of the LLM cache here, for JSON requests ` +
+                  `before validation, is an anti-pattern (can't proceed)`)
     }
 
     // Get the cache key if required
