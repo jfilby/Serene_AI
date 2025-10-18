@@ -486,13 +486,6 @@ export class ChatService {
         messageText += message
       }
 
-      // Try to cache everything?
-      if (FeatureFlags.tryCacheByDefault === true &&
-          tryGetFromCache === false) {
-
-        tryGetFromCache = true
-      }
-
       // Convert to generic message format
       results.messages = this.convertToGenericMessageFormat(results.messages)
 
