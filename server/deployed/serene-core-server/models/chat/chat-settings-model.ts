@@ -1,3 +1,5 @@
+import { PrismaClient } from '@prisma/client'
+
 export class ChatSettingsModel {
 
   // Consts
@@ -151,7 +153,7 @@ export class ChatSettingsModel {
     try {
       return await prisma.chatSettings.findMany({
         where: {
-          pinned: false,
+          isPinned: false,
           ofChatSessions: {
             none: {}
           }

@@ -1,3 +1,4 @@
+import { PrismaClient } from '@prisma/client'
 import { CustomError } from '@/serene-core-server/types/errors'
 import { UserTypes } from '@/serene-core-server/types/user-types'
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
@@ -124,9 +125,9 @@ export class ChatSessionService {
               chatSession.id,
               userProfileId)
 
-    chatParticipants.push(userChatParticipant)
+    chatParticipants.push(userChatParticipant);
 
-    chatSession.chatParticipants = chatParticipants
+    (chatSession as any).chatParticipants = chatParticipants
 
     // console.log(`${fnName}: chatParticipants: ` +
     //             JSON.stringify(chatParticipants))
@@ -163,6 +164,9 @@ export class ChatSessionService {
           prisma: PrismaClient,
           chatSessionId: string) {
 
+    // Debug
+    const fnName = `${this.clName}.getChatMessages()`
+
     // Get the chatParticipant record of the bot
     const toChatParticipant = await
             chatParticipantModel.getByChatSessionIdAndOwnerType(
@@ -170,11 +174,21 @@ export class ChatSessionService {
               chatSessionId,
               UserTypes.botRoleOwnerType)
 
+    // Validate
+    if (toChatParticipant == null) {
+      throw new CustomError(`${fnName}: toChatParticipant == null`)
+    }
+
     // Get the userProfileId of the bot
     const toUserProfile = await
             usersService.getById(
               prisma,
               toChatParticipant.userProfileId)
+
+    // Validate
+    if (toUserProfile == null) {
+      throw new CustomError(`${fnName}: toUserProfile == null`)
+    }
 
     // Get agent name
     const agentUser = await
@@ -268,6 +282,12 @@ export class ChatSessionService {
               prisma,
               userProfileId)
 
+    // Validate
+    if (userProfile == null) {
+      throw new CustomError(`${fnName}: userProfile == null`)
+    }
+
+    // Switch by ownerType
     switch (userProfile.ownerType) {
 
       case UserTypes.botRoleOwnerType: {
@@ -275,6 +295,10 @@ export class ChatSessionService {
                 agentUserModel.getByUserProfileId(
                   prisma,
                   userProfileId)
+
+        if (agentUser == null) {
+          throw new CustomError(`${fnName}: agentUser == null`)
+        }
 
         return agentUser.name
       }
@@ -373,6 +397,11 @@ export class ChatSessionService {
             undefined,  // isEncryptedAtRest
             undefined,  // externalIntegration
             userProfileId)
+
+      // Validate
+      if (chatSessions == null) {
+        throw new CustomError(`${fnName}: chatSessions == null`)
+      }
 
       // Prep chat sessions for return
       chatSessions = await

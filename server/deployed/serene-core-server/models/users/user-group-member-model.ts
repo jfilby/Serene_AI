@@ -1,3 +1,5 @@
+import { PrismaClient } from '@prisma/client'
+
 export class UserGroupMemberModel {
 
   // Consts
@@ -38,7 +40,7 @@ export class UserGroupMemberModel {
     // Delete record
     try {
       return await prisma.userGroupMember.delete({
-        data: {
+        where: {
           id: id
         }
       })

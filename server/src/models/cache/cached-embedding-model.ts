@@ -1,3 +1,4 @@
+import { PrismaClient } from '@prisma/client'
 import { createId } from '@paralleldrive/cuid2'
 import { CustomError } from '@/serene-core-server/types/errors'
 
@@ -43,6 +44,11 @@ export class CachedEmbeddingModel {
           FROM cached_embedding
          WHERE id = ${id}`
 
+    // Validate
+    if (results == null) {
+      throw new CustomError(`${fnName}: results == null`)
+    }
+
     if (results.length === 0) {
       return null
     }
@@ -76,6 +82,11 @@ export class CachedEmbeddingModel {
         SELECT id, text, embedding::text AS embedding
           FROM cached_embedding
          WHERE text = ${text}`
+
+    // Validate
+    if (results == null) {
+      throw new CustomError(`${fnName}: results == null`)
+    }
 
     if (results.length === 0) {
       return null

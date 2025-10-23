@@ -1,3 +1,5 @@
+import { PrismaClient } from '@prisma/client'
+import { CustomError } from '../../types/errors'
 import { ChatParticipantModel } from './chat-participant-model'
 
 const { v4: uuidv4 } = require('uuid')
@@ -119,6 +121,11 @@ export class ChatSessionModel {
               undefined,
               undefined,
               undefined)
+
+    // Validate
+    if (chatSessions == null) {
+      throw new CustomError(`${fnName}: chatSessions == null`)
+    }
 
     // Delete cascade each chat session
     for (const chatSession of chatSessions) {

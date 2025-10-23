@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { ChatSettings, PrismaClient } from '@prisma/client'
 import { CustomError } from '@/serene-core-server/types/errors'
 import { AiTechDefs } from '../../types/tech-defs'
 import { ChatSettingsModel } from '@/serene-core-server/models/chat/chat-settings-model'
@@ -117,8 +117,8 @@ export class LlmUtilsService {
     const fnName = `${this.clName}.getOrCreateChatSettings()`
 
     // If no baseChatSettingsId is specified, then get the default
-    var chatSettings
-    var baseChatSettings
+    var chatSettings: ChatSettings | undefined
+    var baseChatSettings: ChatSettings | undefined
     var defaultBaseChatSettingsId: string | null = ''
 
     if (baseChatSettingsId == null) {
@@ -238,14 +238,13 @@ export class LlmUtilsService {
       case AiTechDefs.openAiProtocol: {
 
         // Prepare messages
-        return await this.openAIGenericLlmService.prepareMessages(
-                       prisma,
-                       tech,
-                       agentUser.name,
-                       agentUser.role,
-                       systemPrompt,
-                       messagesWithRoles,
-                       false)  // anonymize
+        return this.openAIGenericLlmService.prepareMessages(
+                tech,
+                agentUser.name,
+                agentUser.role,
+                systemPrompt,
+                messagesWithRoles,
+                false)  // anonymize
       }
 
       case AiTechDefs.geminiProtocol: {
@@ -297,7 +296,6 @@ export class LlmUtilsService {
         // Prepare messages
         const prepareMessagesResults =
                 this.openAIGenericLlmService.prepareMessages(
-                  prisma,
                   tech,
                   agentUser.name,
                   agentUser.role,
@@ -338,7 +336,6 @@ export class LlmUtilsService {
         // Prepare messages
         const prepareMessagesResults =
                 this.openAIGenericLlmService.prepareMessages(
-                  prisma,
                   tech,
                   agentUser.name,
                   agentUser.role,

@@ -1,3 +1,5 @@
+import { PrismaClient } from '@prisma/client'
+import { CustomError } from '../../types/errors'
 import { UserProfileModel } from '../../models/users/user-profile-model'
 import { UserModel } from '../../models/users/user-model'
 import { UserPreferenceService } from '../user-preference/service'
@@ -83,11 +85,19 @@ export class UsersService {
           prisma: PrismaClient,
           userProfileId: string) {
 
-    // Get userProfile record
+    // Debug
+    const fnName = `${this.clName}.getUserByUserProfileId()`
+
+    // Get userProfile
     const userProfile = await
             this.getById(
               prisma,
               userProfileId)
+
+    // Validate
+    if (userProfile == null) {
+      throw new CustomError(`${fnName}: userProfile == null`)
+    }
 
     // Get user record
     if (userProfile.userId == null) {
@@ -241,8 +251,13 @@ export class UsersService {
               prisma,
               userProfileId)
 
+    // Validate
+    if (userProfile == null) {
+      throw new CustomError(`${fnName}: userProfile == null`)
+    }
+
     // Verify human roleOwnerType, or set if none
-    if (userProfile.roleOwnerType == null) {
+    if (userProfile.ownerType == null) {
 
       await this.userProfileModel.setOwnerType(
               prisma,
@@ -254,11 +269,21 @@ export class UsersService {
           prisma: PrismaClient,
           userProfileId: string) {
 
+    // Debug
+    const fnName = `${this.clName}.verifySignedInUserProfileId()`
+
+    // Get UserProfile
     const userProfile = await
             this.userProfileModel.getById(
               prisma,
               userProfileId)
 
+    // Validate
+    if (userProfile == null) {
+      throw new CustomError(`${fnName}: userProfile == null`)
+    }
+
+    // Return
     if (userProfile.userId == null) {
       return false
     } else {

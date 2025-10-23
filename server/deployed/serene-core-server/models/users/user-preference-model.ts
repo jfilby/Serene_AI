@@ -1,3 +1,5 @@
+import { PrismaClient } from '@prisma/client'
+
 export class UserPreferenceModel {
 
   // Consts
@@ -47,7 +49,7 @@ export class UserPreferenceModel {
 
     // Delete
     try {
-      return await prisma.userpreference.delete({
+      return await prisma.userPreference.delete({
         where: {
           id: id
         }
@@ -71,7 +73,7 @@ export class UserPreferenceModel {
 
     // Query
     try {
-      return await prisma.userpreference.findMany({
+      return await prisma.userPreference.findMany({
         where: {
           userProfileId: userProfileId,
           category: category,
@@ -94,7 +96,7 @@ export class UserPreferenceModel {
 
     // Query
     try {
-      return await prisma.userpreference.findMany({
+      return await prisma.userPreference.findMany({
         where: {
           userProfileId: userProfileId,
           key: {
@@ -119,7 +121,7 @@ export class UserPreferenceModel {
     var userpreference: any = null
 
     try {
-      userpreference = await prisma.userpreference.findUnique({
+      userpreference = await prisma.userPreference.findUnique({
         where: {
           id: id
         }
@@ -147,7 +149,7 @@ export class UserPreferenceModel {
     var userpreference: any = null
 
     try {
-      userpreference = await prisma.userpreference.findFirst({
+      userpreference = await prisma.userPreference.findFirst({
         where: {
           userProfileId: userProfileId,
           key: key
@@ -183,7 +185,7 @@ export class UserPreferenceModel {
 
     // Update record
     try {
-      return await prisma.userpreference.update({
+      return await prisma.userPreference.update({
         data: {
           userProfileId: userProfileId,
           category: category,

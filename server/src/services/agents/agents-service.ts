@@ -1,3 +1,4 @@
+import { PrismaClient } from '@prisma/client'
 import { AgentUserModel } from '../../models/agents/agent-user-model'
 
 export class AgentsService {

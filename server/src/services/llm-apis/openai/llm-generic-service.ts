@@ -122,7 +122,6 @@ export class OpenAIGenericLlmService {
   }
 
   prepareMessages(
-    prisma: PrismaClient,
     tech: any,
     name: string,
     role: string,

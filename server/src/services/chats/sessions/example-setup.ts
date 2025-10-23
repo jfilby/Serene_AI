@@ -1,3 +1,5 @@
+import { PrismaClient } from '@prisma/client'
+import { CustomError } from '@/serene-core-server/types/errors'
 import { ChatSettingsModel } from '@/serene-core-server/models/chat/chat-settings-model'
 import { TechModel } from '@/serene-core-server/models/tech/tech-model'
 import { AgentUserModel } from '../../../models/agents/agent-user-model'
@@ -18,6 +20,9 @@ export class ExampleChatSessionSetupService {
           prisma: PrismaClient,
           userProfileId: string) {
 
+    // Debug
+    const fnName = `${this.clName}.exampleSettings()`
+
     // Upsert an example agent
     const agentUser = await
             this.agentUserModel.upsert(
@@ -28,6 +33,11 @@ export class ExampleChatSessionSetupService {
               'Generalist',
               10,                            // maxPrevMessages
               'Talk about AI')
+
+    // Validate
+    if (agentUser == null) {
+      throw new CustomError(`${fnName}: agentUser == null`)
+    }
 
     // Upsert ChatSetting record
     const chatSetting = await

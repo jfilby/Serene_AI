@@ -1,3 +1,4 @@
+import { PrismaClient } from '@prisma/client'
 import { UserTypes } from '@/serene-core-server/types/user-types'
 
 export class AgentUserModel {

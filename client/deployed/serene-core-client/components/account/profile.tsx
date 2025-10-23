@@ -1,5 +1,5 @@
 import { signIn, signOut } from 'next-auth/react'
-import { useLazyQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client/react'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Select from '@mui/material/Select'
@@ -46,8 +46,8 @@ export default function Profile({
   const profileService = new ProfileService()
 
   // GraphQL
-  const [fetchGetUserPreferencesQuery] =
-    useLazyQuery(getUserPreferencesQuery, {
+  const { refetch: fetchGetUserPreferencesQuery } =
+    useQuery<any>(getUserPreferencesQuery, {
       fetchPolicy: 'no-cache'
       /* onCompleted: data => {
         console.log('attributeTypeName: ' + attributeTypeName)
@@ -119,19 +119,16 @@ export default function Profile({
       // Get profile data
       // console.log(`fetching getUserPreferencesQuery for userProfileId: ${user.id}`)
 
-      const results =
-        await fetchGetUserPreferencesQuery(
-          {
-            variables: {
-              userProfileId: userProfile.id,
-              category: personalDetails,
-              keys: [
-                profileService.fullName,
-                profileService.firstName,
-                profileService.countryCode,
-              ]
-            }
-          })
+      const results = await
+              fetchGetUserPreferencesQuery({
+                userProfileId: userProfile.id,
+                category: personalDetails,
+                keys: [
+                  profileService.fullName,
+                  profileService.firstName,
+                  profileService.countryCode,
+                ]
+              })
 
       // Set profile data
       const keyValues = results.data['getUserPreferences']

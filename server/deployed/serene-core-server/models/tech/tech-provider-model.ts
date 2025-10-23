@@ -1,3 +1,4 @@
+import { PrismaClient } from '@prisma/client'
 import { CustomError } from '../../types/errors'
 
 export class TechProviderModel {
@@ -49,7 +50,7 @@ export class TechProviderModel {
         },
         orderBy: [
           {
-            variantName: 'asc'
+            name: 'asc'
           }
         ]
       })

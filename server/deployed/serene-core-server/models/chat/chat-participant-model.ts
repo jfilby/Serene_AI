@@ -1,3 +1,5 @@
+import { PrismaClient } from '@prisma/client'
+import { CustomError } from '../../types/errors'
 import { UsersService } from '../../services/users/service'
 
 export class ChatParticipantModel {
@@ -170,6 +172,11 @@ export class ChatParticipantModel {
             this.usersService.getById(
               prisma,
               userProfileId)
+
+    // Validate
+    if (userProfile == null) {
+      throw new CustomError(`${fnName}: userProfile == null`)
+    }
 
     // Return OK
     return userProfile.ownerType

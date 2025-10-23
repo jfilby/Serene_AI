@@ -1,3 +1,4 @@
+import { PrismaClient } from '@prisma/client'
 import { Encrypter } from '@/serene-core-server/services/access/encrypt-service'
 import { CustomError } from '@/serene-core-server/types/errors'
 
@@ -371,7 +372,6 @@ export class ChatMessageModel {
 
     // Validate
     if (chatSession == null) {
-
       throw new CustomError(`${fnName}: chatMessage == null`)
     }
 
@@ -382,7 +382,7 @@ export class ChatMessageModel {
       chatMessage = await prisma.chatMessage.findFirst({
         where: {
           chatSessionId: chatSession.id,
-          sent: true
+          sentByAi: true
         },
         orderBy: [
           {

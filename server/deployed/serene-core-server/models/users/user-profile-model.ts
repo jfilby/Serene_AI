@@ -1,3 +1,4 @@
+import { PrismaClient } from '@prisma/client'
 import { UserTypes } from '../../types/user-types'
 
 export class UserProfileModel {

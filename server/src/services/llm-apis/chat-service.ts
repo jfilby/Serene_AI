@@ -1,3 +1,4 @@
+import { PrismaClient } from '@prisma/client'
 import { jsonrepair } from 'jsonrepair'
 import { CustomError } from '@/serene-core-server/types/errors'
 import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
@@ -562,6 +563,14 @@ export class ChatService {
                             `== null`)
     }
 
+    if (agentInfo.toChatParticipant == null) {
+      throw new CustomError(`${fnName}: agentInfo.toChatParticipant == null`)
+    }
+
+    if (agentInfo.toUserProfile == null) {
+      throw new CustomError(`${fnName}: agentInfo.toUserProfile == null`)
+    }
+
     // Get chat messages
     const chatMessages = await
             chatMessageModel.getByChatSessionId(
@@ -587,7 +596,7 @@ export class ChatService {
           process.env.DEFAULT_LLM_VARIANT as string)
     }
 
-    // Validate llmTech
+    // Validate
     if (llmTech == null) {
       throw new CustomError(`${fnName}: llmTech == null with llmTechId: ` +
                             `llmTechId: ${llmTechId}`)
