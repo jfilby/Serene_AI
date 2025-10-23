@@ -13,7 +13,7 @@ export class ChatSessionModel {
   chatParticipantModel = new ChatParticipantModel()
 
   // Code
-  async create(prisma: any,
+  async create(prisma: PrismaClient,
                id: string | undefined,
                chatSettingsId: string,
                instanceId: string | null,
@@ -53,7 +53,7 @@ export class ChatSessionModel {
   }
 
   async deleteById(
-          prisma: any,
+          prisma: PrismaClient,
           id: string) {
 
     // Debug
@@ -73,7 +73,7 @@ export class ChatSessionModel {
   }
 
   async deleteByIdCascade(
-          prisma: any,
+          prisma: PrismaClient,
           id: string) {
 
     // Debug
@@ -104,7 +104,7 @@ export class ChatSessionModel {
   }
 
   async deleteByInstanceId(
-          prisma: any,
+          prisma: PrismaClient,
           instanceId: string) {
 
     // Debug
@@ -130,7 +130,7 @@ export class ChatSessionModel {
   }
 
   async filter(
-          prisma: any,
+          prisma: PrismaClient,
           instanceId: string | null | undefined,
           status: string | undefined,
           isEncryptedAtRest: boolean | undefined,
@@ -165,7 +165,7 @@ export class ChatSessionModel {
   }
 
   async getByExternalIntegrationAndExternalId(
-          prisma: any,
+          prisma: PrismaClient,
           externalIntegration: string,
           externalId: string,
           includeChatSettings: boolean = false) {
@@ -197,7 +197,7 @@ export class ChatSessionModel {
     return chatSession
   }
 
-  async getById(prisma: any,
+  async getById(prisma: PrismaClient,
                 id: string,
                 includeChatSettings: boolean = false) {
 
@@ -227,7 +227,7 @@ export class ChatSessionModel {
     return chatSession
   }
 
-  async getNewStatusOver3DaysOld(prisma: any) {
+  async getNewStatusOver3DaysOld(prisma: PrismaClient) {
 
     // Debug
     const fnName = `${this.clName}.getNewStatusOver3DaysOld()`
@@ -255,7 +255,7 @@ export class ChatSessionModel {
     }
   }
 
-  async update(prisma: any,
+  async update(prisma: PrismaClient,
                id: string,
                chatSettingsId: string | undefined,
                instanceId: string | null | undefined,
@@ -292,7 +292,7 @@ export class ChatSessionModel {
     }
   }
 
-  async upsert(prisma: any,
+  async upsert(prisma: PrismaClient,
                id: string,
                chatSettingsId: string | undefined,
                instanceId: string | null | undefined,

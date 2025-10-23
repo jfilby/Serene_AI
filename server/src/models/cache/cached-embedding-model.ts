@@ -10,7 +10,7 @@ export class CachedEmbeddingModel {
 
   // Code
   async create(
-          prisma: any,
+          prisma: PrismaClient,
           text: string,
           embedding: any) {
 
@@ -31,7 +31,7 @@ export class CachedEmbeddingModel {
     }
   }
 
-  async getById(prisma: any,
+  async getById(prisma: PrismaClient,
                 id: string) {
 
     // Debug
@@ -63,7 +63,7 @@ export class CachedEmbeddingModel {
   }
 
   async getByText(
-          prisma: any,
+          prisma: PrismaClient,
           text: string) {
 
     // Debug

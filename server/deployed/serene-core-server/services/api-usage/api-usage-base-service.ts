@@ -15,7 +15,7 @@ export class ApiUsageBaseService {
 
   // Code
   async isRateLimited(
-          prisma: any,
+          prisma: PrismaClient,
           variantName: string | undefined = undefined,
           techId: string | undefined = undefined) {
 

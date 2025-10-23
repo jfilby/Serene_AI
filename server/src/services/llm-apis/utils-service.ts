@@ -105,7 +105,7 @@ export class LlmUtilsService {
   }
 
   async getOrCreateChatSettings(
-          prisma: any,
+          prisma: PrismaClient,
           baseChatSettingsId: string | null,
           userProfileId: string,
           isEncryptedAtRest: boolean | null,
@@ -218,7 +218,7 @@ export class LlmUtilsService {
   }
 
   async prepareChatMessages(
-          prisma: any,
+          prisma: PrismaClient,
           tech: any,
           agentUser: any,
           systemPrompt: string | undefined,
@@ -279,7 +279,7 @@ export class LlmUtilsService {
   }
 
   async sendChatMessages(
-          prisma: any,
+          prisma: PrismaClient,
           tech: any,
           agentUser: any,
           systemPrompt: string | undefined,

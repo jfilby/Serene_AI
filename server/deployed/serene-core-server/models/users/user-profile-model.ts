@@ -6,7 +6,7 @@ export class UserProfileModel {
   clName = 'UserProfileModel'
 
   // Code
-  async create(prisma: any,
+  async create(prisma: PrismaClient,
                userId: string | null,
                isAdmin: boolean,
                deletePending: Date | null) {
@@ -29,7 +29,7 @@ export class UserProfileModel {
     }
   }
 
-  async getById(prisma: any,
+  async getById(prisma: PrismaClient,
                 id: string) {
 
     // Debug
@@ -51,7 +51,7 @@ export class UserProfileModel {
   }
 
   async getByUserId(
-          prisma: any,
+          prisma: PrismaClient,
           userId: string) {
 
     // Debug
@@ -73,7 +73,7 @@ export class UserProfileModel {
   }
 
   async setOwnerType(
-          prisma: any,
+          prisma: PrismaClient,
           userProfile: any) {
 
     // Debug
@@ -116,7 +116,7 @@ export class UserProfileModel {
     }
   }
 
-  async update(prisma: any,
+  async update(prisma: PrismaClient,
                id: string,
                userId: string | null | undefined,
                isAdmin: boolean | undefined,
@@ -142,7 +142,7 @@ export class UserProfileModel {
     }
   }
 
-  async upsert(prisma: any,
+  async upsert(prisma: PrismaClient,
                id: string | undefined,
                userId: string | null | undefined,
                isAdmin: boolean | undefined,

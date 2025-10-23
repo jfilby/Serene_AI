@@ -26,7 +26,7 @@ export class AgentLlmService {
 
   // Code
   async agentSingleShotLlmRequest(
-          prisma: any,
+          prisma: PrismaClient,
           tech: any,
           userProfileId: string,
           instanceId: string | null,

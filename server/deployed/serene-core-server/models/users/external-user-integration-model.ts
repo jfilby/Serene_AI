@@ -5,7 +5,7 @@ export class ExternalUserIntegrationModel {
 
   // Code
   async create(
-          prisma: any,
+          prisma: PrismaClient,
           userProfileId: string,
           externalIntegrationUserId: string,
           externalIntegration: string) {
@@ -29,7 +29,7 @@ export class ExternalUserIntegrationModel {
   }
 
   async deleteById(
-          prisma: any,
+          prisma: PrismaClient,
           id: string) {
 
     // Debug
@@ -51,7 +51,7 @@ export class ExternalUserIntegrationModel {
   }
 
   async filter(
-          prisma: any,
+          prisma: PrismaClient,
           userProfileId: string | undefined,
           externalIntegrationUserId: string | undefined,
           externalIntegration: string | undefined) {
@@ -75,7 +75,7 @@ export class ExternalUserIntegrationModel {
   }
 
   async getById(
-          prisma: any,
+          prisma: PrismaClient,
           id: string) {
 
     // Debug
@@ -102,7 +102,7 @@ export class ExternalUserIntegrationModel {
   }
 
   async getByUniqueKey(
-          prisma: any,
+          prisma: PrismaClient,
           externalIntegrationUserId: string,
           externalIntegration: string) {
 
@@ -141,7 +141,7 @@ export class ExternalUserIntegrationModel {
   }
 
   async update(
-          prisma: any,
+          prisma: PrismaClient,
           id: string,
           userProfileId: string | undefined,
           externalIntegrationUserId: string | undefined,
@@ -168,7 +168,7 @@ export class ExternalUserIntegrationModel {
     }
   }
 
-  async upsert(prisma: any,
+  async upsert(prisma: PrismaClient,
                id: string | undefined,
                userProfileId: string | undefined,
                externalIntegrationUserId: string | undefined,

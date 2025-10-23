@@ -9,7 +9,7 @@ export class MailingListSubscriberService {
 
   // Code
   async subscribe(
-          prisma: any,
+          prisma: PrismaClient,
           mailingListName: string,
           email: string,
           firstName: string) {

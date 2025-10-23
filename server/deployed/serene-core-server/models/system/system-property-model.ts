@@ -5,7 +5,7 @@ export class SystemPropertyModel {
 
   // Code
   async create(
-          prisma: any,
+          prisma: PrismaClient,
           key: string,
           value: string) {
 
@@ -32,7 +32,7 @@ export class SystemPropertyModel {
     }
   }
 
-  async getAll(prisma: any) {
+  async getAll(prisma: PrismaClient) {
 
     // Debug
     const fnName = `${this.clName}.getAll()`
@@ -47,7 +47,7 @@ export class SystemPropertyModel {
   }
 
   async getById(
-          prisma: any,
+          prisma: PrismaClient,
           id: string) {
 
     // Debug
@@ -74,7 +74,7 @@ export class SystemPropertyModel {
   }
 
   async getByKey(
-          prisma: any,
+          prisma: PrismaClient,
           key: string) {
 
     // Debug
@@ -107,7 +107,7 @@ export class SystemPropertyModel {
   }
 
   async update(
-          prisma: any,
+          prisma: PrismaClient,
           id: string,
           key: string,
           value: string) {
@@ -141,7 +141,7 @@ export class SystemPropertyModel {
   }
 
   async upsert(
-          prisma: any,
+          prisma: PrismaClient,
           key: string,
           value: string) {
 

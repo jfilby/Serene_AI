@@ -10,7 +10,7 @@ export class AgentsService {
 
   // Code
   async getOrCreate(
-          prisma: any,
+          prisma: PrismaClient,
           uniqueRefId: string | null,
           name: string,
           role: string,

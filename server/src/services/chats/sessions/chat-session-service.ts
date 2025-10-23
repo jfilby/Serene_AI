@@ -37,7 +37,7 @@ export class ChatSessionService {
 
   // Code
   async createChatSession(
-          prisma: any,
+          prisma: PrismaClient,
           baseChatSettingsId: string | null,
           userProfileId: string,
           instanceId: string | null,
@@ -138,7 +138,7 @@ export class ChatSessionService {
   }
 
   async enrichWithChatParticipantNames(
-          prisma: any,
+          prisma: PrismaClient,
           chatSession: any) {
 
     // Debug
@@ -160,7 +160,7 @@ export class ChatSessionService {
   }
 
   async getAgentInfo(
-          prisma: any,
+          prisma: PrismaClient,
           chatSessionId: string) {
 
     // Get the chatParticipant record of the bot
@@ -191,7 +191,7 @@ export class ChatSessionService {
   }
 
   async getChatMessages(
-          prisma: any,
+          prisma: PrismaClient,
           chatSessionId: string,
           userProfileId: string,
           lastMessageId: string | undefined) {
@@ -256,7 +256,7 @@ export class ChatSessionService {
   }
 
   async getChatParticipantName(
-          prisma: any,
+          prisma: PrismaClient,
           userProfileId: string) {
 
     // Debug
@@ -303,7 +303,7 @@ export class ChatSessionService {
   }
 
   async getChatParticipants(
-          prisma: any,
+          prisma: PrismaClient,
           chatSessionId: string,
           userProfileId: string) {
 
@@ -314,7 +314,7 @@ export class ChatSessionService {
   }
 
   async getChatSessionById(
-          prisma: any,
+          prisma: PrismaClient,
           chatSessionId: string,
           userProfileId: string) {
 
@@ -351,7 +351,7 @@ export class ChatSessionService {
   }
 
   async getChatSessions(
-          prisma: any,
+          prisma: PrismaClient,
           status: string,
           userProfileId: string,
           instanceId: string) {
@@ -385,7 +385,7 @@ export class ChatSessionService {
     }
 
   async getOrCreateChatSession(
-          prisma: any,
+          prisma: PrismaClient,
           chatSessionId: string,
           baseChatSettingsId: string | null,
           userProfileId: string,
@@ -471,7 +471,7 @@ export class ChatSessionService {
   }
 
   async prepChatSessionsForReturn(
-          prisma: any,
+          prisma: PrismaClient,
           chatSessions: any[]) {
 
     // Check if any chatSessions have a null/blank name, if not return
@@ -538,7 +538,7 @@ export class ChatSessionService {
   }
 
   async saveMessages(
-          prisma: any,
+          prisma: PrismaClient,
           chatSession: any,
           sessionTurnData: any) {
 

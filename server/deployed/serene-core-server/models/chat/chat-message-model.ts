@@ -18,7 +18,7 @@ export class ChatMessageModel {
   }
 
   async countMessages(
-          prisma: any,
+          prisma: PrismaClient,
           userProfileId: string,
           startDate: Date,
           sentByAi: boolean) {
@@ -43,7 +43,7 @@ export class ChatMessageModel {
     return count
   }
 
-  async create(prisma: any,
+  async create(prisma: PrismaClient,
                id: string | undefined,
                chatSession: any,
                replyToId: string | null,
@@ -95,7 +95,7 @@ export class ChatMessageModel {
   }
 
   async deleteByChatSessionId(
-          prisma: any,
+          prisma: PrismaClient,
           chatSessionId: string) {
 
     // Debug
@@ -115,7 +115,7 @@ export class ChatMessageModel {
   }
 
   async deleteById(
-          prisma: any,
+          prisma: PrismaClient,
           id: string) {
 
     // Debug
@@ -134,7 +134,7 @@ export class ChatMessageModel {
     }
   }
 
-  async getById(prisma: any,
+  async getById(prisma: PrismaClient,
                 id: string,
                 chatSession: any) {
 
@@ -174,7 +174,7 @@ export class ChatMessageModel {
   }
 
   async getByChatSessionId(
-          prisma: any,
+          prisma: PrismaClient,
           chatSession: any,
           maxPrevMessages: number | null) {
 
@@ -250,7 +250,7 @@ export class ChatMessageModel {
   }
 
   async getByChatSessionAndExternalId(
-          prisma: any,
+          prisma: PrismaClient,
           chatSession: any,
           externalId: string) {
 
@@ -296,7 +296,7 @@ export class ChatMessageModel {
   }
 
   async getByLastMessageId(
-          prisma: any,
+          prisma: PrismaClient,
           chatSession: any,
           lastMessageId: string) {
 
@@ -363,7 +363,7 @@ export class ChatMessageModel {
   }
 
   async getEarliestUnread(
-          prisma: any,
+          prisma: PrismaClient,
           chatSession: any) {
 
     // Debug
@@ -408,7 +408,7 @@ export class ChatMessageModel {
   }
 
   async getFirst(
-          prisma: any,
+          prisma: PrismaClient,
           chatSession: any) {
 
     // Debug
@@ -452,7 +452,7 @@ export class ChatMessageModel {
   }
 
   async getLast(
-          prisma: any,
+          prisma: PrismaClient,
           chatSession: any) {
 
     // Debug
@@ -496,7 +496,7 @@ export class ChatMessageModel {
   }
 
   async setExternalId(
-          prisma: any,
+          prisma: PrismaClient,
           id: string,
           externalId: string | null) {
 
@@ -533,7 +533,7 @@ export class ChatMessageModel {
     }
   }
 
-  async update(prisma: any,
+  async update(prisma: PrismaClient,
                id: string,
                chatSession: any,
                replyToId: string | null | undefined,
@@ -581,7 +581,7 @@ export class ChatMessageModel {
     }
   }
 
-  async upsert(prisma: any,
+  async upsert(prisma: PrismaClient,
                id: string,
                chatSession: any,
                replyToId: string | null | undefined,

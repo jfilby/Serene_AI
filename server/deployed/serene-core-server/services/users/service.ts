@@ -15,7 +15,7 @@ export class UsersService {
   userPreferenceService = new UserPreferenceService()
 
   // Code
-  async createBlankUser(prisma: any) {
+  async createBlankUser(prisma: PrismaClient) {
 
     // console.log('UsersService.createBlankUser(): start')
 
@@ -27,7 +27,7 @@ export class UsersService {
   }
 
   async createDefaultUserPreferences(
-          prisma: any,
+          prisma: PrismaClient,
           userProfileId: string,
           defaultUserPreferences: string | undefined) {
 
@@ -52,7 +52,7 @@ export class UsersService {
   }
 
   async createUserByEmail(
-          prisma: any,
+          prisma: PrismaClient,
           email: string) {
 
     const user = await
@@ -71,7 +71,7 @@ export class UsersService {
     return userProfile.id
   }
 
-  async getById(prisma: any,
+  async getById(prisma: PrismaClient,
                 userProfileId: string) {
 
     return await this.userProfileModel.getById(
@@ -80,7 +80,7 @@ export class UsersService {
   }
 
   async getUserByUserProfileId(
-          prisma: any,
+          prisma: PrismaClient,
           userProfileId: string) {
 
     // Get userProfile record
@@ -100,7 +100,7 @@ export class UsersService {
   }
 
   async getOrCreateSignedOutUser(
-          prisma: any,
+          prisma: PrismaClient,
           signedOutId: string,
           defaultUserPreferences: string) {
 
@@ -153,7 +153,7 @@ export class UsersService {
   }
 
   async getOrCreateUserByEmail(
-          prisma: any,
+          prisma: PrismaClient,
           email: string,
           defaultUserPreferences: string | undefined) {
 
@@ -209,7 +209,7 @@ export class UsersService {
   }
 
   async getUserProfileByEmail(
-          prisma: any,
+          prisma: PrismaClient,
           email: string) {
 
     // console.log(`UsersService.getUserProfileByEmail(): emailLower: ${emailLower}`)
@@ -229,7 +229,7 @@ export class UsersService {
   }
 
   async verifyHumanUserProfile(
-          prisma: any,
+          prisma: PrismaClient,
           userProfileId: string) {
 
     // Debug
@@ -251,7 +251,7 @@ export class UsersService {
   }
 
   async verifySignedInUserProfileId(
-          prisma: any,
+          prisma: PrismaClient,
           userProfileId: string) {
 
     const userProfile = await

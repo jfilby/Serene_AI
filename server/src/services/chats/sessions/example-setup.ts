@@ -15,7 +15,7 @@ export class ExampleChatSessionSetupService {
 
   // Code
   async exampleSettings(
-          prisma: any,
+          prisma: PrismaClient,
           userProfileId: string) {
 
     // Upsert an example agent

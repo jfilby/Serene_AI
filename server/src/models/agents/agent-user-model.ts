@@ -7,7 +7,7 @@ export class AgentUserModel {
 
   // Code
   async create(
-          prisma: any,
+          prisma: PrismaClient,
           uniqueRefId: string | null,
           name: string,
           role: string,
@@ -58,7 +58,7 @@ export class AgentUserModel {
   }
 
   async getById(
-          prisma: any,
+          prisma: PrismaClient,
           id: string) {
 
     // Debug
@@ -80,7 +80,7 @@ export class AgentUserModel {
   }
 
   async getByUniqueRefId(
-          prisma: any,
+          prisma: PrismaClient,
           uniqueRefId: string) {
 
     // Debug
@@ -108,7 +108,7 @@ export class AgentUserModel {
   }
 
   async getByUserProfileId(
-          prisma: any,
+          prisma: PrismaClient,
           userProfileId: string) {
 
     // Debug
@@ -130,7 +130,7 @@ export class AgentUserModel {
     }
   }
 
-  async update(prisma: any,
+  async update(prisma: PrismaClient,
                id: string,
                uniqueRefId: string | null | undefined,
                name: string | undefined,
@@ -160,7 +160,7 @@ export class AgentUserModel {
     }
   }
 
-  async upsert(prisma: any,
+  async upsert(prisma: PrismaClient,
                id: string | undefined,
                uniqueRefId: string | null | undefined,
                name: string,

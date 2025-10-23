@@ -4,7 +4,7 @@ export class ApiRateLimitModel {
   clName = 'ApiRateLimitModel'
 
   // Code
-  async create(prisma: any,
+  async create(prisma: PrismaClient,
                id: string | undefined,
                techId: string,
                ratePerMinute: number) {
@@ -27,7 +27,7 @@ export class ApiRateLimitModel {
     }
   }
 
-  async getById(prisma: any,
+  async getById(prisma: PrismaClient,
                 id: string) {
 
     // Debug
@@ -55,7 +55,7 @@ export class ApiRateLimitModel {
   }
 
   async getByTechId(
-          prisma: any,
+          prisma: PrismaClient,
           techId: string) {
 
     // Debug
@@ -90,7 +90,7 @@ export class ApiRateLimitModel {
     return apiRateLimit
   }
 
-  async update(prisma: any,
+  async update(prisma: PrismaClient,
                id: string,
                techId: string,
                ratePerMinute: number) {
@@ -115,7 +115,7 @@ export class ApiRateLimitModel {
     }
   }
 
-  async upsert(prisma: any,
+  async upsert(prisma: PrismaClient,
                id: string | undefined,
                techId: string,
                ratePerMinute: number) {

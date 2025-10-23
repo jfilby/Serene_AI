@@ -4,7 +4,7 @@ export class RateLimitedApiEventModel {
   clName = 'RateLimitedApiEventModel'
 
   // Code
-  async create(prisma: any,
+  async create(prisma: PrismaClient,
                id: string | undefined,
                rateLimitedApiId: string,
                userProfileId: string) {
@@ -27,7 +27,7 @@ export class RateLimitedApiEventModel {
     }
   }
 
-  async getById(prisma: any,
+  async getById(prisma: PrismaClient,
                 id: string) {
 
     // Debug
@@ -55,7 +55,7 @@ export class RateLimitedApiEventModel {
   }
 
   async getWaitSecondsSinceLastSpecifiedMinutes(
-          prisma: any,
+          prisma: PrismaClient,
           lastMinutes: number = 1) {
 
     const fnName = `${this.clName}.getWaitSecondsSinceLastSpecifiedMinutes()`
@@ -98,7 +98,7 @@ export class RateLimitedApiEventModel {
   }
 
   async getUserSentForLastSpecifiedMinutes(
-          prisma: any,
+          prisma: PrismaClient,
           lastMinutes: number) {
 
     const fnName = `${this.clName}.getForLastSpecifiedMinutes()`
@@ -122,7 +122,7 @@ export class RateLimitedApiEventModel {
     }
   }
 
-  async update(prisma: any,
+  async update(prisma: PrismaClient,
                id: string,
                rateLimitedApiId: string,
                userProfileId: string) {
@@ -147,7 +147,7 @@ export class RateLimitedApiEventModel {
     }
   }
 
-  async upsert(prisma: any,
+  async upsert(prisma: PrismaClient,
                id: string | undefined,
                rateLimitedApiId: string,
                userProfileId: string) {

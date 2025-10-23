@@ -5,7 +5,7 @@ export class MailingListSubscriberModel {
 
   // Code
   async create(
-          prisma: any,
+          prisma: PrismaClient,
           mailingListId: string,
           email: string,
           firstName: string | undefined,
@@ -44,7 +44,7 @@ export class MailingListSubscriberModel {
   }
 
   async getById(
-          prisma: any,
+          prisma: PrismaClient,
           id: string) {
 
     // Debug
@@ -71,7 +71,7 @@ export class MailingListSubscriberModel {
   }
 
   async getByMailingListIdAndEmail(
-          prisma: any,
+          prisma: PrismaClient,
           mailingListId: string,
           email: string) {
 
@@ -111,7 +111,7 @@ export class MailingListSubscriberModel {
   }
 
   async update(
-          prisma: any,
+          prisma: PrismaClient,
           id: string,
           mailingListId: string,
           email: string,
@@ -143,7 +143,7 @@ export class MailingListSubscriberModel {
   }
 
   async upsert(
-          prisma: any,
+          prisma: PrismaClient,
           id: string,
           mailingListId: string,
           email: string,

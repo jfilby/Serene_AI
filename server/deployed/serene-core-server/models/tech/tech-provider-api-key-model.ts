@@ -7,7 +7,7 @@ export class TechProviderApiKeyModel {
 
   // Code
   async create(
-          prisma: any,
+          prisma: PrismaClient,
           techProviderId: string,
           status: string,
           name: string,
@@ -37,7 +37,7 @@ export class TechProviderApiKeyModel {
   }
 
   async filter(
-          prisma: any,
+          prisma: PrismaClient,
           techProviderId: string | undefined,
           status: string | undefined,
           accountEmail: string | undefined,
@@ -70,7 +70,7 @@ export class TechProviderApiKeyModel {
     return techProvider
   }
 
-  async getById(prisma: any,
+  async getById(prisma: PrismaClient,
                 id: string) {
 
     // Debug
@@ -102,7 +102,7 @@ export class TechProviderApiKeyModel {
   }
 
   async getByUniqueKey(
-          prisma: any,
+          prisma: PrismaClient,
           techProviderId: string,
           name: string) {
 
@@ -140,7 +140,7 @@ export class TechProviderApiKeyModel {
   }
 
   async update(
-          prisma: any,
+          prisma: PrismaClient,
           id: string,
           techProviderId: string | undefined,
           status: string | undefined,
@@ -173,7 +173,7 @@ export class TechProviderApiKeyModel {
     }
   }
 
-  async upsert(prisma: any,
+  async upsert(prisma: PrismaClient,
                id: string | undefined,
                techProviderId: string | undefined,
                status: string | undefined,

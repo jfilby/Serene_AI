@@ -15,7 +15,7 @@ export class UsersGroupService {
 
   // Code
   async verifyGroupMemberByOwner(
-          prisma: any,
+          prisma: PrismaClient,
           memberUserProfileId: string,
           ownerUserProfileId: string,
           groupName: string) {

@@ -5,7 +5,7 @@ export class UserGroupMemberModel {
 
   // Code
   async create(
-          prisma: any,
+          prisma: PrismaClient,
           userGroupId: string,
           userProfileId: string,
           isGroupAdmin: boolean) {
@@ -29,7 +29,7 @@ export class UserGroupMemberModel {
   }
 
   async delete(
-          prisma: any,
+          prisma: PrismaClient,
           id: string) {
 
     // Debug
@@ -49,7 +49,7 @@ export class UserGroupMemberModel {
   }
 
   async filter(
-          prisma: any,
+          prisma: PrismaClient,
           userGroupId: string | undefined,
           isGroupAdmin: boolean | undefined) {
 
@@ -71,7 +71,7 @@ export class UserGroupMemberModel {
   }
 
   async getById(
-          prisma: any,
+          prisma: PrismaClient,
           id: string) {
 
     // Debug
@@ -98,7 +98,7 @@ export class UserGroupMemberModel {
   }
 
   async getByUniqueKey(
-          prisma: any,
+          prisma: PrismaClient,
           userGroupId: string,
           userProfileId: string) {
 
@@ -138,7 +138,7 @@ export class UserGroupMemberModel {
   }
 
   async update(
-          prisma: any,
+          prisma: PrismaClient,
           id: string,
           userGroupId: string | undefined,
           userProfileId: string | undefined,
@@ -165,7 +165,7 @@ export class UserGroupMemberModel {
     }
   }
 
-  async upsert(prisma: any,
+  async upsert(prisma: PrismaClient,
                id: string | undefined,
                userGroupId: string | undefined,
                userProfileId: string | undefined,

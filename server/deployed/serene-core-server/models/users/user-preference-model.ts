@@ -5,7 +5,7 @@ export class UserPreferenceModel {
 
   // Code
   async create(
-          prisma: any,
+          prisma: PrismaClient,
           userProfileId: string,
           category: string,
           key: string,
@@ -39,7 +39,7 @@ export class UserPreferenceModel {
   }
 
   async deleteById(
-          prisma: any,
+          prisma: PrismaClient,
           id: string) {
 
     // Debug
@@ -61,7 +61,7 @@ export class UserPreferenceModel {
   }
 
   async filter(
-          prisma: any,
+          prisma: PrismaClient,
           userProfileId: string | undefined,
           category: string | undefined,
           key: string | undefined) {
@@ -85,7 +85,7 @@ export class UserPreferenceModel {
   }
 
   async filterManyKeys(
-          prisma: any,
+          prisma: PrismaClient,
           userProfileId: string | undefined,
           keys: string[] | undefined) {
 
@@ -109,7 +109,7 @@ export class UserPreferenceModel {
   }
 
   async getById(
-          prisma: any,
+          prisma: PrismaClient,
           id: string) {
 
     // Debug
@@ -136,7 +136,7 @@ export class UserPreferenceModel {
   }
 
   async getByUniqueKey(
-          prisma: any,
+          prisma: PrismaClient,
           userProfileId: string,
           key: string) {
 
@@ -164,7 +164,7 @@ export class UserPreferenceModel {
   }
 
   async update(
-          prisma: any,
+          prisma: PrismaClient,
           id: string,
           userProfileId: string | undefined,
           category: string | undefined,
@@ -201,7 +201,7 @@ export class UserPreferenceModel {
     }
   }
 
-  async upsert(prisma: any,
+  async upsert(prisma: PrismaClient,
                id: string | undefined,
                userProfileId: string | undefined,
                category: string | undefined,

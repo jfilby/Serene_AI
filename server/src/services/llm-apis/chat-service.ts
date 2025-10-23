@@ -110,7 +110,7 @@ export class ChatService {
   }
 
   async llmRequest(
-          prisma: any,
+          prisma: PrismaClient,
           llmTech: any | undefined,
           chatSession: any,
           userProfile: any | undefined,
@@ -233,7 +233,7 @@ export class ChatService {
 
   // Note: don't call directly, rather call llmRequest().
   private async prepAndSendLlmRequest(
-                  prisma: any,
+                  prisma: PrismaClient,
                   llmTech: any | undefined,
                   chatSession: any,
                   userProfile: any,
@@ -521,7 +521,7 @@ export class ChatService {
   }
 
   async runSessionTurn(
-          prisma: any,
+          prisma: PrismaClient,
           llmTechId: string | undefined,
           chatSessionId: string,
           fromChatParticipantId: string,

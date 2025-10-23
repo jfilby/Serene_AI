@@ -18,7 +18,7 @@ export class SereneAiSetup {
   // tipModel = new TipModel()
 
   // Code
-  async upsertTech(prisma: any) {
+  async upsertTech(prisma: PrismaClient) {
 
     // Debug
     const fnName = `${this.clName}.upsertTech()`
@@ -119,7 +119,7 @@ export class SereneAiSetup {
     }
   }
 
-  /* async upsertTips(prisma: any) {
+  /* async upsertTips(prisma: PrismaClient) {
 
     // Worksheet intro tips
     await this.tipModel.upsert(
@@ -135,7 +135,7 @@ export class SereneAiSetup {
             [CommonTypes.workbookTipTag])
   } */
 
-  async setup(prisma: any,
+  async setup(prisma: PrismaClient,
               userProfileId: string) {
 
     // Upsert data

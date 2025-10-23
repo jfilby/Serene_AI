@@ -4,7 +4,7 @@ export class UserModel {
   clName = 'UserModel'
 
   // Code
-  async create(prisma: any,
+  async create(prisma: PrismaClient,
                email: string,
                name: string | null | undefined) {
 
@@ -28,7 +28,7 @@ export class UserModel {
     }
   }
 
-  async filter(prisma: any) {
+  async filter(prisma: PrismaClient) {
 
     // Debug
     const fnName = `${this.clName}.filter()`
@@ -44,7 +44,7 @@ export class UserModel {
     }
   }
 
-  async getByEmail(prisma: any,
+  async getByEmail(prisma: PrismaClient,
                    email: string) {
 
     // Debug
@@ -68,7 +68,7 @@ export class UserModel {
     }
   }
 
-  async getById(prisma: any,
+  async getById(prisma: PrismaClient,
                 id: string) {
 
     // Debug
@@ -89,7 +89,7 @@ export class UserModel {
     }
   }
 
-  async update(prisma: any,
+  async update(prisma: PrismaClient,
                id: string,
                email: string | undefined,
                name: string | null | undefined) {
@@ -114,7 +114,7 @@ export class UserModel {
     }
   }
 
-  async upsert(prisma: any,
+  async upsert(prisma: PrismaClient,
                id: string | undefined,
                email: string,
                name: string | null | undefined) {

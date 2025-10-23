@@ -9,7 +9,7 @@ export class ChatParticipantModel {
   usersService = new UsersService()
 
   // Code
-  async create(prisma: any,
+  async create(prisma: PrismaClient,
                id: string | undefined,
                chatSessionId: string,
                userProfileId: string) {
@@ -40,7 +40,7 @@ export class ChatParticipantModel {
   }
 
   async deleteByChatSessionId(
-          prisma: any,
+          prisma: PrismaClient,
           chatSessionId: string) {
 
     // Debug
@@ -59,7 +59,7 @@ export class ChatParticipantModel {
     }
   }
 
-  async getById(prisma: any,
+  async getById(prisma: PrismaClient,
                 id: string) {
 
     // Debug
@@ -86,7 +86,7 @@ export class ChatParticipantModel {
   }
 
   async getByChatSessionId(
-          prisma: any,
+          prisma: PrismaClient,
           chatSessionId: string) {
 
     // Debug
@@ -109,7 +109,7 @@ export class ChatParticipantModel {
   }
 
   async getByChatSessionIdAndOwnerType(
-          prisma: any,
+          prisma: PrismaClient,
           chatSessionId: string,
           ownerType: string) {
 
@@ -135,7 +135,7 @@ export class ChatParticipantModel {
   }
 
   async getByChatSessionIdAndUserProfileId(
-          prisma: any,
+          prisma: PrismaClient,
           chatSessionId: string,
           userProfileId: string) {
 
@@ -159,7 +159,7 @@ export class ChatParticipantModel {
   }
 
   async getParticipantTypeByUserProfileId(
-          prisma: any,
+          prisma: PrismaClient,
           userProfileId: string) {
 
     // Debug
@@ -175,7 +175,7 @@ export class ChatParticipantModel {
     return userProfile.ownerType
   }
 
-  async update(prisma: any,
+  async update(prisma: PrismaClient,
                id: string,
                chatSessionId: string,
                userProfileId: string) {
@@ -200,7 +200,7 @@ export class ChatParticipantModel {
     }
   }
 
-  async upsert(prisma: any,
+  async upsert(prisma: PrismaClient,
                id: string | undefined,
                chatSessionId: string,
                userProfileId: string) {

@@ -11,7 +11,7 @@ export class SereneAiCleanUpService {
   chatSettingsModel = new ChatSettingsModel()
 
   // Code
-  async getChatSessionsToPurge(prisma: any) {
+  async getChatSessionsToPurge(prisma: PrismaClient) {
 
     // Get old chats that never started.
     // Separate from run(), which deletes them, as an app that uses this
@@ -22,7 +22,7 @@ export class SereneAiCleanUpService {
     return chatSessions
   }
 
-  async run(prisma: any,
+  async run(prisma: PrismaClient,
             purgeChatSessions: any[]) {
 
     // Debug

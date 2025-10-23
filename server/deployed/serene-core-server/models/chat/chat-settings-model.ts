@@ -4,7 +4,7 @@ export class ChatSettingsModel {
   clName = 'ChatSettingsModel'
 
   // Code
-  async create(prisma: any,
+  async create(prisma: PrismaClient,
                baseChatSettingsId: string | null,
                status: string,
                isEncryptedAtRest: boolean,
@@ -44,7 +44,7 @@ export class ChatSettingsModel {
   }
 
   async deleteById(
-          prisma: any,
+          prisma: PrismaClient,
           id: string) {
 
     // Debug
@@ -63,7 +63,7 @@ export class ChatSettingsModel {
     }
   }
 
-  async getById(prisma: any,
+  async getById(prisma: PrismaClient,
                 id: string) {
 
     // Debug
@@ -90,7 +90,7 @@ export class ChatSettingsModel {
   }
 
   async getByName(
-          prisma: any,
+          prisma: PrismaClient,
           name: string) {
 
     // Debug
@@ -123,7 +123,7 @@ export class ChatSettingsModel {
   }
 
   async getByBaseChatSettingsId(
-          prisma: any,
+          prisma: PrismaClient,
           baseChatSettingsId: string | null | undefined) {
 
     // Debug
@@ -142,7 +142,7 @@ export class ChatSettingsModel {
     }
   }
 
-  async getUnused(prisma: any) {
+  async getUnused(prisma: PrismaClient) {
 
     // Debug
     const fnName = `${this.clName}.getByBaseChatSettingsId()`
@@ -163,7 +163,7 @@ export class ChatSettingsModel {
     }
   }
 
-  async update(prisma: any,
+  async update(prisma: PrismaClient,
                id: string,
                baseChatSettingsId: string | null | undefined,
                status: string | undefined,
@@ -216,7 +216,7 @@ export class ChatSettingsModel {
     }
   }
 
-  async upsert(prisma: any,
+  async upsert(prisma: PrismaClient,
                id: string | undefined,
                baseChatSettingsId: string | null | undefined,
                status: string | undefined,

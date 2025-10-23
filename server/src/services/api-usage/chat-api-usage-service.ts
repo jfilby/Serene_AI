@@ -10,7 +10,7 @@ export class ChatApiUsageService {
 
   // Code
   async isRateLimited(
-          prisma: any,
+          prisma: PrismaClient,
           techId: string) {
 
     // Debug

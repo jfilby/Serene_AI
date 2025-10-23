@@ -7,7 +7,7 @@ export class TechProviderModel {
 
   // Code
   async create(
-          prisma: any,
+          prisma: PrismaClient,
           status: string,
           name: string,
           baseUrl: string | null) {
@@ -31,7 +31,7 @@ export class TechProviderModel {
   }
 
   async filter(
-          prisma: any,
+          prisma: PrismaClient,
           status: string | undefined) {
 
     // Debug
@@ -64,7 +64,7 @@ export class TechProviderModel {
     return techProvider
   }
 
-  async getById(prisma: any,
+  async getById(prisma: PrismaClient,
                 id: string) {
 
     // Debug
@@ -96,7 +96,7 @@ export class TechProviderModel {
   }
 
   async getByName(
-          prisma: any,
+          prisma: PrismaClient,
           name: string) {
 
     // Debug
@@ -133,7 +133,7 @@ export class TechProviderModel {
   }
 
   async update(
-          prisma: any,
+          prisma: PrismaClient,
           id: string,
           status: string | undefined,
           name: string | undefined,
@@ -160,7 +160,7 @@ export class TechProviderModel {
     }
   }
 
-  async upsert(prisma: any,
+  async upsert(prisma: PrismaClient,
                id: string | undefined,
                status: string | undefined,
                name: string | undefined,

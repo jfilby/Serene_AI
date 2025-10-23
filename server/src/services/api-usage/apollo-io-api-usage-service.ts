@@ -10,7 +10,7 @@ export class ApolloIoApiUsageService {
   apiUsageBaseService = new ApiUsageBaseService()
 
   // Code
-  async isRateLimited(prisma: any) {
+  async isRateLimited(prisma: PrismaClient) {
 
     // Debug
     const fnName = `${this.clName}.isRateLimited()`

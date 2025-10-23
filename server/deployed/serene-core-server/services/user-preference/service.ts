@@ -14,7 +14,7 @@ export class UserPreferenceService {
 
   // Code
   async createIfNotExists(
-          prisma: any,
+          prisma: PrismaClient,
           userProfileId: string,
           category: string,
           key: string,
@@ -45,7 +45,7 @@ export class UserPreferenceService {
   }
 
   async delete(
-          prisma: any,
+          prisma: PrismaClient,
           userProfileId: string,
           category: string,
           key: string) {
@@ -78,7 +78,7 @@ export class UserPreferenceService {
   }
 
   async getUserPreferences(
-          prisma: any,
+          prisma: PrismaClient,
           userProfileId: string,
           category: string,
           keys: string[]) {

@@ -40,7 +40,7 @@ export class ProfileService {
 
   // Code
   async getAll(
-    prisma: any,
+    prisma: PrismaClient,
     userProfileId: string) {
 
     // Get userPreference records
@@ -92,7 +92,7 @@ export class ProfileService {
   }
 
   async update(
-          prisma: any,
+          prisma: PrismaClient,
           userProfileId: string,
           firstName: string,
           fullName: string,
@@ -232,7 +232,7 @@ export class ProfileService {
 
   async updateViaRestApi(
           { req, res }: ReqRes,
-          prisma: any) {
+          prisma: PrismaClient) {
 
     const body = req.body
 
@@ -381,7 +381,7 @@ export class ProfileService {
   }
 
   async validateProfileCompleted(
-          prisma: any,
+          prisma: PrismaClient,
           forAction: string,
           userProfileId: string) {
 

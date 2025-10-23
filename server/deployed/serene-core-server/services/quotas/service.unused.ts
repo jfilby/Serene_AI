@@ -1,7 +1,7 @@
 export class QuotaService {
 
   async getCurrentSubscriptionPayment(
-          prisma: any,
+          prisma: PrismaClient,
           userId: string) {
 
     // Get payments up until the for the last 31 days
@@ -20,7 +20,7 @@ export class QuotaService {
   }
 
   async getCurrentSubscriptionPaymentDetails(
-          prisma: any,
+          prisma: PrismaClient,
           userId: string) {
 
     // Get payments up until the for the last 31 days
@@ -32,7 +32,7 @@ export class QuotaService {
     })
   }
 
-  async getCurrentUsage(prisma: any,
+  async getCurrentUsage(prisma: PrismaClient,
                         userId: string) {
 
     // Get usage for the last 31 days
@@ -50,7 +50,7 @@ export class QuotaService {
     return userQuotas._sum.usage
   }
 
-  async getCurrentUsageDetails(prisma: any,
+  async getCurrentUsageDetails(prisma: PrismaClient,
                                userId: string) {
 
     // Get usage for the last 31 days

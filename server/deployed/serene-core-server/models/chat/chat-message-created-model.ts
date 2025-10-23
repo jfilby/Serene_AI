@@ -7,7 +7,7 @@ export class ChatMessageCreatedModel {
 
   // Code
   async countMessages(
-          prisma: any,
+          prisma: PrismaClient,
           userProfileId: string,
           instanceId: string | null | undefined,
           techId: string | undefined,
@@ -34,7 +34,7 @@ export class ChatMessageCreatedModel {
     return count
   }
 
-  async create(prisma: any,
+  async create(prisma: PrismaClient,
                userProfileId: string,
                instanceId: string | null,
                techId: string,

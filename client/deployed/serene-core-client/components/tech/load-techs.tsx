@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useLazyQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client/react'
 import { getTechsQuery } from '../../apollo/techs'
 
 interface Props {
@@ -15,8 +15,8 @@ export default function LoadTechByFilter({
                         }: Props) {
 
   // GraphQL
-  const [fetchTechsQuery] =
-    useLazyQuery(getTechsQuery, {
+  const { refetch: fetchTechsQuery } =
+    useQuery<any>(getTechsQuery, {
       fetchPolicy: 'no-cache'
       /* onCompleted: data => {
         console.log('elementName: ' + elementName)
@@ -34,17 +34,14 @@ export default function LoadTechByFilter({
     const fnName = `getTechsList()`
 
     // Query
-    const getTechsData =
-      await fetchTechsQuery(
-        {
-          variables: {
-            userProfileId: userProfileId,
-            resource: resource
-          }
-        })
+    const { data } = await
+            fetchTechsQuery({
+              userProfileId: userProfileId,
+              resource: resource
+            })
 
     // Set results
-    const results = getTechsData.data.getTechs
+    const results = data.getTechs
 
     setTechs(results)
   }
