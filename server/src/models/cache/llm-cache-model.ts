@@ -210,6 +210,11 @@ export class LlmCacheModel {
         throw 'Prisma error'
       }
 
+      if (key == null) {
+        console.error(`${fnName}: id is null and key is null`)
+        throw 'Prisma error'
+      }
+
       if (inputMessage === undefined) {
         console.error(`${fnName}: id is null and inputMessage is undefined`)
         throw 'Prisma error'

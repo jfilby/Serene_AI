@@ -84,13 +84,13 @@ export class LlmCacheService {
           outputMessage: any,
           outputMessages: any) {
 
-    llmCacheModel.upsert(
-      prisma,
-      undefined,  // id
-      llmTechId,
-      cacheKey!,
-      inputMessage,
-      outputMessage ?? null,   // message
-      outputMessages ?? null)  // messages
+    await llmCacheModel.upsert(
+            prisma,
+            undefined,  // id
+            llmTechId,
+            cacheKey!,
+            inputMessage,
+            outputMessage ?? null,   // message
+            outputMessages ?? null)  // messages
   }
 }
