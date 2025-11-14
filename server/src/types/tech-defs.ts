@@ -87,7 +87,7 @@ export class AiTechDefs {
   // Model names
   static googleGemini_V2Flash_ModelName = 'gemini-2.0-flash'
   static googleGemini_V2pt5Pro_ModelName = 'gemini-2.5-pro'
-  static googleGemini_V2pt5Flash_ModelName = 'gemini-2.5-flash'
+  static googleGemini_V2pt5Flash_ModelName = 'gemini-2.5-flash-preview-09-2025'
   static googleGemini_V2pt5FlashLite_ModelName = 'gemini-2.5-flash-lite'
 
   static openAi_Gpt5_ModelName = 'gpt-5'
