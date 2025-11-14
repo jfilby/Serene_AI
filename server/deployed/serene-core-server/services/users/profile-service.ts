@@ -1,3 +1,4 @@
+import { PrismaClient } from '@prisma/client'
 import { UserModel } from '../../models/users/user-model'
 import { UserPreferenceModel } from '../../models/users/user-preference-model'
 import { UserProfileModel } from '../../models/users/user-profile-model'

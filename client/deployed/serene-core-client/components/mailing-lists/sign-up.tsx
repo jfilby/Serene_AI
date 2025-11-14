@@ -24,7 +24,7 @@ export default function MailingListSignUp({
 
   // GraphQL
   const [fetchMailingListSignupMutation] =
-    useMutation(mailingListSignupMutation, {
+    useMutation<any>(mailingListSignupMutation, {
       fetchPolicy: 'no-cache'
       /* onCompleted: data => {
         console.log('elementName: ' + elementName)
