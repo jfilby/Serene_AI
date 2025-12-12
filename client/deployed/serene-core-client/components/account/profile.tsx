@@ -4,23 +4,23 @@ import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Select from '@mui/material/Select'
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
 import ActionNotification from '../notifications/action'
 import { RestApiService } from '../../services/rest-api/service'
 import { FormControl, InputLabel, Typography } from '@mui/material'
 import { countries } from '../../services/locale/countries'
-import { userProfileAtom } from '../../atoms/user'
 import { getUserPreferencesQuery } from '../../apollo/user-preferences'
 import { UserPreferencesService } from '../../services/users/user-preferences-service'
 import { ProfileService } from '../../services/users/profile-service'
 
 interface Props {
+  userProfile: any
   clientUrl: string
   serverUrl: string
   session: any
 }
 
 export default function Profile({
+                          userProfile,
                           clientUrl,
                           serverUrl,
                           session
@@ -38,9 +38,6 @@ export default function Profile({
   const [notificationSuccessOpened, setNotificationSuccessOpened] = useState(false)
   const [notificationErrorText, setNotificationErrorText] = useState('')
   const [notificationErrorOpened, setNotificationErrorOpened] = useState(false)
-
-  // Recoil
-  const userProfile = useRecoilValue(userProfileAtom)
 
   // Services
   const profileService = new ProfileService()
