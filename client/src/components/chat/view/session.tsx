@@ -174,53 +174,92 @@ export default function ViewChatSession({
   }
 
   // Handle received messages from the server
-  socket.on('message', (newMessage: any) => {
+  useEffect(() => {
+    const handleMessage = (newMessage: any) => {
+      if (!newMessage) return
 
-    // Debug
-    // console.log(`message: ${JSON.stringify(newMessage)}`)
-
-    // Validate
-    if (newMessage != null) {
-
-      // Is this an error?
-      if (newMessage.contents[0].type === 'error') {
-
+      if (newMessage.contents?.[0]?.type === 'error') {
         setAlertSeverity('error')
         setMessage(newMessage.contents[0].text)
+
+        // Revert last message safely using functional update
+        setMessages(prevMessages => prevMessages.slice(0, prevMessages.length - 1))
+
+        // Reset input
         setMyMessage(lastMyMessage)
 
-        // Remove the last (unhandled message)
-        setMessages(messages.slice(0, messages.length - 1))
-
-        // Re-enable the user's turn, to try again
+        // Allow user to try again
         setMyTurn(true)
       } else {
         setAlertSeverity(undefined)
 
-        // Update the messages state with the new message
-        setMessages(messages.concat(newMessage))
+        // Append new message safely
+        setMessages(prevMessages => prevMessages.concat(newMessage))
 
-        // AI's turn is done
         if (newMessage.sentByAi === true) {
           setMyTurn(true)
         }
       }
+
+      /* Update raw JSON if present
+      if (newMessage.rawJson != null) {
+        setChatRawJson(newMessage.rawJson)
+      } */
     }
-  })
 
-  socket.on('chatSessionJoined', (chatSessionId: string) => {
-    // console.log(`Successfully joined chat session: ${chatSessionId}`)
-    setIsAuthorized(true)
-    // Handle chatSession join on the client-side if needed
-  })
+    socket.on('message', handleMessage)
 
-  socket.on('authorizationFailed', () => {
-    // console.log('Authorization failed. You cannot join the chatSession.')
-    // Handle authorization failure on the client-side if needed
-    setIsAuthorized(false)
-  })
+    // Cleanup listener on unmount
+    return () => {
+      socket.off('message', handleMessage)
+    }
+  }, [lastMyMessage /*, setChatRawJson */]); // include deps you use inside the effect
 
-  /* socket.on('connection', (socket) => {
+  useEffect(() => {
+    const handler = (data: ArrayBuffer) => {
+      const blob = new Blob([data], { type: 'audio/mpeg' })
+      const audio = new Audio(URL.createObjectURL(blob))
+      audio.play()
+    }
+
+    socket.on('audio (mp3)', handler)
+
+    // Cleanup to remove listener when component unmounts
+    return () => {
+      socket.off('audio (mp3)', handler)
+    }
+  }, [])
+
+  // chatSessionJoined
+  useEffect(() => {
+    const handleJoined = (chatSessionId: string) => {
+      setIsAuthorized(true)
+      // Additional logic if needed
+    }
+
+    socket.on('chatSessionJoined', handleJoined)
+
+    return () => {
+      socket.off('chatSessionJoined', handleJoined)
+    }
+  }, []); // attach once
+
+  // authorizationFailed
+  useEffect(() => {
+    const handleFailed = () => {
+      setIsAuthorized(false)
+      // Additional logic if needed
+    }
+
+    socket.on('authorizationFailed', handleFailed)
+
+    return () => {
+      socket.off('authorizationFailed', handleFailed)
+    }
+  }, []); // attach once
+
+  /* Note: wrap these in useEffects if uncommented (see others)
+  socket.on('connection', (socket) => {
     // console.log(socket.id)
     console.log('connected')
   })
