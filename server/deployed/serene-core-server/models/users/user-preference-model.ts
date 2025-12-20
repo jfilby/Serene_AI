@@ -254,7 +254,7 @@ export class UserPreferenceModel {
         throw 'Prisma error'
       }
 
-      if (values == null) {
+      if (values === undefined) {
         console.error(`${fnName}: id is null and values is undefined`)
         throw 'Prisma error'
       }
