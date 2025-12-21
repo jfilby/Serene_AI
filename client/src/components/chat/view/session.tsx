@@ -22,13 +22,13 @@ interface Props {
 }
 
 export default function ViewChatSession({
-                          chatSession,
-                          userProfileId,  // should be fromChatParticipantId (or both)
-                          showInputTip,
-                          setShowInputTip,
-                          showNextTip,
-                          setShowNextTip
-                        }: Props) {
+  chatSession,
+  userProfileId,  // should be fromChatParticipantId (or both)
+  showInputTip,
+  setShowInputTip,
+  showNextTip,
+  setShowNextTip
+}: Props) {
 
   // Consts
   const chatSessionId = chatSession.id
@@ -67,7 +67,9 @@ export default function ViewChatSession({
     var height = 56
 
     // Alert
-    if (alertSeverity != null) {
+    if (alertSeverity != null &&
+      message != null) {
+
       height -= 6
     }
 
@@ -83,10 +85,10 @@ export default function ViewChatSession({
 
     // Get project
     const { data } = await
-            fetchChatMessages({
-              chatSessionId: chatSession.id,
-              userProfileId: userProfileId
-              })
+      fetchChatMessages({
+        chatSessionId: chatSession.id,
+        userProfileId: userProfileId
+      })
 
     const results = data.getChatMessages
 
@@ -112,9 +114,9 @@ export default function ViewChatSession({
     // console.log(`Sending joinChatSession message..`)
 
     socket.emit('joinChatSession', {
-        chatSessionId,
-        chatSessionToken,
-        userProfileId
+      chatSessionId,
+      chatSessionToken,
+      userProfileId
     })
   }
 
@@ -134,15 +136,15 @@ export default function ViewChatSession({
 
     // Emit a 'message' event to the server
     socket.emit('message', {
-        sentByAi: false,
-        chatSessionId: chatSessionId,
-        chatParticipantId: chatParticipant.id,
-        userProfileId: userProfileId,
-        name: chatParticipant.name,
-        contents: [{
-          type: '',
-          text: prepMyMessage
-        }]
+      sentByAi: false,
+      chatSessionId: chatSessionId,
+      chatParticipantId: chatParticipant.id,
+      userProfileId: userProfileId,
+      name: chatParticipant.name,
+      contents: [{
+        type: '',
+        text: prepMyMessage
+      }]
     })
 
     setLastMyMessage(prepMyMessage)
@@ -161,7 +163,7 @@ export default function ViewChatSession({
       if (messages.length === 0) {
         setShowInputTip(true)
       } else if (showInputTip === true &&
-                 messages.length > 0) {
+        messages.length > 0) {
 
         setShowInputTip(false)
       }
@@ -311,56 +313,69 @@ export default function ViewChatSession({
 
   // Render
   return (
-    <div style={{ border: '1px solid #888', padding: '0.5em', height: chatHeight }}>
-      {/* <p>chatSession: {JSON.stringify(chatSession)}</p> */}
+    <>
+      <div style={{
+        border: '1px solid #888',
+        padding: '0.5em',
+        height: chatHeight,
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden'
+      }}>
+        {/* <p>chatSession: {JSON.stringify(chatSession)}</p> */}
 
-      <ChatSessionMessages
-        messages={messages}
-        myTurn={myTurn}
-        userProfileId={userProfileId} />
-      <>
-      {alertSeverity && message ?
-        <Alert
-          severity={alertSeverity}
-          style={{ marginBottom: '2em' }}>
-          {message}
-        </Alert>
-        :
-        <></>
-      }
-      </>
-      <>
-        <TextareaAutosize
-          autoComplete='off'
-          autoFocus
-          minRows={2}
-          onChange={(e) => setMyMessage(e.target.value)}
-          onKeyDown={e => {
-            if (e.key === 'Enter' && myTurn === false) {
-              e.preventDefault()
-            }
-          }}
-          onKeyUp={e => {
-            if (e.key === 'Enter' && myTurn === true) {
+        <div style={{ flex: 1, minHeight: 0 }}>
+          <ChatSessionMessages
+            messages={messages}
+            myTurn={myTurn}
+            userProfileId={userProfileId} />
+        </div>
 
-              if (e.shiftKey || e.ctrlKey) {
-                setMyMessage(myMessage + '\n')
-              } else {
-                handleSendMessage()
+        <>
+          {alertSeverity && message ?
+            <Alert
+              severity={alertSeverity}
+              style={{ marginBottom: '2em' }}>
+              {message}
+            </Alert>
+            :
+            <></>
+          }
+        </>
+
+        <div style={{ flexShrink: 0 }}>
+          <TextareaAutosize
+            autoComplete='off'
+            autoFocus
+            minRows={2}
+            onChange={(e) => setMyMessage(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' && myTurn === false) {
+                e.preventDefault()
               }
-            }
-          }}
-          ref={myMessageInput}
-          style={{ border: '1px solid #ccc', marginRight: '0.5em', verticalAlign: 'top', width: '80%' }}
-          value={myMessage} />
+            }}
+            onKeyUp={e => {
+              if (e.key === 'Enter' && myTurn === true) {
 
-        <Button
-          disabled={!myTurn}
-          onClick={(e) => { handleSendMessage() }}
-          style={{ verticalAlign: 'top' }}>
-          Send
-        </Button>
-      </>
-    </div>
+                if (e.shiftKey || e.ctrlKey) {
+                  setMyMessage(myMessage + '\n')
+                } else {
+                  handleSendMessage()
+                }
+              }
+            }}
+            ref={myMessageInput}
+            style={{ border: '1px solid #ccc', marginRight: '0.5em', verticalAlign: 'top', width: '80%' }}
+            value={myMessage} />
+
+          <Button
+            disabled={!myTurn}
+            onClick={(e) => { handleSendMessage() }}
+            style={{ verticalAlign: 'top' }}>
+            Send
+          </Button>
+        </div>
+      </div>
+    </>
   )
 }
