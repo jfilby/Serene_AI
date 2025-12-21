@@ -1,7 +1,7 @@
-import React from 'react'
 import { FormControl, InputLabel, TextareaAutosize } from '@mui/material'
 
 interface Props {
+  disabled?: boolean
   id: string
   label: string
   minRows: number
@@ -12,6 +12,7 @@ interface Props {
 }
 
 export default function TextAreaField({
+                          disabled,
                           id,
                           label,
                           minRows = 5,
@@ -43,6 +44,7 @@ export default function TextAreaField({
         </InputLabel>
         <TextareaAutosize
           autoComplete='off'
+          disabled={disabled}
           id={id}
           minRows={minRows}
           onChange={onChange}
