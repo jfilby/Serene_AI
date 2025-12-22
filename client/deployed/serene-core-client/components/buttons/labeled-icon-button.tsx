@@ -2,6 +2,7 @@ import { Box, Button, ButtonProps, styled } from '@mui/material'
 import { grey } from '@mui/material/colors'
 
 interface Props {
+  disabled?: boolean
   icon: any
   label: string | undefined
   onClick: any
@@ -12,6 +13,7 @@ interface Props {
 }
 
 export default function LabeledIconButton({
+                          disabled,
                           icon,
                           label,
                           onClick,
@@ -39,6 +41,7 @@ export default function LabeledIconButton({
   return (
     <Box sx={{ pointerEvents: onClick == null ? 'none' : 'auto' }}>
       <ColorButton
+        disabled={disabled}
         onClick={onClick}
         variant='text'
         startIcon={<Icon />}

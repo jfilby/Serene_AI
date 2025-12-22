@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import { CustomError } from '../../types/errors'
 import { UserModel } from '../../models/users/user-model'
 import { UserPreferenceModel } from '../../models/users/user-preference-model'
 import { UserProfileModel } from '../../models/users/user-profile-model'
@@ -13,6 +14,8 @@ interface ReqRes {
 export class ProfileService {
 
   // Consts
+  clName = 'ProfileService'
+
   // billingAddress = 'billing address'
   personalDetails = 'personal details'
 
@@ -235,6 +238,10 @@ export class ProfileService {
           { req, res }: ReqRes,
           prisma: PrismaClient) {
 
+    // Debug
+    const fnName = `${this.clName}.updateViaRestApi()`
+
+    // Get body
     const body = req.body
 
     // Validate
@@ -366,6 +373,15 @@ export class ProfileService {
             body.billingCity,
             body.billingState,
             body.billingZip */)
+
+    // Validate
+    if (userProfile == null) {
+      throw new CustomError(`${fnName}: userProfile == null`)
+    }
+
+    if (userProfile.userId == null) {
+      throw new CustomError(`${fnName}: userProfile.userId == null`)
+    }
 
     // Update the User
     await this.userModel.update(

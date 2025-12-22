@@ -1,4 +1,5 @@
 import { prisma } from '@/db'
+import { CustomError } from '../../../types/errors'
 import { ResourceQuotasQueryService } from '../../../services/quotas/query-service'
 import { UsersService } from '../../../services/users/service'
 
@@ -23,6 +24,11 @@ export async function getResourceQuotaUsage(
           usersService.getById(
             prisma,
             args.userProfileId)
+
+  // Validate
+  if (userProfile == null) {
+    throw new CustomError(`${fnName}: userProfile == null`)
+  }
 
   // The user must be an admin
   if (userProfile.isAdmin === false) {
