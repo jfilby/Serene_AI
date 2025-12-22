@@ -2,6 +2,12 @@ import { PrismaClient } from '@prisma/client'
 import { createId } from '@paralleldrive/cuid2'
 import { CustomError } from '@/serene-core-server/types/errors'
 
+type CachedEmbeddingRecord = {
+  id: string
+  text: string
+  embedding: string
+}
+
 export class CachedEmbeddingModel {
 
   // Consts
@@ -39,7 +45,7 @@ export class CachedEmbeddingModel {
     const fnName = `${this.clName}.getById()`
 
     // Query
-    const results = await prisma.$queryRaw`
+    const results = await prisma.$queryRaw<CachedEmbeddingRecord[]>`
         SELECT id, text, embedding::text
           FROM cached_embedding
          WHERE id = ${id}`
@@ -55,7 +61,7 @@ export class CachedEmbeddingModel {
 
     // Convert embedding to number[]
     const embeddingVector = JSON.parse(results[0].embedding)
-    results.embedding = embeddingVector
+    results[0].embedding = embeddingVector
 
     // Validate and return
     if (results.length === 1) {
@@ -78,7 +84,7 @@ export class CachedEmbeddingModel {
     // console.log(`${fnName}: starting with text: ${text}`)
 
     // Query
-    var results = await prisma.$queryRaw`
+    var results = await prisma.$queryRaw<CachedEmbeddingRecord[]>`
         SELECT id, text, embedding::text AS embedding
           FROM cached_embedding
          WHERE text = ${text}`
@@ -94,7 +100,7 @@ export class CachedEmbeddingModel {
 
     // Convert embedding to number[]
     const embeddingVector = JSON.parse(results[0].embedding)
-    results.embedding = embeddingVector
+    results[0].embedding = embeddingVector
 
     // Validate and return
     if (results.length === 1) {
