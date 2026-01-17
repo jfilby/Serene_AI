@@ -59,7 +59,7 @@ export class LlmCacheService {
               cacheKey)
 
     // Verify input
-    if (llmCache?.input != inputMessageStr) {
+    if (llmCache?.inputMessage != inputMessageStr) {
 
       return {
         cacheKey: cacheKey,
