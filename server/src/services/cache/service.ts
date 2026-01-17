@@ -82,7 +82,8 @@ export class LlmCacheService {
           cacheKey: string,
           inputMessage: string,
           outputMessage: any,
-          outputMessages: any) {
+          outputMessages: any,
+          outputJson: any) {
 
     await llmCacheModel.upsert(
             prisma,
@@ -91,6 +92,7 @@ export class LlmCacheService {
             cacheKey!,
             inputMessage,
             outputMessage ?? null,   // message
-            outputMessages ?? null)  // messages
+            outputMessages ?? null,  // messages
+            outputJson ?? null)
   }
 }
