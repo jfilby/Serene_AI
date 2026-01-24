@@ -105,7 +105,7 @@ export class UsersService {
     const fnName = `${this.clName}.getUserIdFromCookieAndVerify()`
 
     // Get signed-in userId
-    const idValue: string | undefined =
+    const idValue: string | undefined = await
             getCookie(
               this.signedInCookieName,
               { req, res })
@@ -178,7 +178,8 @@ export class UsersService {
           apolloClient)
 
     } else {
-      signedOutId = this.getSignedOutUserIdFromCookie({ req, res })
+      // Note: don't remove the await (getCookie needs it)
+      signedOutId = await this.getSignedOutUserIdFromCookie({ req, res })
     }
 
     // Signed-out get/create user
