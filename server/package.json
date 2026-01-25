@@ -15,11 +15,10 @@
     "react-dom": "^19"
   },
   "devDependencies": {
-    "@apollo/client": "^3.9.10",
     "@apollo/server": "^4.10.2",
     "@google/genai": "^1.15.0",
     "@paralleldrive/cuid2": "^2.2.2",
-    "@prisma/client": "^6.17.1",
+    "@prisma/client": "^6.19.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -27,6 +26,7 @@
     "eslint-config-next": "15.5.9",
     "jsonrepair": "^3.8.0",
     "openai": "^4.96.2",
+    "prisma": "^6.19.2",
     "socket.io": "^4.7.5",
     "typescript": "^5"
   }
