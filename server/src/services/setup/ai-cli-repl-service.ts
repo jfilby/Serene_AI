@@ -61,7 +61,7 @@ export class AiModelCliReplService {
     techProvider: TechProvider) {
 
     // Gemini keys need to specify free/paid
-    var pricingTier: string | null = null
+    var pricingTier = SereneCoreServerTypes.paid
 
     if (techProvider.name === AiTechDefs.googleGeminiProvider) {
 
