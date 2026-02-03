@@ -107,6 +107,7 @@ model UserProfile {
   ofRateLimitedApiEvents      RateLimitedApiEvent[]
   ofResourceQuotaTotals       ResourceQuotaTotal[]
   ofResourceQuotaUsages       ResourceQuotaUsage[]
+  ofAiTaskTechs               AiTaskTech[]
 
   @@map("user_profile")
   @@schema("public")
@@ -351,6 +352,7 @@ model Tech {
 
   ofChatMessageCreateds        ChatMessageCreated[]
   ofLlmCaches                  LlmCache[]
+  ofAiTaskTechs                AiTaskTech[]
 
   @@map("tech")
   @@schema("public")
@@ -387,6 +389,39 @@ model TechProviderApiKey {
 }
 
 // Serene AI
+
+// AI tasks
+
+model AiTask {
+  id                           String               @id @default(cuid())
+  status                       String               @db.Char(1)
+  namespace                    String
+  name                         String
+  created                      DateTime             @default(now())
+  updated                      DateTime             @updatedAt
+
+  ofAiTaskTechs                AiTaskTech[]
+
+  @@unique([namespace, name])
+  @@map("ai_task")
+  @@schema("public")
+}
+
+model AiTaskTech {
+  id                           String               @id @default(cuid())
+  aiTaskId                     String               @map("ai_task_id")
+  aiTask                       AiTask               @relation(fields: [aiTaskId], references: [id])
+  techId                       String               @map("tech_id")
+  tech                         Tech                 @relation(fields: [techId], references: [id])
+  userProfileId                String?              @map("user_profile_id")
+  userProfile                  UserProfile?         @relation(fields: [userProfileId], references: [id])
+  created                      DateTime             @default(now())
+  updated                      DateTime             @updatedAt
+
+  @@unique([aiTaskId, userProfileId])
+  @@map("ai_task_tech")
+  @@schema("public")
+}
 
 // Cache and rate-limiting
 
