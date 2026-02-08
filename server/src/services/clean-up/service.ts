@@ -33,7 +33,7 @@ export class SereneAiCleanUpService {
 
       for (const chatSession of purgeChatSessions) {
 
-        console.log(`${fnName}: deleting ChatSession: ` + chatSession.id)
+        // console.log(`${fnName}: deleting ChatSession: ` + chatSession.id)
 
         await this.chatSessionModel.deleteByIdCascade(
                 transactionPrisma,
@@ -46,7 +46,7 @@ export class SereneAiCleanUpService {
     })
 
     // Delete unused ChatSettings records
-    console.log(`${fnName}: deleting unused ChatSettings...`)
+    // console.log(`${fnName}: deleting unused ChatSettings...`)
 
     const unusedChatSettings = await
             this.chatSettingsModel.getUnused(prisma)
