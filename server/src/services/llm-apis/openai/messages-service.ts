@@ -1,15 +1,15 @@
 import { CustomError } from '@/serene-core-server/types/errors'
-import { SereneAiServerOnlyTypes } from '../../../types/server-only-types'
+import { ChatMessage, SereneAiServerOnlyTypes } from '../../../types/server-only-types'
 import { EstimateOpenAiTokensService } from './estimate-tokens-service'
 
 // Services
 const estimateOpenAiTokensService = new EstimateOpenAiTokensService()
 
 // Class
-export class OpenAIGenericLlmService {
+export class OpenAIMessagesService {
 
   // Consts
-  clName = 'OpenAIGenericLlmService'
+  clName = 'OpenAIMessagesService'
 
   // OpenAI consts
   stopReason = 'stop'
@@ -18,6 +18,125 @@ export class OpenAIGenericLlmService {
   nullReason = 'null'
 
   // Code
+  addSystemRoleAndPrompt(
+    name: string,
+    role: string,
+    anonymize: boolean,
+    systemPrompt: string | undefined,
+    messagesWithRoles: any[]) {
+
+    // Set the role with a system message
+    if (role != null) {
+
+      // If the role isn't anonymous, start with a name
+      var roleContent: string
+
+      if (anonymize === false) {
+        roleContent = `You are ${name}, a ${role}.`
+      } else {
+        roleContent = `You are a ${role}.`
+      }
+
+      messagesWithRoles.push({
+        role: SereneAiServerOnlyTypes.chatGptSystemMessageRole,
+        content: roleContent
+      })
+    }
+
+    // System prompt
+    if (systemPrompt != null) {
+
+      messagesWithRoles.push({
+        role: SereneAiServerOnlyTypes.chatGptSystemMessageRole,
+        content: systemPrompt
+      })
+    }
+  }
+
+  buildMessagesWithRoles(
+    chatMessages: any[],
+    fromContents: ChatMessage[],
+    userChatParticipantIds: string[],
+    agentChatParticipantIds: string[]) {
+
+    // Debug
+    const fnName = `${this.clName}.buildMessagesWithRoles()`
+
+    /* console.log(`${fnName}: chatMessages: ` + JSON.stringify(chatMessages))
+
+    console.log(`${fnName}: userChatParticipantIds: ` +
+                JSON.stringify(userChatParticipantIds))
+
+    console.log(`${fnName}: agentChatParticipantIds: ` +
+                JSON.stringify(agentChatParticipantIds)) */
+
+    // Messages var
+    var messagesWithRoles: any[] = []
+
+    // If this is the first message, then add a system prompt
+    if (chatMessages.length === 0) {
+      messagesWithRoles.push()
+    }
+
+    // Build messages with roles
+    for (const chatMessage of chatMessages) {
+
+      // Determine the role
+      var role: string = ''
+
+      if (chatMessage.sentByAi === false) {
+        role = SereneAiServerOnlyTypes.chatGptUserMessageRole
+      } else if (chatMessage.sentByAi === true) {
+        role = SereneAiServerOnlyTypes.chatGptModelMessageRole
+      } else {
+        throw new CustomError(
+          `${fnName}: unhandled chatMessage.sentByAi: ` +
+          JSON.stringify(chatMessage.sentByAi))
+      }
+
+      // Add chat message
+      messagesWithRoles.push({
+        role: role,
+        parts: JSON.parse(chatMessage.message)
+      })
+    }
+
+    // Add latest message from the user
+    messagesWithRoles.push({
+      role: SereneAiServerOnlyTypes.chatGptUserMessageRole,
+      parts: fromContents
+    })
+
+    // Return
+    return messagesWithRoles
+  }
+
+  buildMessagesWithRolesForSinglePrompt(prompt: string) {
+
+    // Debug
+    const fnName = `${this.clName}.buildMessagesWithRolesForSinglePrompt()`
+
+    // Messages var
+    var messagesWithRoles: any[] = []
+
+    // Add a system prompt
+    messagesWithRoles.push()
+
+    // Determine the role
+    var role: string = ''
+
+    role = SereneAiServerOnlyTypes.chatGptUserMessageRole
+
+    // Add chat message
+    messagesWithRoles.push({
+      role: role,
+      parts: [{ text: prompt }]
+    })
+
+    // Return
+    return messagesWithRoles
+  }
+
   convertOpenAiChatCompletionResults(openAiResults: any) {
 
     // Debug
@@ -64,6 +183,8 @@ export class OpenAIGenericLlmService {
 
     // Debug
     const fnName = `${this.clName}.convertOpenAiResults()`
+
+    // console.log(`${fnName}: results: ` + JSON.stringify(results))
 
     // Validate
     if (openAiResults.choices == null) {
@@ -132,37 +253,18 @@ export class OpenAIGenericLlmService {
     // Debug
     const fnName = `${this.clName}.prepareMessages()`
 
-    // console.log(`${fnName}: starting..`)
+    // console.log(`${fnName}: starting with tech: ` + JSON.stringify(tech))
 
     // Create messagesWithRoles
     var messagesWithRoles: any[] = []
 
-    // Set the role with a system message
-    if (role != null) {
-
-      // If the role isn't anonymous, start with a name
-      var roleContent: string
-
-      if (anonymize === false) {
-        roleContent = `You ${name}, a ${role}.`
-      } else {
-        roleContent = `You are a ${role}.`
-      }
-
-      messagesWithRoles.push({
-        role: SereneAiServerOnlyTypes.chatGptSystemMessageRole,
-        content: roleContent
-      })
-    }
-
-    // System prompt
-    if (systemPrompt != null) {
-
-      messagesWithRoles.push({
-        role: SereneAiServerOnlyTypes.chatGptSystemMessageRole,
-        content: systemPrompt
-      })
-    }
+    // Set the system role and prompt
+    this.addSystemRoleAndPrompt(
+      name,
+      role,
+      anonymize,
+      systemPrompt,
+      messagesWithRoles)
   
     // Inform messages set the context
     for (const message of messages) {
@@ -206,8 +308,7 @@ export class OpenAIGenericLlmService {
 
         default: {
           throw new CustomError(`${fnName}: unhandled message role ` +
-                                JSON.stringify(message.role)
-          )
+            JSON.stringify(message.role))
         }
       }
 
@@ -217,6 +318,10 @@ export class OpenAIGenericLlmService {
         content: content
       })
     }
+
+    // Debug
+    // console.log(`${fnName}: messagesWithRoles: ` +
+    //   JSON.stringify(messagesWithRoles))
 
     // Estimate the input and output tokens
     const estimatedInputTokens =
