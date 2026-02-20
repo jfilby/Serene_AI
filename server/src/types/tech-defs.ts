@@ -70,8 +70,8 @@ export class AiTechDefs {
   static googleGemini_V2pt5FlashLiteFree = 'Google Gemini v2.5 Flash-Lite (free tier)'
   static googleGemini_V3Flash = 'Google Gemini v3 Flash'
   static googleGemini_V3FlashFree = 'Google Gemini v3 Flash (free tier)'
-  static googleGemini_V3Pt1Pro = 'Google Gemini v3.1 Pro'
-  static googleGemini_V3Pt1ProFree = 'Google Gemini v3.1 Pro (free tier)'
+  static googleGemini_V3pt1Pro = 'Google Gemini v3.1 Pro'
+  static googleGemini_V3pt1ProFree = 'Google Gemini v3.1 Pro (free tier)'
 
   // OpenAI
   static openAi_Gpt5pt2 = 'GPT-5.2'
@@ -295,7 +295,7 @@ export class AiTechDefs {
     },
     {
       provider: this.googleGeminiProvider,
-      variantName: this.googleGemini_V3Pt1Pro,
+      variantName: this.googleGemini_V3pt1Pro,
       resource: this.llmsResource,
       model: this.googleGemini_V3Pt1Pro_ModelName,
       protocol: this.geminiProtocol,
@@ -307,7 +307,7 @@ export class AiTechDefs {
     },
     {
       provider: this.googleGeminiProvider,
-      variantName: this.googleGemini_V3Pt1ProFree,
+      variantName: this.googleGemini_V3pt1ProFree,
       resource: this.llmsResource,
       model: this.googleGemini_V3Pt1Pro_ModelName,
       protocol: this.geminiProtocol,
