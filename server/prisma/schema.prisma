@@ -430,7 +430,7 @@ model AiTaskTech {
 model CachedEmbedding {
   id                           String               @id @default(cuid())
   text                         String               @unique
-  embedding                    Unsupported("vector(768)")?
+  embedding                    Unsupported("vector(1536)")?
   created                      DateTime             @default(now())
 
   @@map("cached_embedding")
