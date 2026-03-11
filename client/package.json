@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "@apollo/client": "^4.0.7",
-    "@prisma/client": "^6.17.1",
+    "@prisma/client": "^7.4.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
