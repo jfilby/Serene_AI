@@ -4,6 +4,7 @@ import { AccessService } from '../../../services/access/access-service'
 const accessService = new AccessService()
 
 // Factory of resolvers
+// Note: prisma must be passed into the GraphQL server's context
 export function sereneCoreAccessQueryResolvers() {
   return {
     Query: {

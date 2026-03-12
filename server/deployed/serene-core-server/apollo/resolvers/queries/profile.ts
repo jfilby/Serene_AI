@@ -4,6 +4,7 @@ import { ProfileService } from '../../../services/users/profile-service'
 const profileService = new ProfileService()
 
 // Factory of resolvers
+// Note: prisma must be passed into the GraphQL server's context
 export function sereneCoreProfileQueryResolvers() {
   return {
     Query: {

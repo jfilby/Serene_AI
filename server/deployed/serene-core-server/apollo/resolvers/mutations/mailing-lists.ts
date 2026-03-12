@@ -4,6 +4,7 @@ import { MailingListSubscriberService } from '../../../services/mailing-lists/ma
 const mailingListSubscriberService = new MailingListSubscriberService()
 
 // Factory of resolvers
+// Note: prisma must be passed into the GraphQL server's context
 export function sereneCoreMailingListsMutationResolvers() {
   return {
     Mutation: {

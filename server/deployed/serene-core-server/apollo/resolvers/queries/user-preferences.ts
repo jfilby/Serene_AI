@@ -4,6 +4,7 @@ import { UserPreferenceService } from '../../../services/user-preference/service
 const userPreferenceService = new UserPreferenceService()
 
 // Factory of resolvers
+// Note: prisma must be passed into the GraphQL server's context
 export function sereneCoreUserPreferencesQueryResolvers() {
   return {
     Query: {

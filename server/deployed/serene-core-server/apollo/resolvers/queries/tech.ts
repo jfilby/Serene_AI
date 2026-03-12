@@ -6,6 +6,7 @@ const techQueryService = new TechQueryService()
 const usersService = new UsersService()
 
 // Factory of resolvers
+// Note: prisma must be passed into the GraphQL server's context
 export function sereneCoreTechQueryResolvers() {
   return {
     Query: {

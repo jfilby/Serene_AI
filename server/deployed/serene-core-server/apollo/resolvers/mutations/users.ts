@@ -4,6 +4,7 @@ import { UsersService } from '../../../services/users/service'
 const usersService = new UsersService()
 
 // Factory of resolvers
+// Note: prisma must be passed into the GraphQL server's context
 export function sereneCoreUsersMutationResolvers() {
   return {
     Mutation: {

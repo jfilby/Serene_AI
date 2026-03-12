@@ -4,6 +4,7 @@ import { ResourceQuotasQueryService } from '../../../services/quotas/query-servi
 const resourceQuotasService = new ResourceQuotasQueryService()
 
 // Factory of resolvers
+// Note: prisma must be passed into the GraphQL server's context
 export function sereneCoreQuotasQueryResolvers() {
   return {
     Query: {

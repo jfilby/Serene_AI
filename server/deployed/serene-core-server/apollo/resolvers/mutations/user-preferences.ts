@@ -4,6 +4,7 @@ import { UserPreferenceModel } from '../../../models/users/user-preference-model
 const userPreferenceModel = new UserPreferenceModel()
 
 // Factory of resolvers
+// Note: prisma must be passed into the GraphQL server's context
 export function sereneCoreUserPreferencesMutationResolvers() {
   return {
     Mutation: {
