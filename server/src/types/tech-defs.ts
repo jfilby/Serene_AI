@@ -1,5 +1,5 @@
 // NOTE: If variants are set to paid then quotas are expected to be setup.
-import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
+import { SereneCoreServerTypes } from 'serene-core-server'
 
 export interface RateLimitedDef {
   perMinute?: number | undefined

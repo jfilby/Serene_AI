@@ -1,5 +1,5 @@
 import { PrismaClient } from '@/prisma/client'
-import { ApiUsageBaseService } from '@/serene-core-server/services/api-usage/api-usage-base-service'
+import { ApiUsageBaseService } from 'serene-core-server'
 
 export class ChatApiUsageService {
 

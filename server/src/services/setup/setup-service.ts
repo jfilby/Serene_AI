@@ -1,11 +1,9 @@
 import { PrismaClient } from '@/prisma/client'
-import { CustomError } from '@/serene-core-server/types/errors'
-import { RateLimitedApiModel } from '@/serene-core-server/models/tech/rate-limited-api-model'
-import { TechModel } from '@/serene-core-server/models/tech/tech-model'
-import { TechProviderModel } from '@/serene-core-server/models/tech/tech-provider-model'
+import { CustomError } from 'serene-core-server'
+import { RateLimitedApiModel, TechModel, TechProviderModel } from 'serene-core-server'
 import { AiTechDefs } from '../../types/tech-defs'
 import { SereneAiProviderProvides, SereneAiServerOnlyTypes } from '../../types/server-only-types'
-import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
+import { SereneCoreServerTypes } from 'serene-core-server'
 
 export class SereneAiSetup {
 

@@ -1,4 +1,4 @@
-import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
+import { SereneCoreServerTypes } from 'serene-core-server'
 import { AiTechDefs } from './tech-defs'
 
 export class AiTechPricing {

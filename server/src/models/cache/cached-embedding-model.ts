@@ -1,6 +1,6 @@
 import { PrismaClient } from '@/prisma/client'
 import { createId } from '@paralleldrive/cuid2'
-import { CustomError } from '@/serene-core-server/types/errors'
+import { CustomError } from 'serene-core-server'
 
 type CachedEmbeddingRecord = {
   id: string

@@ -1,8 +1,8 @@
 import { PrismaClient } from '@/prisma/client'
-import { CustomError } from '@/serene-core-server/types/errors'
-import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
-import { ChatMessageCreatedModel } from '@/serene-core-server/models/chat/chat-message-created-model'
-import { ChatMessageModel } from '@/serene-core-server/models/chat/chat-message-model'
+import { CustomError } from 'serene-core-server'
+import { SereneCoreServerTypes } from 'serene-core-server'
+import { ChatMessageCreatedModel } from 'serene-core-server'
+import { ChatMessageModel } from 'serene-core-server'
 import { AiTechPricing } from '../../../types/tech-pricing'
 
 // Models

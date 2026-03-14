@@ -1,11 +1,9 @@
 import { GoogleGenAI } from '@google/genai'
 import { PrismaClient } from '@/prisma/client'
-import { CustomError } from '@/serene-core-server/types/errors'
-import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
-import { TechProviderApiKeyModel } from '@/serene-core-server/models/tech/tech-provider-api-key-model'
-import { TechProviderModel } from '@/serene-core-server/models/tech/tech-provider-model'
+import { CustomError } from 'serene-core-server'
+import { SereneCoreServerTypes } from 'serene-core-server'
+import { TechProviderApiKeyModel, TechProviderModel } from 'serene-core-server'
 import { FeatureFlags } from '../../../types/feature-flags'
-import { SereneAiServerOnlyTypes } from '../../../types/server-only-types'
 import { EstimateGeminiTokensService } from './estimate-tokens-service'
 
 // Interfaces

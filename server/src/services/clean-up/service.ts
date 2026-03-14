@@ -1,9 +1,7 @@
 import { PrismaClient } from '@/prisma/client'
-import { CustomError } from '@/serene-core-server/types/errors'
-import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
-import { ChatMessageCreatedModel } from '@/serene-core-server/models/chat/chat-message-created-model'
-import { ChatSessionModel } from '@/serene-core-server/models/chat/chat-session-model'
-import { ChatSettingsModel } from '@/serene-core-server/models/chat/chat-settings-model'
+import { CustomError } from 'serene-core-server'
+import { SereneCoreServerTypes } from 'serene-core-server'
+import { ChatMessageCreatedModel, ChatSessionModel, ChatSettingsModel } from 'serene-core-server'
 
 // Models
 const chatMessageCreatedModel = new ChatMessageCreatedModel()

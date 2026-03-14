@@ -1,4 +1,4 @@
-import { CustomError } from '@/serene-core-server/types/errors'
+import { CustomError } from 'serene-core-server'
 
 export class EstimateGeminiTokensService {
 

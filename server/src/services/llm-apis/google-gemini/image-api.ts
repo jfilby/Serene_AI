@@ -1,5 +1,5 @@
 import { PrismaClient, Tech } from '@/prisma/client'
-import { CustomError } from '@/serene-core-server/types/errors'
+import { CustomError } from 'serene-core-server'
 import { GoogleGeminiLlmService } from './llm-api'
 
 // Services

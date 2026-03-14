@@ -1,4 +1,4 @@
-import ViewTextField from '@/serene-core-client/components/basics/view-text-field'
+import { ViewTextField } from 'serene-core-client'
 import { Card, CardContent, Typography } from '@mui/material'
 
 interface Props {

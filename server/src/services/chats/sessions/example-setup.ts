@@ -1,9 +1,8 @@
 import { PrismaClient } from '@/prisma/client'
-import { CustomError } from '@/serene-core-server/types/errors'
-import { ChatSettingsModel } from '@/serene-core-server/models/chat/chat-settings-model'
-import { TechModel } from '@/serene-core-server/models/tech/tech-model'
+import { CustomError } from 'serene-core-server'
+import { ChatSettingsModel, TechModel } from 'serene-core-server'
 import { AgentUserModel } from '../../../models/agents/agent-user-model'
-import { SereneCoreServerTypes } from '@/serene-core-server/types/user-types'
+import { SereneCoreServerTypes } from 'serene-core-server'
 
 export class ExampleChatSessionSetupService {
 

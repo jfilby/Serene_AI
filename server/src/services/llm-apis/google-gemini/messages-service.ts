@@ -1,4 +1,4 @@
-import { CustomError } from '@/serene-core-server/types/errors'
+import { CustomError } from 'serene-core-server'
 import { ChatMessage, SereneAiServerOnlyTypes } from '../../../types/server-only-types'
 import { EstimateGeminiTokensService } from './estimate-tokens-service'
 

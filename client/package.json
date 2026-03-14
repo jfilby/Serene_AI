@@ -1,7 +1,11 @@
 {
-  "name": "client",
+  "name": "serene-ai-client",
   "version": "0.1.0",
-  "private": true,
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": "./dist/src/index.js"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,20 +13,29 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mui/material": "^7.3.7",
+    "next": "16.1.6",
     "react": "^19",
     "react-dom": "^19",
-    "next": "16.1.6",
-    "@mui/material": "^7.3.7"
+    "react-markdown": "^10.1.0",
+    "serene-core-client": "^0.1.6"
   },
   "devDependencies": {
     "@apollo/client": "^4.0.7",
+    "@auth/core": "^0.34.3",
+    "@auth/prisma-adapter": "^2.11.1",
     "@prisma/client": "^7.4.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cookies-next": "^6.1.1",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "next": "^16.1.6",
+    "next-auth": "^4.24.13",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "socket.io-client": "^4.7.2",
-    "typescript": "^5"
+    "typescript": "^5.9.3"
   }
 }
