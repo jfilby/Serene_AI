@@ -1,6 +1,6 @@
 {
   "name": "serene-ai-client",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "type": "module",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
@@ -22,7 +22,7 @@
     "react": "^19",
     "react-dom": "^19",
     "react-markdown": "^10.1.0",
-    "serene-core-client": "^0.1.6"
+    "serene-core-client": "^0.1.9"
   },
   "devDependencies": {
     "@apollo/client": "^4.0.7",

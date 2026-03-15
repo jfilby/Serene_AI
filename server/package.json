@@ -1,6 +1,6 @@
 {
   "name": "serene-ai-server",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "type": "module",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
@@ -24,7 +24,7 @@
     "next": "16.1.6",
     "react": "^19",
     "react-dom": "^19",
-    "serene-core-server": "0.1.3"
+    "serene-core-server": "0.1.8"
   },
   "devDependencies": {
     "@apollo/server": "^4.10.2",
