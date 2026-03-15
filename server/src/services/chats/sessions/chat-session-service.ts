@@ -1,12 +1,11 @@
-import { PrismaClient } from '@/prisma/client'
 import { CustomError } from 'serene-core-server'
-import { TechModel, UserTypes } from 'serene-core-server'
-import { ChatMessageModel, ChatParticipantModel, ChatSessionModel, ChatSettingsModel, UsersService } from 'serene-core-server'
-import { SereneAiServerOnlyTypes } from '../../../types/server-only-types'
-import { AgentUserModel } from '../../../models/agents/agent-user-model'
-import { AgentsService } from '../../agents/agents-service'
-import { ChatMessageService } from '../messages/service'
-import { LlmUtilsService } from '../../llm-apis/utils-service'
+import { ChatMessageModel, ChatParticipantModel, ChatSessionModel, ChatSettingsModel, TechModel, UsersService, UserTypes } from 'serene-core-server'
+import { PrismaClient } from '@/prisma/client.js'
+import { SereneAiServerOnlyTypes } from '../../../types/server-only-types.js'
+import { AgentUserModel } from '../../../models/agents/agent-user-model.js'
+import { AgentsService } from '../../agents/agents-service.js'
+import { ChatMessageService } from '../messages/service.js'
+import { LlmUtilsService } from '../../llm-apis/utils-service.js'
 
 // Models
 const agentUserModel = new AgentUserModel()

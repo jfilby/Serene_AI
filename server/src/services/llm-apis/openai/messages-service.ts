@@ -1,6 +1,6 @@
 import { CustomError } from 'serene-core-server'
-import { ChatMessage, SereneAiServerOnlyTypes } from '../../../types/server-only-types'
-import { EstimateOpenAiTokensService } from './estimate-tokens-service'
+import { ChatMessage, SereneAiServerOnlyTypes } from '../../../types/server-only-types.js'
+import { EstimateOpenAiTokensService } from './estimate-tokens-service.js'
 
 // Services
 const estimateOpenAiTokensService = new EstimateOpenAiTokensService()

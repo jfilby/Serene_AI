@@ -1,9 +1,7 @@
-import { PrismaClient } from '@/prisma/client'
-import { CustomError } from 'serene-core-server'
-import { RateLimitedApiModel, TechModel, TechProviderModel } from 'serene-core-server'
-import { AiTechDefs } from '../../types/tech-defs'
-import { SereneAiProviderProvides, SereneAiServerOnlyTypes } from '../../types/server-only-types'
-import { SereneCoreServerTypes } from 'serene-core-server'
+import { CustomError, RateLimitedApiModel, SereneCoreServerTypes, TechModel, TechProviderModel } from 'serene-core-server'
+import { PrismaClient } from '@/prisma/client.js'
+import { AiTechDefs } from '../../types/tech-defs.js'
+import { SereneAiProviderProvides, SereneAiServerOnlyTypes } from '../../types/server-only-types.js'
 
 export class SereneAiSetup {
 

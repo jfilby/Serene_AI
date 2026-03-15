@@ -8,8 +8,8 @@
     "strict": true,
     "noEmit": false,
     "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
     "rootDir": ".",
     "outDir": "dist",               // Compiled files go here
     "declaration": true,            // Generate .d.ts types for consumers

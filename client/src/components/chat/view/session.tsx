@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { useQuery } from '@apollo/client/react'
-import { getChatMessagesQuery } from '../../../apollo/chats'
 import { io } from 'socket.io-client'
+import { useQuery } from '@apollo/client/react'
 import { Alert, Button, TextareaAutosize } from '@mui/material'
-import ChatSessionMessages from './messages'
+import { getChatMessagesQuery } from '../../../apollo/chats.js'
+import ChatSessionMessages from './messages.js'
 
 // Get/create a Socket.io object. This needs to be done outside of the
 // function, which would otherwise constantly retry the object creation,

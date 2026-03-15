@@ -1,7 +1,7 @@
 const { v4: uuidv4 } = require('uuid')
 import { ListItem, Typography } from '@mui/material'
 import Markdown from 'react-markdown'
-import MessageAvatar from './avatar'
+import MessageAvatar from './avatar.js'
 
 interface Props {
   message: any

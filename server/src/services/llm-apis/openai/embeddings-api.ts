@@ -1,5 +1,5 @@
-import { PrismaClient } from '@/prisma/client'
-import { OpenAiLlmService } from './llm-service'
+import { PrismaClient } from '@/prisma/client.js'
+import { OpenAiLlmService } from './llm-service.js'
 
 // Services
 const openAiLlmService = new OpenAiLlmService()

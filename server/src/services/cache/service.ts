@@ -1,6 +1,6 @@
 import { blake3 } from '@noble/hashes/blake3'
-import { PrismaClient } from '@/prisma/client'
-import { LlmCacheModel } from '../../models/cache/llm-cache-model'
+import { PrismaClient } from '@/prisma/client.js'
+import { LlmCacheModel } from '../../models/cache/llm-cache-model.js'
 
 // Types
 export interface LlmGetInterface {

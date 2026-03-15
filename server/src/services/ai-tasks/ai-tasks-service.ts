@@ -1,7 +1,7 @@
-import { AiTask, PrismaClient } from '@/prisma/client'
 import { CustomError } from 'serene-core-server'
-import { AiTaskModel } from '../../models/ai-tasks/ai-task-model'
-import { AiTaskTechModel } from '../../models/ai-tasks/ai-task-tech-model'
+import { AiTask, PrismaClient } from '@/prisma/client.js'
+import { AiTaskModel } from '../../models/ai-tasks/ai-task-model.js'
+import { AiTaskTechModel } from '../../models/ai-tasks/ai-task-tech-model.js'
 
 // Types
 export interface AiTaskDetail {

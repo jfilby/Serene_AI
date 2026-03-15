@@ -1,5 +1,5 @@
-import { PrismaClient } from '@/prisma/client'
 import { ApiUsageBaseService } from 'serene-core-server'
+import { PrismaClient } from '@/prisma/client.js'
 
 export class ChatApiUsageService {
 

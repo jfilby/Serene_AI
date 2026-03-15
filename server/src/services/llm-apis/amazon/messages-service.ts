@@ -1,6 +1,6 @@
 import { CustomError } from 'serene-core-server'
-import { ChatMessage, SereneAiServerOnlyTypes } from '../../../types/server-only-types'
-import { EstimateAmazonBedrockTokensService } from './estimate-tokens-service'
+import { ChatMessage, SereneAiServerOnlyTypes } from '../../../types/server-only-types.js'
+import { EstimateAmazonBedrockTokensService } from './estimate-tokens-service.js'
 
 // Services
 const estimateAmazonBedrockTokensService = new EstimateAmazonBedrockTokensService()

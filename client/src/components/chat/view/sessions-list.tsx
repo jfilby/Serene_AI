@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useQuery } from '@apollo/client/react'
 import { Divider, Typography } from '@mui/material'
-import { getChatSessionsQuery } from '../../../apollo/chats'
+import { getChatSessionsQuery } from '../../../apollo/chats.js'
 
 interface Props {
   instanceId: string

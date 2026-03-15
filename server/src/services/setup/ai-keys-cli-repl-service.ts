@@ -1,10 +1,9 @@
 import chalk from 'chalk'
+import { SereneCoreServerTypes, TechProviderApiKeyModel, TechProviderModel } from 'serene-core-server'
 import { confirm, input, select } from '@inquirer/prompts'
-import { PrismaClient, TechProvider, TechProviderApiKey } from '@/prisma/client'
-import { TechProviderApiKeyModel, TechProviderModel } from 'serene-core-server'
-import { SereneCoreServerTypes } from 'serene-core-server'
-import { SereneAiProviderProvides } from '../../types/server-only-types'
-import { AiTechDefs } from '../../types/tech-defs'
+import { PrismaClient, TechProvider, TechProviderApiKey } from '@/prisma/client.js'
+import { SereneAiProviderProvides } from '../../types/server-only-types.js'
+import { AiTechDefs } from '../../types/tech-defs.js'
 
 // Models
 const techProviderApiKeyModel = new TechProviderApiKeyModel()

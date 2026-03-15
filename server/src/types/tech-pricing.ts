@@ -1,5 +1,5 @@
 import { SereneCoreServerTypes } from 'serene-core-server'
-import { AiTechDefs } from './tech-defs'
+import { AiTechDefs } from './tech-defs.js'
 
 export class AiTechPricing {
 

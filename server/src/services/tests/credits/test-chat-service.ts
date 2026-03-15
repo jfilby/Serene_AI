@@ -1,13 +1,11 @@
-import { PrismaClient } from '@/prisma/client'
-import { CustomError } from 'serene-core-server'
-import { SereneCoreServerTypes } from 'serene-core-server'
-import { ChatSessionModel, ChatSettingsModel, ResourceQuotaTotalModel, ResourceQuotaUsageModel, TechModel } from 'serene-core-server'
+import { ChatSessionModel, ChatSettingsModel, CustomError, ResourceQuotaTotalModel, ResourceQuotaUsageModel, SereneCoreServerTypes, TechModel } from 'serene-core-server'
 import { ResourceQuotasQueryService } from 'serene-core-server'
-import { AiTechDefs } from '../../../types/tech-defs'
-import { SereneAiServerOnlyTypes } from '../../../types/server-only-types'
-import { AgentsService } from '../../agents/agents-service'
-import { ChatService } from '../../llm-apis/chat-service'
-import { ChatMessageService } from '../../chats/messages/service'
+import { PrismaClient } from '@/prisma/client.js'
+import { AiTechDefs } from '../../../types/tech-defs.js'
+import { SereneAiServerOnlyTypes } from '../../../types/server-only-types.js'
+import { AgentsService } from '../../agents/agents-service.js'
+import { ChatService } from '../../llm-apis/chat-service.js'
+import { ChatMessageService } from '../../chats/messages/service.js'
 
 export class TestLlmService {
 

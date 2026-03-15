@@ -1,6 +1,6 @@
-import { PrismaClient } from '@/prisma/client'
 import { ApiUsageBaseService } from 'serene-core-server'
-import { SereneAiServerOnlyTypes } from '../../types/server-only-types'
+import { PrismaClient } from '@/prisma/client.js'
+import { SereneAiServerOnlyTypes } from '../../types/server-only-types.js'
 
 export class ApolloIoApiUsageService {
 

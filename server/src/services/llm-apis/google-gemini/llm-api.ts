@@ -1,10 +1,8 @@
+import { CustomError, SereneCoreServerTypes, TechProviderApiKeyModel, TechProviderModel } from 'serene-core-server'
 import { GoogleGenAI } from '@google/genai'
-import { PrismaClient } from '@/prisma/client'
-import { CustomError } from 'serene-core-server'
-import { SereneCoreServerTypes } from 'serene-core-server'
-import { TechProviderApiKeyModel, TechProviderModel } from 'serene-core-server'
-import { FeatureFlags } from '../../../types/feature-flags'
-import { EstimateGeminiTokensService } from './estimate-tokens-service'
+import { PrismaClient } from '@/prisma/client.js'
+import { FeatureFlags } from '../../../types/feature-flags.js'
+import { EstimateGeminiTokensService } from './estimate-tokens-service.js'
 
 // Interfaces
 interface ChatCompletion {

@@ -1,7 +1,7 @@
 const { v4: uuidv4 } = require('uuid')
 import { useLayoutEffect, useRef } from 'react'
 import { LinearProgress, List } from '@mui/material'
-import Message from './message'
+import Message from './message.js'
 
 interface Props {
   messages: any[]

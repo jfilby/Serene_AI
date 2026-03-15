@@ -1,6 +1,6 @@
-import { PrismaClient, Tech } from '@/prisma/client'
 import { CustomError } from 'serene-core-server'
-import { GoogleGeminiLlmService } from './llm-api'
+import { PrismaClient, Tech } from '@/prisma/client.js'
+import { GoogleGeminiLlmService } from './llm-api.js'
 
 // Services
 const googleGeminiLlmService = new GoogleGeminiLlmService()

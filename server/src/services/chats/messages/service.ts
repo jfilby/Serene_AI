@@ -1,9 +1,6 @@
-import { PrismaClient } from '@/prisma/client'
-import { CustomError } from 'serene-core-server'
-import { SereneCoreServerTypes } from 'serene-core-server'
-import { ChatMessageCreatedModel } from 'serene-core-server'
-import { ChatMessageModel } from 'serene-core-server'
-import { AiTechPricing } from '../../../types/tech-pricing'
+import { ChatMessageCreatedModel, ChatMessageModel, CustomError, SereneCoreServerTypes } from 'serene-core-server'
+import { PrismaClient } from '@/prisma/client.js'
+import { AiTechPricing } from '../../../types/tech-pricing.js'
 
 // Models
 const chatMessageCreatedModel = new ChatMessageCreatedModel()

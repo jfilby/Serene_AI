@@ -1,8 +1,8 @@
-import { PrismaClient } from '@/prisma/client'
 import { BedrockRuntimeClient, InvokeModelCommand } from '@aws-sdk/client-bedrock-runtime'
 import { CustomError } from 'serene-core-server'
-import { SereneAiServerOnlyTypes } from '../../../types/server-only-types'
-import { AmazonBedrockMessagesService } from './messages-service'
+import { PrismaClient } from '@/prisma/client.js'
+import { SereneAiServerOnlyTypes } from '../../../types/server-only-types.js'
+import { AmazonBedrockMessagesService } from './messages-service.js'
 
 // Note: the invoke style doesn't use an API key but relies on the AWS cli to
 // have setup the credentials before use.

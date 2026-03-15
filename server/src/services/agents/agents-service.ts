@@ -1,5 +1,5 @@
-import { PrismaClient } from '@/prisma/client'
-import { AgentUserModel } from '../../models/agents/agent-user-model'
+import { PrismaClient } from '@/prisma/client.js'
+import { AgentUserModel } from '../../models/agents/agent-user-model.js'
 
 export class AgentsService {
 

@@ -1,6 +1,6 @@
-import { prisma } from '@/db'
 import { CustomError } from 'serene-core-server'
-import { ChatSessionService } from '../../../services/chats/sessions/chat-session-service'
+import { prisma } from '@/db.js'
+import { ChatSessionService } from '../../../services/chats/sessions/chat-session-service.js'
 
 
 // Services

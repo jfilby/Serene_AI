@@ -1,11 +1,9 @@
 import OpenAI from 'openai'
-import { PrismaClient } from '@/prisma/client'
-import { CustomError } from 'serene-core-server'
-import { SereneCoreServerTypes } from 'serene-core-server'
-import { TechProviderApiKeyModel, TechProviderModel } from 'serene-core-server'
-import { AiTechDefs } from '../../../types/tech-defs'
-import { FeatureFlags } from '../../../types/feature-flags'
-import { OpenAIMessagesService } from './messages-service'
+import { CustomError, SereneCoreServerTypes, TechProviderApiKeyModel, TechProviderModel } from 'serene-core-server'
+import { PrismaClient } from '@/prisma/client.js'
+import { AiTechDefs } from '../../../types/tech-defs.js'
+import { FeatureFlags } from '../../../types/feature-flags.js'
+import { OpenAIMessagesService } from './messages-service.js'
 
 // OpenAI clients
 const openAiClients = new Map<string, OpenAI>()

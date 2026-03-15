@@ -1,11 +1,9 @@
-import { PrismaClient } from '@/prisma/client'
-import { CustomError } from 'serene-core-server'
-import { ChatSessionModel, ChatSettingsModel, TechModel } from 'serene-core-server'
-import { sleepSeconds } from 'serene-core-server'
-import { SereneAiServerOnlyTypes } from '../../types/server-only-types'
-import { AgentsService } from '../agents/agents-service'
-import { ChatService } from './chat-service'
-import { LlmUtilsService } from './utils-service'
+import { ChatSessionModel, ChatSettingsModel, CustomError, sleepSeconds, TechModel } from 'serene-core-server'
+import { PrismaClient } from '@/prisma/client.js'
+import { SereneAiServerOnlyTypes } from '../../types/server-only-types.js'
+import { AgentsService } from '../agents/agents-service.js'
+import { ChatService } from './chat-service.js'
+import { LlmUtilsService } from './utils-service.js'
 
 // Models
 const chatSessionModel = new ChatSessionModel()

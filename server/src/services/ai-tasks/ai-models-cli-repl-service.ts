@@ -1,8 +1,8 @@
 import chalk from 'chalk'
-import { select } from '@inquirer/prompts'
-import { PrismaClient } from '@/prisma/client'
 import { SereneCoreServerTypes } from 'serene-core-server'
-import { AiTaskDetail, AiTasksService } from './ai-tasks-service'
+import { select } from '@inquirer/prompts'
+import { PrismaClient } from '@/prisma/client.js'
+import { AiTaskDetail, AiTasksService } from './ai-tasks-service.js'
 
 // Services
 const aiTasksService = new AiTasksService()
