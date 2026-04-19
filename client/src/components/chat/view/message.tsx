@@ -1,7 +1,7 @@
 const { v4: uuidv4 } = require('uuid')
-import { ListItem, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import Markdown from 'react-markdown'
-import MessageAvatar from './avatar.js'
+import { MessageAvatar } from './avatar.js'
 
 interface Props {
   message: any
@@ -12,7 +12,7 @@ interface HeadingProps {
   children: React.ReactNode
 }
 
-export default function Message({ message }: Props) {
+export function Message({ message }: Props) {
 
   const customHeadingRenderer: React.FC<HeadingProps> = ({ level, children }) => {
     // Render all headings as h6
@@ -28,18 +28,18 @@ export default function Message({ message }: Props) {
       case '':
       case 'md':
         return <div style={{ marginLeft: '1em' }}>
-                <MessageAvatar from={message.name} />
-                  <Markdown
-                    // renderers={{ heading: customHeadingRenderer }}
-                    >
-                    {content.text}
-                  </Markdown>
-              </div>
+          <MessageAvatar from={message.name} />
+          <Markdown
+          // renderers={{ heading: customHeadingRenderer }}
+          >
+            {content.text}
+          </Markdown>
+        </div>
 
       default:
         return <Typography variant='body2' style={{ fontWeight: 'bold' }}>
-                 Unhandled content type: {JSON.stringify(content.type)}
-               </Typography>
+          Unhandled content type: {JSON.stringify(content.type)}
+        </Typography>
     }
   }
 
@@ -54,7 +54,7 @@ export default function Message({ message }: Props) {
             </div>
           ))}
         </>
-      :
+        :
         <p>message: {JSON.stringify(message)}</p>
       }
     </>

@@ -9,11 +9,11 @@ interface Props {
   userProfileId: string
 }
 
-export default function ChatSessionsList({
-                          instanceId,
-                          status,
-                          userProfileId
-                        }: Props) {
+export function ChatSessionsList({
+  instanceId,
+  status,
+  userProfileId
+}: Props) {
 
   // State
   const [chatSessions, setChatSessions] = useState<any[] | undefined>(undefined)
@@ -36,11 +36,11 @@ export default function ChatSessionsList({
 
     // Query
     const { data } = await
-            fetchGetChatSessionsQuery({
-              instanceId: instanceId,
-              status: status,
-              userProfileId: userProfileId
-          })
+      fetchGetChatSessionsQuery({
+        instanceId: instanceId,
+        status: status,
+        userProfileId: userProfileId
+      })
 
     setChatSessions(data.getChatSessions)
   }
@@ -79,7 +79,7 @@ export default function ChatSessionsList({
                 </>
               ))}
             </>
-          :
+            :
             <Typography
               style={{ marginTop: '2em' }}
               variant='body1'>
@@ -87,7 +87,7 @@ export default function ChatSessionsList({
             </Typography>
           }
         </>
-      :
+        :
         <></>
       }
     </div>

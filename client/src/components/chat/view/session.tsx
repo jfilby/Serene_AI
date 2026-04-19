@@ -3,7 +3,7 @@ import { io } from 'socket.io-client'
 import { useQuery } from '@apollo/client/react'
 import { Alert, Button, TextareaAutosize } from '@mui/material'
 import { getChatMessagesQuery } from '../../../apollo/chats.js'
-import ChatSessionMessages from './messages.js'
+import { ChatSessionMessages } from './messages.js'
 
 // Get/create a Socket.io object. This needs to be done outside of the
 // function, which would otherwise constantly retry the object creation,
@@ -21,7 +21,7 @@ interface Props {
   setShowNextTip: any
 }
 
-export default function ViewChatSession({
+export function ViewChatSession({
   chatSession,
   userProfileId,  // should be fromChatParticipantId (or both)
   showInputTip,

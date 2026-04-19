@@ -5,7 +5,7 @@ interface Props {
   from: string
 }
 
-export default function MessageAvatar({ from }: Props) {
+export function MessageAvatar({ from }: Props) {
 
   // Functions
   const renderSwitch = () => {
@@ -19,8 +19,8 @@ export default function MessageAvatar({ from }: Props) {
 
       default:
         return <Avatar sx={{ bgcolor: deepOrange[500] }}>
-            {from.substring(0, 2).toUpperCase()}
-          </Avatar>
+          {from.substring(0, 2).toUpperCase()}
+        </Avatar>
     }
   }
 

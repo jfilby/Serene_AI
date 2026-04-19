@@ -9,11 +9,11 @@ interface Props {
   setChatSession: any
 }
 
-export default function AddChatSession({
-                          chatSessionId,
-                          userProfileId,
-                          setChatSession
-                        }: Props) {
+export function AddChatSession({
+  chatSessionId,
+  userProfileId,
+  setChatSession
+}: Props) {
 
   // State
   const [alertSeverity, setAlertSeverity] = useState<any>(undefined)

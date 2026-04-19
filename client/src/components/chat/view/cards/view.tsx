@@ -5,9 +5,9 @@ interface Props {
   chatSession: any
 }
 
-export default function ViewChatSessionCard({
-                          chatSession
-                        }: Props) {
+export function ViewChatSessionCard({
+  chatSession
+}: Props) {
 
   // Render
   return (
@@ -22,17 +22,17 @@ export default function ViewChatSessionCard({
             </Typography>
 
             {chatSession.userProfile.user.name != null &&
-             chatSession.userProfile.user.name !== '' ?
+              chatSession.userProfile.user.name !== '' ?
               <ViewTextField
                 label='Description'
                 value={chatSession.userProfile.user.name}
                 style={{ marginBottom: '0.5em' }} />
-            :
+              :
               <></>
             }
           </CardContent>
         </Card>
-      :
+        :
         <></>
       }
     </div>

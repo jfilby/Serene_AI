@@ -1,7 +1,7 @@
 const { v4: uuidv4 } = require('uuid')
 import { useLayoutEffect, useRef } from 'react'
 import { LinearProgress, List } from '@mui/material'
-import Message from './message.js'
+import { Message } from './message.js'
 
 interface Props {
   messages: any[]
@@ -9,11 +9,11 @@ interface Props {
   userProfileId: string
 }
 
-export default function ChatSessionMessages({
-                          messages,
-                          myTurn,
-                          userProfileId
-                        }: Props) {
+export function ChatSessionMessages({
+  messages,
+  myTurn,
+  userProfileId
+}: Props) {
 
   // Use of a ref and useLayoutEffect to scroll to the bottom on new messages.
   // Source: https://stackoverflow.com/a/73094341
@@ -43,7 +43,7 @@ export default function ChatSessionMessages({
       <List>
         {messages ?
           <>
-            {messages.map(function(message: any, index: number) {
+            {messages.map(function (message: any, index: number) {
               return (
                 <Message
                   key={uuidv4()}
@@ -51,12 +51,12 @@ export default function ChatSessionMessages({
               )
             })}
           </>
-        :
+          :
           <></>
         }
         {myTurn === false ?
           <LinearProgress style={{ marginTop: '1em', marginRight: '0.5em' }} />
-        :
+          :
           <></>
         }
       </List>
