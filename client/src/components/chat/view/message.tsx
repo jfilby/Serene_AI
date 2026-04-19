@@ -1,4 +1,4 @@
-const { v4: uuidv4 } = require('uuid')
+import { v4 as uuidv4 } from 'uuid'
 import { Typography } from '@mui/material'
 import Markdown from 'react-markdown'
 import { MessageAvatar } from './avatar.js'
