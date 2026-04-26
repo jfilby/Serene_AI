@@ -129,7 +129,7 @@ export class OpenAiLlmService {
         }
 
     if (jsonMode === true) {
-      completionsOptions.response_format={ "type": "json_object" }
+      completionsOptions.response_format = { 'type': 'json_object' }
     }
 
     // ChatCompletion request
