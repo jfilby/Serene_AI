@@ -21,13 +21,6 @@ export class OpenAiLlmService {
   // Consts
   clName = 'OpenAiLlmService'
 
-  openAiName = 'OpenAI'
-
-  // Model names from: https://openai.com/pricing
-  gpt3pt5Turbo = 'gpt-3.5-turbo'
-  gpt4 = 'gpt-4'
-  gpt4Turbo = 'gpt-4-1106-preview'
-
   // Code
   async getOrCreateClient(
           prisma: PrismaClient,
