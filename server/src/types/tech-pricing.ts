@@ -88,16 +88,6 @@ export class AiTechPricing {
       inputTokens: 0.50,
       outputTokens: 3.00
     },
-    // Gemini 2.0 Flash / free / text
-    [AiTechDefs.googleGemini_V2Flash + `/${SereneCoreServerTypes.free}/${AiTechPricing.text}`]: {
-      inputTokens: 0.00,
-      outputTokens: 0.00
-    },
-    // Gemini 2.0 Flash / paid / text
-    [AiTechDefs.googleGemini_V2Flash + `/${SereneCoreServerTypes.paid}/${AiTechPricing.text}`]: {
-      inputTokens: 0.10,
-      outputTokens: 0.40
-    },
     // Gemini 2.5 Pro / paid / text
     [AiTechDefs.googleGemini_V2pt5Pro + `/${SereneCoreServerTypes.paid}/${AiTechPricing.text}`]: [{
       inputTokens: 1.25,

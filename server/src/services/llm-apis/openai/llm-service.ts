@@ -1,6 +1,6 @@
 import OpenAI from 'openai'
 import { CustomError, SereneCoreServerTypes, TechProviderApiKeyModel, TechProviderModel } from 'serene-core-server'
-import { PrismaClient } from '@/prisma/client.js'
+import { PrismaClient, Tech } from '@/prisma/client.js'
 import { AiTechDefs } from '../../../types/tech-defs.js'
 import { FeatureFlags } from '../../../types/feature-flags.js'
 import { OpenAIMessagesService } from './messages-service.js'
@@ -24,7 +24,7 @@ export class OpenAiLlmService {
   // Code
   async getOrCreateClient(
           prisma: PrismaClient,
-          tech: any) {
+          tech: Tech) {
 
     // Debug
     const fnName = `${this.clName}.getOrCreateClient()`
@@ -74,7 +74,7 @@ export class OpenAiLlmService {
 
   async sendChatMessages(
           prisma: PrismaClient,
-          tech: any,
+          tech: Tech,
           messagesWithRoles: any[],
           jsonMode: boolean = false) {
 

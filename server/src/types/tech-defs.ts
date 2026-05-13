@@ -56,11 +56,6 @@ export class AiTechDefs {
   static mockedLlmPaid = 'Mocked LLM'
   static mockedLlmFree = 'Mocked LLM (free tier)'
 
-  // static googleGemini_V1Pro = 'Google Gemini v1 Pro'
-  // static googleGemini_V1pt5Pro = 'Google Gemini v1.5 Pro'
-  // static googleGemini_V1pt5Flash = 'Google Gemini v1.5 Flash'
-  static googleGemini_V2Flash = 'Google Gemini v2 Flash'
-  static googleGemini_V2FlashFree = 'Google Gemini v2 Flash (free tier)'
   static googleGemini_V2pt5Pro = 'Google Gemini v2.5 Pro'
   static googleGemini_V2pt5ProFree = 'Google Gemini v2.5 Pro (free tier)'
   static googleGemini_V2pt5Flash = 'Google Gemini v2.5 Flash'
@@ -96,9 +91,8 @@ export class AiTechDefs {
   static openRouter_MistralSmall3pt2_24b_Chutes = 'Mistral Small 3.2 24B'
 
   // Model names
-  static googleGemini_V2Flash_ModelName = 'gemini-2.0-flash'
   static googleGemini_V2pt5Pro_ModelName = 'gemini-2.5-pro'
-  static googleGemini_V2pt5Flash_ModelName = 'gemini-2.5-flash-preview-09-2025'
+  static googleGemini_V2pt5Flash_ModelName = 'gemini-2.5-flash'
   static googleGemini_V2pt5FlashImage_ModelName = 'gemini-2.5-flash-image'
   static googleGemini_V2pt5FlashLite_ModelName = 'gemini-2.5-flash-lite'
   static googleGemini_V3Flash_ModelName = 'gemini-3-flash-preview'
@@ -151,33 +145,6 @@ export class AiTechDefs {
   // A list of available LLMs
   static llmTechs: TechDef[] = [
     // Google Gemini: LLMs
-    {
-      provider: this.googleGeminiProvider,
-      variantName: this.googleGemini_V2Flash,
-      resource: this.llmsResource,
-      model: this.googleGemini_V2Flash_ModelName,
-      protocol: this.geminiProtocol,
-      pricingTier: SereneCoreServerTypes.paid,
-      inputTokens: 1048576,
-      outputTokens: 8192,
-      default: false,
-      isAdminOnly: false
-    },
-    {
-      provider: this.googleGeminiProvider,
-      variantName: this.googleGemini_V2FlashFree,
-      resource: this.llmsResource,
-      model: this.googleGemini_V2Flash_ModelName,
-      protocol: this.geminiProtocol,
-      pricingTier: SereneCoreServerTypes.free,
-      inputTokens: 1048576,
-      outputTokens: 8192,
-      default: false,
-      isAdminOnly: true,
-      rateLimited: {
-        perMinute: 15
-      }
-    },
     {
       provider: this.googleGeminiProvider,
       variantName: this.googleGemini_V2pt5Pro,
