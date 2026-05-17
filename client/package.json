@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@mui/material": "^7.3.7",
-    "next": "16.1.6",
+    "next": "16.2.6",
     "react": "^19",
     "react-dom": "^19",
     "react-markdown": "^10.1.0",
@@ -35,8 +35,7 @@
     "@types/uuid": "^10.0.0",
     "cookies-next": "^6.1.1",
     "eslint": "^9",
-    "eslint-config-next": "16.1.6",
-    "next": "^16.1.6",
+    "eslint-config-next": "16.2.6",
     "next-auth": "^4.24.13",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
